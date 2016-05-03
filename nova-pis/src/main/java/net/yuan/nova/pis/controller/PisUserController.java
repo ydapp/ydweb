@@ -11,9 +11,10 @@ import net.yuan.nova.commons.SystemConstant;
 import net.yuan.nova.core.shiro.CurrentUserUtil;
 import net.yuan.nova.core.shiro.PubUserAuthenticationToken;
 import net.yuan.nova.core.shiro.vo.User;
+import net.yuan.nova.core.shiro.vo.UserModel;
 import net.yuan.nova.core.vo.DataGridData;
 import net.yuan.nova.core.vo.JsonVo;
-import net.yuan.nova.pis.controller.model.UserModel;
+import net.yuan.nova.pis.business.UserModelBusinessImpl;
 import net.yuan.nova.pis.entity.PisBrokingFirm;
 import net.yuan.nova.pis.entity.PisCity;
 import net.yuan.nova.pis.entity.PisUser;
@@ -64,7 +65,8 @@ public class PisUserController {
 	private PisBuildingService buildingService;
 	@Autowired
 	private PisBrokingFirmService brokingFirmService;
-	
+	@Autowired
+	private UserModelBusinessImpl userModelBusiness;
 	/**
 	 * 获得当前登录用户信息
 	 * 
@@ -92,29 +94,12 @@ public class PisUserController {
 			json.setMessage("当前未登录或登录超时");
 		} else {
 			json.setSuccess(true);
-			UserModel userModel = new UserModel();
-			
-			PisUser pisUser = this.pisUserService.findUserById(user.getUserId());
-			PisUserGroup group = this.pisUserService.getPisUserGroup(user.getUserId());
-			if (group != null){
-				userModel.setGroupType(group.getType());
-			}
-			userModel.setNick(pisUser.getNick());
-			userModel.setTel(pisUser.getTel());
-			
-			PisUserExtend userExtend = this.userExtendService.selectByUserId(user.getUserId());
-			if (userExtend != null){
-				if (StringUtils.isNoneEmpty(userExtend.getBrokingFirmId())){
-					userModel.setBrokingFirm(this.brokingFirmService.findById(userExtend.getBrokingFirmId()).getBrokingFirmName());
-				}
-				if (StringUtils.isNoneEmpty(userExtend.getBuildingId())){
-					userModel.setBuilding(this.buildingService.getById(userExtend.getBuildingId()).getBuildingName());
-				}
-			}
+			UserModel userModel = this.userModelBusiness.getUserModel(user);
 			json.setResult(userModel);
 		}
 		return json;
 	}
+	
 
 	@RequestMapping(value = "/api/addUser")
 	public ModelMap addUser(HttpServletRequest request, ModelMap modelMap, PisUser pisUser) {
@@ -295,8 +280,10 @@ public class PisUserController {
 			vo.setTel(user.getTel());
 			vo.setNick(user.getNick());
 			PisUserGroup userGroup = this.pisUserService.getPisUserGroup(user.getUserId());
-			
-			vo.setGroupType(userGroup == null ? "" : userGroup.getTypeTitle());
+			if (userGroup != null){
+				vo.setGroupType(userGroup.getType());
+				vo.setGroupTypeTitle(userGroup.getTypeTitle());
+			}
 			userInfoList.add(vo);
 			
 		}

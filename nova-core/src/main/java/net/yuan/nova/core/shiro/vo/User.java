@@ -17,7 +17,7 @@ public class User implements Serializable {
 	private String phoneNumber;
 	private Type type;
 	private LoginType loginType;
-
+	private UserModel userModel;//定义用户显示信息
 	public String getUserId() {
 		return userId;
 	}
@@ -138,6 +138,14 @@ public class User implements Serializable {
 	@Override
 	public int hashCode() {
 		return userId != null ? userId.hashCode() : 0;
+	}
+
+	public UserModel getUserModel() {
+		return userModel;
+	}
+
+	public void setUserModel(UserModel userModel) {
+		this.userModel = userModel;
 	}
 
 }

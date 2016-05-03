@@ -1,16 +1,21 @@
-package net.yuan.nova.pis.controller.model;
+package net.yuan.nova.core.shiro.vo;
+
+import java.io.Serializable;
+
 /**
  * 添加用户基本信息
  * @author leasonlive
  *
  */
-public class UserModel {
+public class UserModel implements Serializable {
 	//电话
 	private String tel;
 	//姓名
 	private String nick;
-	//类型
+	//类型代码
 	private String groupType;
+	//类型名称
+	private String groupTypeTitle;
 	//用户经纪公司和经纪人标志
 	private String brokingFirm;
 	//用于案场专员
@@ -44,6 +49,12 @@ public class UserModel {
 	}
 	public void setBuilding(String building) {
 		this.building = building;
+	}
+	public String getGroupTypeTitle() {
+		return groupTypeTitle;
+	}
+	public void setGroupTypeTitle(String groupTypeTitle) {
+		this.groupTypeTitle = groupTypeTitle;
 	}
 	
 	

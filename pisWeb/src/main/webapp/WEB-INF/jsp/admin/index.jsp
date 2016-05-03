@@ -52,7 +52,12 @@
 		</div>
 		<span class="header-user">
 			<a href="javascript:void(0);" id="user-info" class="easyui-menubutton"
-			    data-options="menu:'#user-menu',iconCls:'icon-user'">${CURRENT_USER.loginName}</a>
+			    data-options="menu:'#user-menu',iconCls:'icon-user'">
+			    ${CURRENT_USER.loginName}&nbsp;&nbsp;${CURRENT_USER.userModel.groupTypeTitle}
+			    <c:if test="${CURRENT_USER.userModel.groupType=='brokingFirm'}"><br>${CURRENT_USER.userModel.brokingFirm}</c:if>
+			    <c:if test="${CURRENT_USER.userModel.groupType=='saleman'}"><br>${CURRENT_USER.userModel.brokingFirm}</c:if>
+			    <c:if test="${CURRENT_USER.userModel.groupType=='commissioner'}"><br>${CURRENT_USER.userModel.building}</c:if>
+			    </a>
 		</span>
 		<div id="user-menu" class="easyui-menu" style="width: 130px;">
 			<div class="user-refresh" data-options="iconCls:'icon-reload'">刷新</div>

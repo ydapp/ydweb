@@ -1,8 +1,10 @@
 package net.yuan.nova.core.shiro;
 
 import net.yuan.nova.commons.SystemConstant;
+import net.yuan.nova.core.shiro.service.UserModelBusiness;
 import net.yuan.nova.core.shiro.service.UserService;
 import net.yuan.nova.core.shiro.vo.User;
+import net.yuan.nova.core.shiro.vo.UserModel;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.SecurityUtils;
@@ -22,6 +24,7 @@ import org.apache.shiro.subject.Subject;
 import org.apache.shiro.util.ByteSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * 后台管理员登录使用的realm
@@ -34,6 +37,8 @@ public class AdminAuthorizingRealm extends AuthorizingRealm {
 	private final Logger log = LoggerFactory.getLogger(AdminAuthorizingRealm.class);
 
 	protected UserService userService;
+	@Autowired
+	protected UserModelBusiness userModelBusiness;
 
 	@Override
 	public String getName() {
@@ -89,6 +94,8 @@ public class AdminAuthorizingRealm extends AuthorizingRealm {
 				// 将当前用户写入session
 				Subject currentUser = SecurityUtils.getSubject();
 				Session session = currentUser.getSession();
+				UserModel userModel = this.userModelBusiness.getUserModel(staff);
+				staff.setUserModel(userModel);
 				session.setAttribute(SystemConstant.SESSION_USER, staff);
 				return authcInfo;
 			} else {
