@@ -302,12 +302,13 @@
 				validator : function(value) {
 					var flag;
 					$.ajax({
-						type : 'POST',
-						url : '<%=request.getContextPath()%>/admin/staff/checkPassword.json',
-						data : 'oldPwd=' + value,
+						type :'POST',
+						dataType : "json",
+						url : '<%=path%>/api/staff/checkPassword.json',
+						data : 'oldPwd=' + value+'&loginName=${CURRENT_USER.loginName}',
 						async : false,
 						success : function(data) {
-							flag = data;
+							flag = data.success;
 						}
 					});
 					return flag;
