@@ -309,7 +309,7 @@
 						async : false,
 						success : function(data) {
 							flag = data.success;
-						}
+						} 
 					});
 					return flag;
 				},
