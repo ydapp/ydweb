@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.yuan.nova.core.dao.AttachmentBlobDao">
+
+	<resultMap id="attachmentBlobMap" type="net.yuan.nova.core.entity.AttachmentBlob">
+		<id property="atchMd5" column="ATCH_MD5" />
+		<result property="acthSize" column="ATCH_SIZE" />
+		<result property="atchCont" column="ATCH_CONT" />
+	</resultMap>
+
+	<!-- ############################## -->
+	<!-- ###### 增加 ###### -->
+	<!-- ############################## -->
+
+	<insert id="addAttachmentBlob" parameterType="net.yuan.nova.core.entity.AttachmentBlob">
+		insert into
+		PIS_ATTACHMENT_BLOB(ATCH_MD5,ATCH_SIZE,ATCH_CONT)
+		values(#{atchMd5},#{acthSize},#{atchCont,jdbcType=BLOB})
+	</insert>
+
+	<!-- ############################## -->
+	<!-- ###### 删除 ###### -->
+	<!-- ############################## -->
+
+	<delete id="deleteAttachmentBlob" parameterType="long">
+		delete from PIS_ATTACHMENT_BLOB where ATCH_MD5=#{atchMd5}
+	</delete>
+
+	<delete id="cleanAttachmentBlob">
+		delete from PIS_ATTACHMENT_BLOB t where not exists (select '1' from PIS_ATTACHMENT a where a.md5=t.atch_md5)
+	</delete>
+
+	<!-- ############################## -->
+	<!-- ###### 查询 ###### -->
+	<!-- ############################## -->
+
+	<select id="findAttachmentBlob" resultMap="attachmentBlobMap">
+		select * from PIS_ATTACHMENT_BLOB where ATCH_MD5=#{atchMd5}
+	</select>
+
+	<select id="findAttachmentBlobCount" resultType="int">
+		select count(1) from PIS_ATTACHMENT_BLOB where ATCH_MD5=#{atchMd5}
+	</select>
+
+</mapper>  

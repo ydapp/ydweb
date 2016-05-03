@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.yuan.nova.pis.dao.PisProjectMapper" >
+  <resultMap id="BaseResultMap" type="net.yuan.nova.pis.entity.PisProject">
+    <id column="PROJECT_ID" property="projectId" jdbcType="VARCHAR" />
+    <result column="USER_ID" property="userId" jdbcType="VARCHAR" />
+    <result column="BUILDING_ID" property="buildingId" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+   PROJECT_ID,USER_ID,BUILDING_ID
+  </sql>
+  <select id="getByUserId" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from PIS_PROJECT 
+    where USER_ID=#{userId,jdbcType=VARCHAR}
+    
+  </select>
+  <select id="getByBuildingId" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from PIS_PROJECT 
+    where BUILDING_ID=#{buildingId,jdbcType=VARCHAR}
+    
+  </select>
+  <insert id="insert" parameterType="net.yuan.nova.pis.entity.PisProject" >
+    insert into PIS_PROJECT (
+    PROJECT_ID,USER_ID,BUILDING_ID
+    )
+    values (
+    #{projectId,jdbcType=VARCHAR}, #{userId,jdbcType=VARCHAR}, #{buildingId,jdbcType=VARCHAR}
+      )
+  </insert>
+</mapper>

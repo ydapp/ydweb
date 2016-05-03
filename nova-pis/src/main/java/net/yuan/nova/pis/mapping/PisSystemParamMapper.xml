@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.yuan.nova.pis.dao.PisSystemParamMapper">
+
+	<resultMap id="systemParamMap" type="net.yuan.nova.commons.SystemParam">
+		<id property="param" column="PARAM" />
+		<result property="paramName" column="PARAM_NAME" />
+		<result property="mask" column="MASK" />
+		<result property="currentValue" column="CURRENT_VALUE" />
+		<result property="comments" column="COMMENTS" />
+	</resultMap>
+
+	<!-- ############################## -->
+	<!-- ###### 查询 ###### -->
+	<!-- ############################## -->
+
+	<select id="findAll" resultMap="systemParamMap">
+		select * from PIS_SYSTEM_PARAM
+	</select>
+
+	<select id="findSystemParam" resultMap="systemParamMap">
+		select * from PIS_SYSTEM_PARAM where MASK=#{mask}
+	</select>
+
+	<select id="getDataList" resultType="java.util.Map">
+		${paramSQL}
+	</select>
+	<!-- 更新系统参数 -->
+	<update id="updataSystemParams" parameterType="String">
+		UPDATE PIS_SYSTEM_PARAM SET CURRENT_VALUE =#{currentValue}, COMMENTS = #{comments} WHERE MASK= #{mask}
+	</update>
+</mapper>  

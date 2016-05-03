@@ -1,0 +1,234 @@
+@charset "utf-8";
+iframe {
+	padding: 0px;
+	margin: 0px;
+	border: 0px;
+	display: block;
+}
+#header {
+	background-image: url(../images/main/top_bg.png);
+	overflow: hidden;
+}
+
+.header-logo {
+	margin: 0 0 0 20px;
+	background: url(../images/main/s_logo.png) no-repeat scroll 0 center;
+	width: 460px;
+	height: 65px;
+}
+
+.header-title {
+	margin-left: 85px;
+	width: 370px;
+	height: 65px;
+	line-height: 65px;
+	-moz-user-select: none;
+	-khtml-user-select: none;
+	user-select: none;
+	background-image: url("../images/main/top_bg.png");
+	-moz-user-select: none;
+	font-family: "微软雅黑";
+	font-size: 32px;
+	color: #ffffff;
+}
+
+.header-navbar {
+	position: absolute;
+	top: 0;
+	left: 520px;
+}
+
+.nav {
+	content: " ";
+	display: table;
+	box-sizing: border-box;
+	clear: both;
+	list-style: outside none none;
+	padding-left: 0;
+}
+
+.navbar-nav {
+	float: left;
+	margin: 0;
+}
+
+.navbar-nav li {
+	box-sizing: border-box;
+}
+
+.navbar-nav li {
+	float: left;
+}
+
+.nav li {
+	display: block;
+	position: relative;
+}
+
+.navbar-nav li a {
+	display: block;
+	color: #FFFFFF;
+	font-family: "微软雅黑";
+	font-size: 16px;
+	line-height: 35px;
+	padding: 15px 16px;
+	position: relative;
+	text-decoration: none;
+	background-color: transparent;
+}
+
+.navbar-nav li a:hover {
+	background-color: #0060cb;
+}
+
+.navbar-nav li.active a {
+	background-color: #0060cb;
+}
+
+.clear {
+	clear: both;
+}
+
+.header-user {
+	height: 26px;
+	margin: -13px 0 0 0;
+	position: absolute;
+	top: 50%;
+	right: 30px;
+}
+
+#user-info {
+	background: none repeat scroll 0 0 transparent;
+	border: 1px solid #FFFFFF;
+	border-radius: 2px;
+	color: #FFFFFF;
+}
+
+#user-info.l-btn-plain {
+	padding: 1px;
+}
+
+#user-info .l-btn-text {
+	font-size: 14px;
+	line-height: 24px;
+}
+
+#user-info .m-btn-downarrow {
+	background: url("../images/main/menu_arrow.png") no-repeat scroll 0
+		center;
+}
+
+.icon-user {
+	background: url("../images/main/admin.png") no-repeat scroll center
+		center;
+}
+
+.sidebar-nav {
+	
+}
+/*
+ * 修改easyui的样式
+ */
+#sidebar .panel-header {
+	background-color: #daeef5;
+	background-image: url("../images/main/tab_bg.png");
+	padding-left: 15px;
+}
+
+#sidebar .panel-title {
+	color: #666666;
+	font-family: "宋体";
+	font-size: 14px;
+	font-weight: bold;
+	height: 22px;
+	line-height: 22px;
+}
+
+#sidebar .panel-icon {
+	left: 15px;
+	background-image: url("../images/easyUI/pictures/tabicons.png");
+	background-position: -20px -100px;
+}
+
+#sidebar .panel-with-icon {
+	padding-left: 20px;
+}
+
+#sidebar .tree {
+	color: #0278fd;
+}
+
+#sidebar .tree-node {
+	height: 32px;
+	padding-left: 15px;
+	vertical-align: middle;
+}
+
+#sidebar .tree-expanded, #sidebar .tree-collapsed {
+	margin-top: 7px;
+}
+
+#sidebar .tree-folder, #sidebar .tree-file {
+	margin-top: 8px;
+}
+
+#sidebar .tree-folder {
+	background: url("../images/main/gb_bule.png") no-repeat scroll;
+}
+
+#sidebar .tree-node-selected .tree-folder {
+	background: url("../images/main/gb_white.png") no-repeat scroll;
+}
+
+#sidebar .tree-folder-open {
+	background: url("../images/main/dk_bule.png") no-repeat scroll;
+}
+
+#sidebar .tree-node-selected .tree-folder-open {
+	background: url("../images/main/dk_white.png") no-repeat scroll;
+}
+
+#sidebar .tree-file {
+	background: url("../images/main/zk_bule.png") no-repeat scroll;
+}
+
+#sidebar .tree-node-selected .tree-file {
+	background: url("../images/main/zk_white.png") no-repeat scroll;
+}
+
+#sidebar .tree-collapsed {
+	background: url("../images/main/icon_jt_blue.png") no-repeat scroll;
+}
+
+#sidebar .tree-node-selected .tree-collapsed {
+	background: url("../images/main/icon_jt_white.png") no-repeat scroll;
+}
+
+#sidebar .tree-expanded {
+	background: url("../images/main/icon_jt2_blue.png") no-repeat scroll;
+}
+
+#sidebar .tree-node-selected .tree-expanded {
+	background: url("../images/main/icon_jt1_white.png") no-repeat scroll;
+}
+
+#sidebar .tree-title {
+	font-family: "宋体";
+	font-size: 12px;
+	height: 32px;
+	line-height: 32px;
+}
+
+#sidebar .tree-title {
+	font-family: "宋体";
+	font-size: 12px;
+}
+
+#main-panel .tabs-header {
+	background-color: #daeef5;
+	background-image: url("../images/main/tab_bg.png");
+}
+
+#main-panel .tabs li a.tabs-inner {
+	background-color: transparent;
+}

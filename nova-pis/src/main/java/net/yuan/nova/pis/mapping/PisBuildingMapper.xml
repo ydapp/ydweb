@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.yuan.nova.pis.dao.PisBuildingMapper" >
+  <resultMap id="BaseResultMap" type="net.yuan.nova.pis.entity.PisBuilding">
+    <id column="CITY_ID" property="cityId" jdbcType="VARCHAR" />
+    <result column="BUILDING_ID" property="buildingId" jdbcType="VARCHAR" />
+    <result column="BUILDING_NAME" property="buildingName" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+   CITY_ID,BUILDING_ID,BUILDING_NAME
+  </sql>
+  <select id="getBuilding" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from PIS_BUILDING where CITY_ID = #{cityId,jdbcType=VARCHAR}
+    
+  </select>
+  <select id="getById" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from PIS_BUILDING where BUILDING_ID = #{buildingId,jdbcType=VARCHAR}
+    
+  </select>
+  <select id="getByName" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from PIS_BUILDING where BUILDING_NAME = #{getByName,jdbcType=VARCHAR}
+  </select>
+  <insert id="insert" parameterType="net.yuan.nova.pis.entity.PisBuilding" >
+    insert into PIS_BUILDING (CITY_ID,BUILDING_ID,BUILDING_NAME
+      )
+    values (#{cityId,jdbcType=VARCHAR}, #{buildingId,jdbcType=VARCHAR}, #{buildingName,jdbcType=VARCHAR}
+      )
+  </insert>
+</mapper>

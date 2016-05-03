@@ -1,0 +1,47 @@
+.objectBrace {
+	color: #00AA00;
+	font-weight: bold;
+}
+
+.arrayBrace {
+	color: #0033FF;
+	font-weight: bold;
+}
+
+.propertyName {
+	color: #CC0000;
+	font-weight: bold;
+}
+
+.string {
+	color: #007777;
+}
+
+.number {
+	color: #AA00AA;
+}
+
+.boolean {
+	color: #0000FF;
+}
+
+.function {
+	color: #AA6633;
+	text-decoration: italic;
+}
+
+.null {
+	color: #0000FF;
+}
+
+.comma {
+	color: #000000;
+	font-weight: bold;
+}
+
+pre.codeContainer {
+	font-size: 12px;
+	margin: 5px;
+	margin-top: 0px;
+	margin-bottom: 0px;
+}

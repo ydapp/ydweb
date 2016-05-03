@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.yuan.nova.core.dao.AttachmentDao">
+
+	<resultMap id="attachmentMap" type="net.yuan.nova.core.entity.Attachment">
+		<id property="appAtchId" column="APP_ATCH_ID" />
+		<result property="tableName" column="TABLE_NAME" />
+		<result property="kindId" column="KIND_ID" />
+		<result property="atchName" column="ATCH_NAME" />
+		<result property="savePath" column="SAVE_PATH" />
+		<result property="comments" column="COMMENTS" />
+		<result property="acthType" column="ATCH_TYPE" />
+		<result property="md5" column="MD5" />
+		<result property="acthSize" column="ACTH_SIZE" />
+		<result property="state" column="STATE" />
+		<result property="createDate" column="CREATE_DATE" />
+	</resultMap>
+
+	<!-- ############################## -->
+	<!-- ###### 增加 ###### -->
+	<!-- ############################## -->
+
+	<insert id="addAttachment" parameterType="net.yuan.nova.core.entity.Attachment">
+		insert into
+		PIS_ATTACHMENT(APP_ATCH_ID,TABLE_NAME,KIND_ID,ATCH_NAME,SAVE_PATH,COMMENTS,ATCH_TYPE,MD5,ACTH_SIZE,STATE,CREATE_DATE)
+		values(#{appAtchId},#{tableName},#{kindId,jdbcType=VARCHAR},#{atchName,jdbcType=VARCHAR},#{savePath,jdbcType=VARCHAR},#{comments,jdbcType=VARCHAR},#{acthType,jdbcType=VARCHAR},#{md5},#{acthSize},#{state},sysdate)
+	</insert>
+
+	<!-- ############################## -->
+	<!-- ###### 删除 ###### -->
+	<!-- ############################## -->
+
+	<delete id="deleteAttachment">
+		delete from
+		PIS_ATTACHMENT where APP_ATCH_ID=#{appAtchId}
+	</delete>
+	
+	<delete id="deleteAttachmentsByKindId">
+		delete from
+		PIS_ATTACHMENT where KIND_ID=#{kindId} and TABLE_NAME= #{tableName}
+	</delete>
+	
+	<delete id="cleanAttachment">
+		delete from PIS_ATTACHMENT where TABLE_NAME=#{tableName}
+	</delete>
+
+	<!-- ############################## -->
+	<!-- ###### 修改 ###### -->
+	<!-- ############################## -->
+
+	<update id="updateStatusByAttachmentId">
+		update PIS_ATTACHMENT
+		set
+		STATE=#{state}
+		where
+		APP_ATCH_ID=#{appAtchId}
+	</update>
+
+	<update id="updateDescriptionByAttachmentId">
+		update PIS_ATTACHMENT
+		set
+		<if test="atchName !=null">ATCH_NAME=#{atchName},</if>
+		COMMENTS=#{comments}
+		where
+		APP_ATCH_ID=#{appAtchId}
+	</update>
+	
+	<update id="updateAttachment" parameterType="net.yuan.nova.core.entity.Attachment">
+		update PIS_ATTACHMENT
+		set
+		KIND_ID=#{kindId}, TABLE_NAME= #{tableName}
+		where
+		APP_ATCH_ID=#{appAtchId}
+	</update>
+
+	<!-- ############################## -->
+	<!-- ###### 查询 ###### -->
+	<!-- ############################## -->
+
+	<select id="getAttachmentById" resultMap="attachmentMap">
+		select * from
+		PIS_ATTACHMENT where
+		APP_ATCH_ID=#{appAtchId}
+	</select>
+
+	<select id="getAttachmentsByKindId" resultMap="attachmentMap">
+		select *
+		from PIS_ATTACHMENT where KIND_ID=#{kindId} and TABLE_NAME= #{tableName}
+		and STATE = #{state} order by APP_ATCH_ID
+	</select>
+
+	<select id="getAttachmentCountByKindId" resultType="int">
+		select
+		count(*)
+		from PIS_ATTACHMENT where KIND_ID=#{kindId} and TABLE_NAME= #{tableName}
+		and STATE = #{state}
+	</select>
+
+	<select id="getAttachmentCountByKind" resultType="int">
+		select
+		count(*)
+		from PIS_ATTACHMENT where TABLE_NAME= #{tableName} and STATE = #{state}
+	</select>
+
+	<select id="getAttachmentList"  resultMap="attachmentMap">
+		select *
+		  from (select A.*, rownum rn
+		          from ( select APP_ATCH_ID,SAVE_PATH,ATCH_TYPE,MD5,ACTH_SIZE from PIS_ATTACHMENT
+		          	where APP_ATCH_ID > #{appAtchId}
+					order by APP_ATCH_ID ) A
+		         where rownum &lt;= #{endRowNum})
+		 where rn &gt; #{offset}
+	</select>
+</mapper>  

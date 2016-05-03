@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.yuan.nova.pis.dao.PisMenuItemMapper">
+	<!-- PispMenuItem返回集合 -->
+	<resultMap id="BasePispMenuItemMap" type="net.yuan.nova.pis.entity.PisMenuItem">
+		<id column="ID" property="id" jdbcType="VARCHAR" />
+		<result column="PARENT_ID" property="parentId" jdbcType="VARCHAR" />
+		<result column="TEXT" property="text" jdbcType="VARCHAR" />
+		<result column="MENU_LEVEL" property="menuLevel" jdbcType="DECIMAL" />
+		<result column="MENU_CODE" property="menuCode" jdbcType="VARCHAR" />
+		<result column="MENU_PATH" property="menuPath" jdbcType="VARCHAR" />
+		<result column="URl" property="url" jdbcType="VARCHAR" />
+		<result column="SORT" property="sort" jdbcType="DECIMAL" />
+		<result column="CREATED_DATE" property="createdDate" jdbcType="TIMESTAMP" />
+		<result column="STATUS" property="status" jdbcType="VARCHAR" />
+	</resultMap>
+ 
+	<!-- 增加PispMenuItem -->
+	<insert id="saveMenuItem" parameterType="net.yuan.nova.pis.entity.PisMenuItem">
+	    insert into PIS_MENU_ITEM (ID, PARENT_ID, TEXT, MENU_LEVEL, MENU_CODE, MENU_PATH, URL, SORT, CREATED_DATE)
+        values (#{id,jdbcType=VARCHAR}, 
+         <choose>
+			<when test="parentId!=null and parentId!=''">
+				#{parentId,jdbcType=VARCHAR},
+			</when>
+			<when test="parentId==null or parentId==''">
+				null,
+			</when>
+		 </choose>
+        #{text,jdbcType=VARCHAR},#{menuLevel,jdbcType=DECIMAL}, 
+        #{menuCode,jdbcType=VARCHAR}, #{menuPath,jdbcType=VARCHAR}, 
+        #{url,jdbcType=VARCHAR}, #{sort,jdbcType=DECIMAL}, sysdate)
+	</insert>
+	
+	<!-- 根据主键进行查询PispMenuItem -->
+	<select id="findMenuItem" resultMap="BasePispMenuItemMap">
+		select ID, PARENT_ID, TEXT, MENU_LEVEL, MENU_CODE, MENU_PATH, URL, SORT, CREATED_DATE
+		from PIS_MENU_ITEM a where ID = #{id,jdbcType=VARCHAR}
+	</select>
+	
+	<!-- 删除PispMenuItem  -->
+	<delete id="delMenuItem" parameterType="String" >
+      delete from PIS_MENU_ITEM where ID = #{id,jdbcType=VARCHAR}
+    </delete>
+    
+    <!-- 修改PispMenuItem -->
+	<update id="updateMenuItem" parameterType="net.yuan.nova.pis.entity.PisMenuItem">
+	    update PIS_MENU_ITEM
+	    <set >
+	      <if test="parentId != null and parentId != ''" >
+	        PARENT_ID = #{parentId,jdbcType=VARCHAR},
+	      </if>
+	      <if test="text != null and text != ''" >
+	        TEXT = #{text,jdbcType=VARCHAR},
+	      </if>
+	      <if test="menuLevel != null and menuLevel != 0" >
+	        MENU_LEVEL = #{menuLevel,jdbcType=DECIMAL},
+	      </if>
+	      <if test="menuCode != null and menuCode != ''" >
+	        MENU_CODE = #{menuCode,jdbcType=VARCHAR},
+	      </if>
+	      <if test="menuPath != null and menuPath != ''" >
+	        MENU_PATH = #{menuPath,jdbcType=VARCHAR},
+	      </if>
+	      <if test="url != null and url != ''" >
+	        URL = #{url,jdbcType=VARCHAR},
+	      </if>
+	      <if test="sort != null and sort != 0" >
+	        SORT = #{sort,jdbcType=DECIMAL},
+	      </if>
+	      <if test="createdDate != null and createdDate != ''" >
+	        CREATED_DATE = #{createdDate,jdbcType=TIMESTAMP},
+	      </if>
+	    </set>
+	    where ID = #{id,jdbcType=VARCHAR}
+	</update>
+	
+    <!-- 查询父菜单下的所有菜单 -->
+    <select id="findChildren" resultMap="BasePispMenuItemMap">
+	     select ID, PARENT_ID, TEXT, MENU_LEVEL, MENU_CODE, MENU_PATH, URL, SORT, CREATED_DATE
+	     from PIS_MENU_ITEM a where 1=1
+	     <choose>
+			<when test="parentId!=null and parentId!=''">
+				and a.PARENT_ID= #{parentId,jdbcType=VARCHAR}
+			</when>
+			<when test="parentId==null or parentId==''">
+				and a.PARENT_ID is null
+			</when>
+		 </choose>
+		 order by menu_level,sort
+    </select>
+    
+    <!-- 查询父菜单下的所有菜单的个数 -->
+    <select id="getChildrenCount" resultType="int">
+	     select count(1)
+	     from PIS_MENU_ITEM a where 1=1
+	     <choose>
+			<when test="parentId!=null and parentId!=''">
+				and a.PARENT_ID= #{parentId,jdbcType=VARCHAR}
+			</when>
+			<when test="parentId==null or parentId==''">
+				and a.PARENT_ID is null
+			</when>
+		 </choose>
+    </select>
+ 
+</mapper>  
