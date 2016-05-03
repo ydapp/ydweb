@@ -39,7 +39,9 @@
 				<tr>
 					<th data-options="field:'nick',width:180">用户</th>
 					<th data-options="field:'tel',width:180">电话</th>
-					<th data-options="field:'groupType',width:180">类型</th>
+					<th data-options="field:'groupTypeTitle',width:180">类型</th>
+					<th data-options="field:'brokingFirm',width:180">所属经纪公司</th>
+					<th data-options="field:'building',width:180">所属楼盘</th>
 				</tr>
 			</thead>
 		</table>

@@ -8,6 +8,7 @@ import net.yuan.nova.pis.dao.PisPropertyMapper;
 import net.yuan.nova.pis.entity.PisBuilding;
 import net.yuan.nova.pis.entity.PisProperty;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -22,6 +23,9 @@ public class PisBuildingService {
 
 	@CacheEvict(value = "buildingCache", allEntries = true)
 	public int insert(PisBuilding pisBuilding) {
+		if (StringUtils.isEmpty(pisBuilding.getBuildingId())){
+			pisBuilding.setBuildingId(UUID.randomUUID().toString());
+		}
 		return this.pisBuildingMapper.insert(pisBuilding);
 	}
 
@@ -67,11 +71,8 @@ public class PisBuildingService {
 	// ///////////////////////////////////////////////////////////
 
 	public int addPisProperty(PisProperty pisProperty) {
-		if (pisProperty != null) {
-			pisProperty.setPropertyId(UUID.randomUUID().toString());
-			pisPropertyMapper.insertSelective(pisProperty);
-		}
-		return 0;
+		pisProperty.setPropertyId(UUID.randomUUID().toString());
+		return pisPropertyMapper.insertSelective(pisProperty);
 	}
 
 	public List<PisProperty> selectPisProperties() {

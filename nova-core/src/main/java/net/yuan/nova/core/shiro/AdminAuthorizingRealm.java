@@ -94,7 +94,7 @@ public class AdminAuthorizingRealm extends AuthorizingRealm {
 				// 将当前用户写入session
 				Subject currentUser = SecurityUtils.getSubject();
 				Session session = currentUser.getSession();
-				UserModel userModel = this.userModelBusiness.getUserModel(staff);
+				UserModel userModel = this.userModelBusiness.getUserModel(staff.getUserId());
 				staff.setUserModel(userModel);
 				session.setAttribute(SystemConstant.SESSION_USER, staff);
 				return authcInfo;

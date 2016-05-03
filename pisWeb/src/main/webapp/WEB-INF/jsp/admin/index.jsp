@@ -214,8 +214,18 @@
 	<!-- 左侧导航栏end -->
 	<div id="main-panel" data-options="region:'center',border:true">
 		<div id="main-tabs" class="easyui-tabs" data-options="fit:true,border:false,tabHeight:31" >
-			<div title="欢迎使用">
-				<h1>系统开发中</h1>
+			<div title="欢迎使用"><p><p>
+				${systemName} 后台管理主要侧重于集团人员管理和楼盘信息维护以及发布
+				
+
+				<h1>YD经纪人员管理主要分为四类</h1>
+	<ul>
+    <li>APP管理员，可以分配经纪公司账号和驻场专员账号，可以导出所有推荐</li>
+   <li> 经纪公司账号，可以分配经纪人账号，该经纪人自动挂载到该公司下面，可以导出该公司下面的所有推荐</li>
+    <li>经纪人，不能分配任何账号，可以创建推荐</li>
+    <li>驻场专员，不能分配任何账号，可以确认推荐</li>
+
+				</ul>
 				<%-- <iframe scrolling="auto" frameborder="0"  src="<%=path%>/monitoring" style="width:100%;height:100%;"></iframe> --%>	
 			</div>
 		</div>

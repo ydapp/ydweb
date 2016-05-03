@@ -31,11 +31,11 @@ public class UserModelBusinessImpl implements UserModelBusiness{
 	private PisBuildingService buildingService;
 	@Autowired
 	private PisBrokingFirmService brokingFirmService;
-	public UserModel getUserModel(User user) {
+	public UserModel getUserModel(String userId) {
 		UserModel userModel = new UserModel();
 		
-		PisUser pisUser = this.pisUserService.findUserById(user.getUserId());
-		PisUserGroup group = this.pisUserService.getPisUserGroup(user.getUserId());
+		PisUser pisUser = this.pisUserService.findUserById(userId);
+		PisUserGroup group = this.pisUserService.getPisUserGroup(userId);
 		if (group != null){
 			userModel.setGroupType(group.getType());
 			userModel.setGroupTypeTitle(group.getTypeTitle());
@@ -43,7 +43,7 @@ public class UserModelBusinessImpl implements UserModelBusiness{
 		userModel.setNick(pisUser.getNick());
 		userModel.setTel(pisUser.getTel());
 		
-		PisUserExtend userExtend = this.userExtendService.selectByUserId(user.getUserId());
+		PisUserExtend userExtend = this.userExtendService.selectByUserId(userId);
 		if (userExtend != null){
 			if (StringUtils.isNoneEmpty(userExtend.getBrokingFirmId())){
 				userModel.setBrokingFirm(this.brokingFirmService.findById(userExtend.getBrokingFirmId()).getBrokingFirmName());

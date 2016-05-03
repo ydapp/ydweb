@@ -14,5 +14,5 @@ public interface UserModelBusiness {
 	 * @param user
 	 * @return
 	 */
-	public UserModel getUserModel(User user);
+	public UserModel getUserModel(String userId);
 }

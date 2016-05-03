@@ -2,6 +2,7 @@ package net.yuan.nova.pis.controller;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -15,11 +16,13 @@ import net.yuan.nova.pis.entity.PisBuilding;
 import net.yuan.nova.pis.entity.PisProperty;
 import net.yuan.nova.pis.entity.vo.PisPropertyVo;
 import net.yuan.nova.pis.service.PisBuildingService;
+import net.yuan.nova.pis.service.PisCityService;
 import net.yuan.nova.pis.service.TemplateService;
 
 import org.apache.commons.beanutils.BeanUtils;
-import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
+import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +51,8 @@ public class BuildingController {
 	private AttachmentService attachmentService;
 	@Autowired
 	private TemplateService templateService;
+	@Autowired
+	private PisCityService cityService;
 
 	/**
 	 * 获取某城市的楼盘信息
@@ -82,11 +87,13 @@ public class BuildingController {
 	 * @return
 	 */
 	@RequestMapping("/admin/property/add")
-	public Object insertSelective(HttpServletRequest request, ModelMap modelMap, PisProperty pisProperty) {
+	public Object insertSelective(HttpServletRequest request, ModelMap modelMap) {
+		log.debug("添加楼盘");
 		JsonVo<Object> json = new JsonVo<Object>();
 		MultipartFile file = null;
 		MultipartHttpServletRequest multipartRequest = null;
 		// 转型为MultipartHttpRequest，如果没有上传图片是会报出异常：ClassCastException
+		log.debug("转换request为附件方式");
 		try {
 			multipartRequest = (MultipartHttpServletRequest) request;
 			file = multipartRequest.getFile("cover");
@@ -96,12 +103,60 @@ public class BuildingController {
 		if (file == null) {
 			System.out.println("没有附件上传");
 		}
-		if (StringUtils.isBlank(pisProperty.getPropertyName())) {
-			json.putError("propertyName", "楼盘名称不能为空");
+		Enumeration<String> names = multipartRequest.getParameterNames();
+		while (names.hasMoreElements()){
+			String name = names.nextElement();
+			String value = multipartRequest.getParameter(name);
+			String[] values = multipartRequest.getParameterValues(name);
+			log.debug("name:" + name + " value:" + value + " values:" + values);
 		}
+		PisProperty property = new PisProperty();
+		property.setAddress(multipartRequest.getParameter("address"));
+		property.setArea(multipartRequest.getParameter("area"));
+		property.setAvgPrice(NumberUtils.createInteger(multipartRequest.getParameter("avgPrice")));
+		property.setCharacteristic(multipartRequest.getParameter("characteristic"));
+		property.setCity(multipartRequest.getParameter("city"));
+		property.setCommission(multipartRequest.getParameter("commission"));
+		property.setCountry(multipartRequest.getParameter("country"));
+		property.setCounty(multipartRequest.getParameter("county"));
+		property.setDecoration(multipartRequest.getParameter("decoration"));
+		try {
+			property.setDeliveryTime(DateUtils.parseDate(multipartRequest.getParameter("deliveryTime"), "yyyy-mm-dd"));
+		} catch (Exception e){
+			log.error("解析deliveryTime失败",e);
+		}
+		property.setGreenRate(NumberUtils.createBigDecimal(multipartRequest.getParameter("greenRate")));
+		try {
+			property.setOpenDate(DateUtils.parseDate(multipartRequest.getParameter("openDate"), "yyyy-mm-dd"));
+		} catch (Exception e){
+			log.error("解析openDate失败", e);
+		}
+		property.setPropertyCompany(multipartRequest.getParameter("propertyCompany"));
+		property.setPropertyId(multipartRequest.getParameter("propertyId"));
+		property.setPropertyName(multipartRequest.getParameter("propertyName"));
+		property.setPropertyType(multipartRequest.getParameter("propertyType"));
+		property.setProvince(multipartRequest.getParameter("province"));
+		property.setRealEstateAgency(multipartRequest.getParameter("realEstateAgency"));
+		property.setRecommendedNumber(NumberUtils.createInteger(multipartRequest.getParameter("recommendedNumber")));
+		property.setReservationNumber(NumberUtils.createInteger(multipartRequest.getParameter("reservationNumber")));
+		property.setViewTimes(NumberUtils.createInteger(request.getParameter("viewTimes")));
+		property.setYears(NumberUtils.createInteger(multipartRequest.getParameter("years")));
+		if (StringUtils.isEmpty(property.getPropertyName())){
+			json.setSuccess(false);
+			json.setMessage("楼盘名称不能为空");
+		}
+		log.debug("属性设置完毕，开始保存数据库");
 		if (json.validate()) {
-			// 数据通过验证后保存
-			buildingService.addPisProperty(pisProperty);
+			log.debug("保存业务数据");
+			buildingService.addPisProperty(property);
+			log.debug("保存图片数据");
+			this.attachmentService.addUploadFile(file, file.getOriginalFilename(), property.getPropertyId(), Attachment.TableName.PIS_PROPERTY, Attachment.State.A);
+			log.debug("保存building数据");
+			PisBuilding building = new PisBuilding();
+			building.setBuildingId(property.getPropertyId());
+			building.setBuildingName(property.getPropertyName());
+			building.setCityId(property.getCity());
+			this.buildingService.insert(building);
 		}
 		return json;
 	}
@@ -110,6 +165,11 @@ public class BuildingController {
 	public Object selectPisProperties() {
 		DataGridData<PisProperty> dgd = new DataGridData<PisProperty>();
 		List<PisProperty> properties = buildingService.selectPisProperties();
+		for (PisProperty pisProperty : properties) {
+			if (StringUtils.isNotBlank(pisProperty.getCity())){
+				pisProperty.setCityTitle(this.cityService.getCityById(pisProperty.getCity()).getCityName());
+			}
+		}
 		dgd.setRows(properties);
 		dgd.setTotal(properties.size());
 		return dgd;

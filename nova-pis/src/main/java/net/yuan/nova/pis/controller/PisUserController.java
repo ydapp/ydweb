@@ -94,7 +94,7 @@ public class PisUserController {
 			json.setMessage("当前未登录或登录超时");
 		} else {
 			json.setSuccess(true);
-			UserModel userModel = this.userModelBusiness.getUserModel(user);
+			UserModel userModel = this.userModelBusiness.getUserModel(user.getUserId());
 			json.setResult(userModel);
 		}
 		return json;
@@ -276,14 +276,7 @@ public class PisUserController {
 		List<PisUser> users = this.pisUserService.getAll();
 		List<UserModel> userInfoList = new ArrayList<>();
 		for (PisUser user : users) {
-			UserModel vo = new UserModel();
-			vo.setTel(user.getTel());
-			vo.setNick(user.getNick());
-			PisUserGroup userGroup = this.pisUserService.getPisUserGroup(user.getUserId());
-			if (userGroup != null){
-				vo.setGroupType(userGroup.getType());
-				vo.setGroupTypeTitle(userGroup.getTypeTitle());
-			}
+			UserModel vo = this.userModelBusiness.getUserModel(user.getUserId());
 			userInfoList.add(vo);
 			
 		}

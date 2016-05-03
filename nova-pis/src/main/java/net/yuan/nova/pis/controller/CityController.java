@@ -87,4 +87,9 @@ public class CityController {
 		}
 		return getCityList(parentCityId, request, modelMap);
 	}
+	@RequestMapping(value = "/api/city/{cityId}")
+	public PisCity getCity(@PathVariable("cityId") String cityId, HttpServletRequest request, ModelMap modelMap) {
+
+		return this.pisCityService.getCityById(cityId);
+	}
 }
