@@ -21,6 +21,7 @@
     <result column="CUSTOMER_PRESENT_USER_ID" property="customerPresentUserId" jdbcType="VARCHAR" />
     <result column="RECOMMEND_CONFIRM_DATE" property="recommendConfirmDate" jdbcType="VARCHAR" />
     <result column="RECOMMEND_CONFIRM_USERID" property="recommendConfirmUserId" jdbcType="VARCHAR" />
+    <result column="recommend_Confirm_Advice" property="recommendConfirmAdvice" jdbcType="VARCHAR" />
     
   </resultMap>
   <sql id="Base_Column_List" >
@@ -37,7 +38,8 @@
    CUSTOMER_PRESENT_DATE ,
    CUSTOMER_PRESENT_USER_ID ,
    RECOMMEND_CONFIRM_DATE,
-   RECOMMEND_CONFIRM_USERID  
+   RECOMMEND_CONFIRM_USERID,  
+   recommend_Confirm_Advice  
   </sql>
   
   <insert id="insert" parameterType="net.yuan.nova.pis.entity.PisRecommend" >
@@ -59,7 +61,8 @@
 		#{customerPresentDate,jdbcType=VARCHAR},
 		#{customerPresentUserId,jdbcType=VARCHAR},
 		#{recommendConfirmDate,jdbcType=VARCHAR},
-		#{recommendConfirmUserId,jdbcType=VARCHAR}
+		#{recommendConfirmUserId,jdbcType=VARCHAR},
+		#{recommendConfirmAdvice,jdbcType=VARCHAR}
 	)
   </insert>
   <select id="getById"  resultMap="BaseResultMap" parameterType="java.lang.String" >
@@ -104,6 +107,7 @@
       update PIS_RECOMMEND 
       set RECOMMEND_CONFIRM_USERID=#{recommendConfirmUserId,jdbcType=VARCHAR},
       RECOMMEND_CONFIRM_DATE=#{recommendConfirmDate,jdbcType=VARCHAR},
+      recommend_Confirm_Advice=#{recommendConfirmAdvice,jdbcType=VARCHAR},
       STATUS = #{status,jdbcType=VARCHAR}
       where RECOMMEND_ID = #{recommendId,jdbcType=VARCHAR}
       
@@ -134,7 +138,8 @@
    a.CUSTOMER_PRESENT_DATE ,
    a.CUSTOMER_PRESENT_USER_ID ,
    a.RECOMMEND_CONFIRM_DATE,
-   a.RECOMMEND_CONFIRM_USERID  
+   a.RECOMMEND_CONFIRM_USERID,  
+   a.recommend_Confirm_Advice  
     from PIS_RECOMMEND a,pis_user_extend b where a.refree_Id=b.user_id and b.brokingFirm_Id = #{brokingFirmId}
   </select>
   <select id="getBySaleman"  resultMap="BaseResultMap"  parameterType="java.lang.String" >

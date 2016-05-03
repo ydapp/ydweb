@@ -130,7 +130,7 @@ public class PisRecommendServiceTest extends AbstractJUnit4SpringContextTests {
 	public void recommendConfirm() {
 		PisRecommend recommend = this.recommendService.getById("bcc667fe-7e1a-4913-8725-8f0eab87ccd6");
 		PisUser confirmUser = this.userService.findUserByUserName("牛首山报备专员");
-		this.recommendService.recommendConfirm(recommend.getRecommendId(), confirmUser.getUserId());
+		this.recommendService.recommendConfirm(recommend.getRecommendId(), confirmUser.getUserId(),"确认报备意见");
 		PisRecommend recommendConfirmed = this.recommendService.getById("bcc667fe-7e1a-4913-8725-8f0eab87ccd6");
 		Assert.assertEquals(PisRecommend.Status.confirm, recommendConfirmed.getStatus());
 

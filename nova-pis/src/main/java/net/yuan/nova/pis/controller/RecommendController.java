@@ -220,7 +220,7 @@ public class RecommendController {
 	 *            报备id
 	 * @param confirmUserId
 	 *            报备专员id
-	 * @param request
+	 * @param request 里面一般会包含recommendConfirmAdvice参数
 	 * @param modelMap
 	 * @return
 	 */
@@ -231,7 +231,9 @@ public class RecommendController {
 		JsonVo<Object> jsonVo = new JsonVo<Object>();
 		log.debug("recommendId:" + recommendId);
 		log.debug("confirmUserId:" + confirmUserId);
-		int rows = this.recommendService.recommendConfirm(recommendId, confirmUserId);
+		String recommendConfirmAdvice = request.getParameter("recommendConfirmAdvice");
+		log.debug("recommendConfirmAdvice:" + recommendConfirmAdvice);
+		int rows = this.recommendService.recommendConfirm(recommendId, confirmUserId,recommendConfirmAdvice);
 		if (rows == 0) {
 			jsonVo.putError("rows", "未能匹配记录");
 		}
@@ -279,7 +281,14 @@ public class RecommendController {
 		log.debug("根据用户类型确定导出范围");
 		PisUser pisUser = this.userService.findUserById(user.getUserId());
 		PisUserGroup group = this.userService.getPisUserGroup(user.getUserId());
-		
+		if (group == null){
+			JsonVo<Object> jsonVo = new JsonVo<Object>();
+			jsonVo.setSuccess(false);
+			jsonVo.setMessage("该用户不具备导出报备数据权限(非APP管理员/驻场专员/经纪公司/经纪人)");
+			jsonVo.validate();
+			modelMap.addAttribute("result", jsonVo);
+			return modelMap;
+		}
 		if (StringUtils.equals(PisUserGroup.TYPE.appAdmin.name(), group.getType())){
 			log.debug("当前用户是app管理员，可以导出所有的推荐信息");
 			list = this.recommendService.getAll();
@@ -305,15 +314,16 @@ public class RecommendController {
 		header.add("客户电话");
 		header.add("城市");
 		header.add("楼盘");
-		header.add("预计看房时间");
+		//header.add("预计看房时间");
 		header.add("推荐人");
-		header.add("备注");
+		header.add("详情");
 		header.add("推荐状态");
 		header.add("推荐时间");
 		header.add("客户到场时间");
 		header.add("客户到场确认人");
 		header.add("推荐确认时间");
 		header.add("推荐确认人");
+		header.add("推荐确认意见");
 		for (int i = 0; i < header.size(); i++) {
 			HSSFCell cellHeard = rowHeard.createCell(i);
 			cellHeard.setCellValue(header.get(i));
@@ -327,7 +337,7 @@ public class RecommendController {
 			data.add(recommend.getCustomerTel());
 			data.add(this.getCityName(recommend.getCityId()));
 			data.add(this.getBuildingName(recommend.getBuildingId()));
-			data.add(this.formatDate(recommend.getAppointmentLookHouseDate()));
+			//data.add(this.formatDate(recommend.getAppointmentLookHouseDate()));
 			data.add(this.getUserName(recommend.getRefreeId()));
 			data.add(recommend.getRemark());
 			data.add(recommend.getStatusName());
@@ -342,7 +352,9 @@ public class RecommendController {
 			if (recommend.getRecommendConfirmDate() != null) {
 				data.add(formatDate(recommend.getRecommendConfirmDate()));
 				data.add(this.getUserName(recommend.getRecommendConfirmUserId()));
+				data.add(recommend.getRecommendConfirmAdvice());
 			} else {
+				data.add("");
 				data.add("");
 				data.add("");
 			}

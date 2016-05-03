@@ -29,6 +29,7 @@
     <result column="RECOMMENDED_NUMBER" property="recommendedNumber" jdbcType="DECIMAL" />
     <result column="RESERVATION_NUMBER" property="reservationNumber" jdbcType="DECIMAL" />
     <result column="VIEW_TIMES" property="viewTimes" jdbcType="DECIMAL" />
+    <result column="subscription_rules" property="subscriptionRules" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
     <!--
@@ -39,7 +40,7 @@
     PROPERTY_ID, PROPERTY_NAME, PROPERTY_TYPE, REAL_ESTATE_AGENCY, ADDRESS, COUNTRY, 
     PROVINCE, CITY, COUNTY, OPEN_DATE, CHARACTERISTIC, DECORATION, AREA, YEARS, GREEN_RATE, 
     PROPERTY_COMPANY, DELIVERY_TIME, AVG_PRICE, COMMISSION, RECOMMENDED_NUMBER, RESERVATION_NUMBER, 
-    VIEW_TIMES
+    VIEW_TIMES,subscription_rules
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
     <!--
@@ -84,7 +85,7 @@
       AREA, YEARS, GREEN_RATE, 
       PROPERTY_COMPANY, DELIVERY_TIME, AVG_PRICE, 
       COMMISSION, RECOMMENDED_NUMBER, RESERVATION_NUMBER, 
-      VIEW_TIMES)
+      VIEW_TIMES,subscription_rules)
     values (#{propertyId,jdbcType=VARCHAR}, #{propertyName,jdbcType=VARCHAR}, #{propertyType,jdbcType=CHAR}, 
       #{realEstateAgency,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR}, #{country,jdbcType=VARCHAR}, 
       #{province,jdbcType=VARCHAR}, #{city,jdbcType=VARCHAR}, #{county,jdbcType=VARCHAR}, 
@@ -92,7 +93,7 @@
       #{area,jdbcType=VARCHAR}, #{years,jdbcType=DECIMAL}, #{greenRate,jdbcType=DECIMAL}, 
       #{propertyCompany,jdbcType=VARCHAR}, #{deliveryTime,jdbcType=TIMESTAMP}, #{avgPrice,jdbcType=DECIMAL}, 
       #{commission,jdbcType=VARCHAR}, #{recommendedNumber,jdbcType=DECIMAL}, #{reservationNumber,jdbcType=DECIMAL}, 
-      #{viewTimes,jdbcType=DECIMAL})
+      #{viewTimes,jdbcType=DECIMAL}, #{subscriptionRules,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="net.yuan.nova.pis.entity.PisProperty" >
     <!--
@@ -168,6 +169,9 @@
       <if test="viewTimes != null" >
         VIEW_TIMES,
       </if>
+      <if test="subscriptionRules != null" >
+        subscription_rules,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="propertyId != null" >
@@ -235,6 +239,9 @@
       </if>
       <if test="viewTimes != null" >
         #{viewTimes,jdbcType=DECIMAL},
+      </if>
+      <if test="subscriptionRules != null" >
+        #{subscriptionRules,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -309,6 +316,9 @@
       <if test="viewTimes != null" >
         VIEW_TIMES = #{viewTimes,jdbcType=DECIMAL},
       </if>
+      <if test="subscriptionRules != null" >
+        subscription_Rules = #{subscriptionRules,jdbcType=VARCHAR},
+      </if>
     </set>
     where PROPERTY_ID = #{propertyId,jdbcType=VARCHAR}
   </update>
@@ -339,7 +349,8 @@
       COMMISSION = #{commission,jdbcType=VARCHAR},
       RECOMMENDED_NUMBER = #{recommendedNumber,jdbcType=DECIMAL},
       RESERVATION_NUMBER = #{reservationNumber,jdbcType=DECIMAL},
-      VIEW_TIMES = #{viewTimes,jdbcType=DECIMAL}
+      VIEW_TIMES = #{viewTimes,jdbcType=DECIMAL},
+      subscription_rules = #{subscriptionRules,jdbcType=VARCHAR}
     where PROPERTY_ID = #{propertyId,jdbcType=VARCHAR}
   </update>
 </mapper>

@@ -113,7 +113,7 @@ public class BuildingController {
 		PisProperty property = new PisProperty();
 		property.setAddress(multipartRequest.getParameter("address"));
 		property.setArea(multipartRequest.getParameter("area"));
-		property.setAvgPrice(NumberUtils.createInteger(multipartRequest.getParameter("avgPrice")));
+		property.setAvgPrice(NumberUtils.createInteger(StringUtils.trimToNull(multipartRequest.getParameter("avgPrice"))));
 		property.setCharacteristic(multipartRequest.getParameter("characteristic"));
 		property.setCity(multipartRequest.getParameter("city"));
 		property.setCommission(multipartRequest.getParameter("commission"));
@@ -121,13 +121,19 @@ public class BuildingController {
 		property.setCounty(multipartRequest.getParameter("county"));
 		property.setDecoration(multipartRequest.getParameter("decoration"));
 		try {
-			property.setDeliveryTime(DateUtils.parseDate(multipartRequest.getParameter("deliveryTime"), "yyyy-mm-dd"));
+			String deliveryTime = StringUtils.trimToNull(multipartRequest.getParameter("deliveryTime"));
+			if (deliveryTime!= null){
+				property.setDeliveryTime(DateUtils.parseDate(deliveryTime, "yyyy-mm-dd"));
+			}
 		} catch (Exception e){
 			log.error("解析deliveryTime失败",e);
 		}
-		property.setGreenRate(NumberUtils.createBigDecimal(multipartRequest.getParameter("greenRate")));
+		property.setGreenRate(NumberUtils.createBigDecimal(StringUtils.trimToNull(multipartRequest.getParameter("greenRate"))));
 		try {
-			property.setOpenDate(DateUtils.parseDate(multipartRequest.getParameter("openDate"), "yyyy-mm-dd"));
+			String openDate = StringUtils.trimToNull(multipartRequest.getParameter("openDate"));
+			if (openDate != null){
+				property.setOpenDate(DateUtils.parseDate(openDate, "yyyy-mm-dd"));
+			}
 		} catch (Exception e){
 			log.error("解析openDate失败", e);
 		}
@@ -137,10 +143,11 @@ public class BuildingController {
 		property.setPropertyType(multipartRequest.getParameter("propertyType"));
 		property.setProvince(multipartRequest.getParameter("province"));
 		property.setRealEstateAgency(multipartRequest.getParameter("realEstateAgency"));
-		property.setRecommendedNumber(NumberUtils.createInteger(multipartRequest.getParameter("recommendedNumber")));
-		property.setReservationNumber(NumberUtils.createInteger(multipartRequest.getParameter("reservationNumber")));
-		property.setViewTimes(NumberUtils.createInteger(request.getParameter("viewTimes")));
-		property.setYears(NumberUtils.createInteger(multipartRequest.getParameter("years")));
+		property.setRecommendedNumber(NumberUtils.createInteger(StringUtils.trimToNull(multipartRequest.getParameter("recommendedNumber"))));
+		property.setReservationNumber(NumberUtils.createInteger(StringUtils.trimToNull(multipartRequest.getParameter("reservationNumber"))));
+		property.setSubscriptionRules(multipartRequest.getParameter("subscriptionRules"));
+		property.setViewTimes(NumberUtils.createInteger(StringUtils.trimToNull(request.getParameter("viewTimes"))));
+		property.setYears(NumberUtils.createInteger(StringUtils.trimToNull(multipartRequest.getParameter("years"))));
 		if (StringUtils.isEmpty(property.getPropertyName())){
 			json.setSuccess(false);
 			json.setMessage("楼盘名称不能为空");

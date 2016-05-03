@@ -23,7 +23,7 @@ public class PisRecommend {
 	private Date appointmentLookHouseDate;
 	// 推荐人
 	private String refreeId;
-	// 备注
+	// 详情
 	private String remark;
 	// 推荐状态三种状态，recommend推荐，present到场，confirm确认
 	private Status status;
@@ -37,7 +37,8 @@ public class PisRecommend {
 	private Date recommendConfirmDate;
 	// 推荐确认人
 	private String recommendConfirmUserId;
-
+	// 推荐确认意见
+	private String recommendConfirmAdvice;
 	public String getRecommendId() {
 		return recommendId;
 	}
@@ -148,6 +149,14 @@ public class PisRecommend {
 
 	public void setRecommendConfirmUserId(String recommendConfirmUserId) {
 		this.recommendConfirmUserId = recommendConfirmUserId;
+	}
+
+	public String getRecommendConfirmAdvice() {
+		return recommendConfirmAdvice;
+	}
+
+	public void setRecommendConfirmAdvice(String recommendConfirmAdvice) {
+		this.recommendConfirmAdvice = recommendConfirmAdvice;
 	}
 
 	public static enum Status {

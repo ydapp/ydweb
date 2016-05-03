@@ -190,11 +190,12 @@ public class PisRecommendService {
 	 * @param recommendId
 	 * @param confirmUserId
 	 */
-	public int recommendConfirm(String recommendId, String confirmUserId) {
+	public int recommendConfirm(String recommendId, String confirmUserId, String recommendConfirmAdvice) {
 		PisRecommend recommend = new PisRecommend();
 		recommend.setRecommendId(recommendId);
 		recommend.setRecommendConfirmUserId(confirmUserId);
 		recommend.setRecommendConfirmDate(new Date());
+		recommend.setRecommendConfirmAdvice(recommendConfirmAdvice);
 		recommend.setStatus(PisRecommend.Status.confirm);
 		return this.recommendMapper.recommendConfirm(recommend);
 	}

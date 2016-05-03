@@ -59,6 +59,7 @@
 					<th data-options="field:'openDate',width:180,fixed:true,formatter:ChangeDateFormat">开盘时间</th>
 					
 					<th data-options="field:'avgPrice',width:180,fixed:true">均价</th>
+					<th data-options="field:'subscriptionRules',width:180,fixed:true">认购规则</th>
 				</tr>
 			</thead>
 		</table>
@@ -87,6 +88,10 @@
 					<div class="fitem">
 						<label><font color="red">*</font>楼盘地址：</label> <input
 							name="address" class="easyui-textbox" style="width: 452px;" data-options="prompt:'南京鼓楼区xx号'">
+					</div>
+					<div class="fitem">
+						<label><font color="red">*</font>认购规则：</label> <input
+							name="subscriptionRules" class="easyui-textbox" style="width: 452px;" data-options="prompt:'首付2层'">
 					</div>
 					<div class="fitem">
 						<label><font color="red">*</font>首期开盘：</label> <input
