@@ -18,10 +18,12 @@ import net.yuan.nova.pis.entity.PisBuilding;
 import net.yuan.nova.pis.entity.PisCity;
 import net.yuan.nova.pis.entity.PisRecommend;
 import net.yuan.nova.pis.entity.PisUser;
+import net.yuan.nova.pis.entity.PisUserGroup;
 import net.yuan.nova.pis.entity.vo.PisRecommendVo;
 import net.yuan.nova.pis.service.PisBuildingService;
 import net.yuan.nova.pis.service.PisCityService;
 import net.yuan.nova.pis.service.PisRecommendService;
+import net.yuan.nova.pis.service.PisUserExtendService;
 import net.yuan.nova.pis.service.PisUserService;
 
 import org.apache.commons.lang.StringUtils;
@@ -57,6 +59,9 @@ public class RecommendController {
 	private PisBuildingService buildingService;
 	@Autowired
 	private PisUserService userService;
+	@Autowired
+	private PisUserExtendService userExtendService;
+	
 	private static Map<String, String> users = new HashMap<String, String>();
 	private static Map<String, String> cities = new HashMap<String, String>();
 	private static Map<String, String> builds = new HashMap<String, String>();
@@ -269,7 +274,28 @@ public class RecommendController {
 	@ResponseBody
 	@RequestMapping(value = "/api/excell", method = RequestMethod.GET)
 	public ModelMap downAsExcell(HttpServletRequest request, ModelMap modelMap, HttpServletResponse response) {
-		List<PisRecommend> list = this.recommendService.getAll();
+		List<PisRecommend> list = null;
+		User user = CurrentUserUtil.getShiroUser();
+		log.debug("根据用户类型确定导出范围");
+		PisUser pisUser = this.userService.findUserById(user.getUserId());
+		PisUserGroup group = this.userService.getPisUserGroup(user.getUserId());
+		
+		if (StringUtils.equals(PisUserGroup.TYPE.appAdmin.name(), group.getType())){
+			log.debug("当前用户是app管理员，可以导出所有的推荐信息");
+			list = this.recommendService.getAll();
+		} else if (StringUtils.equals(PisUserGroup.TYPE.brokingFirm.name(), group.getType())){
+			log.debug("当前用户是经纪公司，可以导出该经纪公司下面的所有的推荐信息");
+			String brokingFirmId = this.userExtendService.selectByUserId(user.getUserId()).getBrokingFirmId();
+			list = this.recommendService.getByBrokingFirmId(brokingFirmId);
+		}else if (StringUtils.equals(PisUserGroup.TYPE.salesman.name(), group.getType())){
+			log.debug("当前用户是经纪人，可以导出该经纪人的所有的推荐信息");
+			list = this.recommendService.getBySaleman(user.getUserId());
+		}else if (StringUtils.equals(PisUserGroup.TYPE.commissioner.name(), group.getType())){
+			log.debug("当前用户是驻场专员，可以导出该人的楼盘的所有的推荐信息");
+			String buildingId = this.userExtendService.selectByUserId(user.getUserId()).getBuildingId();
+			list = this.recommendService.getByBuildingId(buildingId);
+		}
+		
 		HSSFWorkbook wb = new HSSFWorkbook();
 		HSSFSheet sheet = wb.createSheet("报备信息");
 		HSSFRow rowHeard = sheet.createRow(0);

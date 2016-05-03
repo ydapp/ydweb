@@ -215,4 +215,28 @@ public class PisRecommendService {
 	public List<PisRecommend> getAll(){
 		return this.recommendMapper.getAll();
 	}
+	/**
+	 * 根据经纪公司ID获取所有推荐信息
+	 * @return
+	 */
+	public List<PisRecommend> getByBrokingFirmId(String brokingFirmId){
+		return this.recommendMapper.getByBrokingFirmId(brokingFirmId);
+	}
+	/**
+	 * 根据经纪人id获取该人的所有推荐
+	 * @param userId
+	 * @return
+	 */
+	public List<PisRecommend> getBySaleman(String userId){
+		return this.recommendMapper.getBySaleman(userId);
+	}
+	/**
+	 * 根据楼盘id获取所有的推荐
+	 * @param buildingId
+	 * @return
+	 */
+	public List<PisRecommend> getByBuildingId(String buildingId){
+		return this.recommendMapper.getByBuildingId(buildingId);
+	}
+	
 }

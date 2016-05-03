@@ -119,4 +119,32 @@
       <include refid="Base_Column_List" />
     from PIS_RECOMMEND
   </select>
+  <select id="getByBrokingFirmId"  resultMap="BaseResultMap"  parameterType="java.lang.String" >
+      select 
+      a.RECOMMEND_ID,
+   a.CUSTOMER_NAME,
+   a.CUSTOMER_TEL ,
+   a.CITY_ID,
+   a.BUILDING_ID,
+   a.APPOINTMENT_LOOK_HOUSE_DATE,
+   a.REFREE_ID,
+   a.REMARK ,
+   a.STATUS ,
+   a.RECOMMEND_DATE,
+   a.CUSTOMER_PRESENT_DATE ,
+   a.CUSTOMER_PRESENT_USER_ID ,
+   a.RECOMMEND_CONFIRM_DATE,
+   a.RECOMMEND_CONFIRM_USERID  
+    from PIS_RECOMMEND a,pis_user_extend b where a.refree_Id=b.user_id and b.brokingFirm_Id = #{brokingFirmId}
+  </select>
+  <select id="getBySaleman"  resultMap="BaseResultMap"  parameterType="java.lang.String" >
+      select 
+      <include refid="Base_Column_List" />
+    from PIS_RECOMMEND where REFREE_ID=#{userId}
+  </select>
+  <select id="getByBuildingId"  resultMap="BaseResultMap"  parameterType="java.lang.String" >
+      select 
+      <include refid="Base_Column_List" />
+    from PIS_RECOMMEND where BUILDING_ID=#{buildingId}
+  </select>
 </mapper>
