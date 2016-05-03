@@ -381,4 +381,21 @@ public class PisUserController {
 		}
 		return vo;
 	}
+	/**
+	 * 验证密码是否正确
+	 * @return true:原密码正确，false:原密码错误
+	 */
+	@SuppressWarnings("rawtypes")
+	@RequestMapping(value="/api/staff/checkPassword")
+	public JsonVo  checkPassword(HttpServletRequest request, HttpServletResponse response,ModelMap modelMap){
+		JsonVo json = new JsonVo();
+		//获取原始密码
+		String oldPwd = StringUtils.trimToEmpty(request.getParameter("oldPwd"));
+		//获取登录账号
+		String loginName = StringUtils.trimToEmpty(request.getParameter("loginName"));
+		//执行密码修改
+		boolean flag = this.pisUserService.checkPassword(oldPwd,loginName);
+		json.setSuccess(flag);
+		return json;
+	}
 }

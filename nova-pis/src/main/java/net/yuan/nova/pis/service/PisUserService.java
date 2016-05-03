@@ -138,4 +138,15 @@ public class PisUserService {
 	public List<PisUser> getAll(){
 		return this.pisUserMapper.selectAll();
 	}
+	
+	/**
+	 * 验证密码是否正确
+	 * @param pisUser 用户实体类
+	 * @return true:原密码正确,false：原密码错误
+	 */
+	public boolean  checkPassword(String pwd,String loginName){
+		PisUser picUser = pisUserMapper.selectUserByUserName(loginName);
+		String password = this.passwordHelper.encryptPassword(pwd,picUser.getSalt());
+		return picUser.getPassword().equals(password);
+	}
 }
