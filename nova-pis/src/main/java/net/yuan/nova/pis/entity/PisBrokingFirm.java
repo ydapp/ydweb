@@ -1,6 +1,6 @@
 package net.yuan.nova.pis.entity;
 /**
- * 经纪公司,暂时不用
+ * 经纪公司
  * @author leasonlive
  *
  */

@@ -2,6 +2,7 @@ package net.yuan.nova.pis.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -13,12 +14,14 @@ import net.yuan.nova.core.shiro.vo.User;
 import net.yuan.nova.core.vo.DataGridData;
 import net.yuan.nova.core.vo.JsonVo;
 import net.yuan.nova.pis.controller.model.UserModel;
+import net.yuan.nova.pis.entity.PisBrokingFirm;
 import net.yuan.nova.pis.entity.PisCity;
 import net.yuan.nova.pis.entity.PisUser;
 import net.yuan.nova.pis.entity.PisUserExtend;
 import net.yuan.nova.pis.entity.PisUserGroup;
 import net.yuan.nova.pis.entity.PisUserGroupShipKey;
 import net.yuan.nova.pis.entity.vo.UserInfoVo;
+import net.yuan.nova.pis.service.PisBrokingFirmService;
 import net.yuan.nova.pis.service.PisBuildingService;
 import net.yuan.nova.pis.service.PisUserExtendService;
 import net.yuan.nova.pis.service.PisUserService;
@@ -59,6 +62,9 @@ public class PisUserController {
 	private PisUserExtendService userExtendService;
 	@Autowired
 	private PisBuildingService buildingService;
+	@Autowired
+	private PisBrokingFirmService brokingFirmService;
+	
 	/**
 	 * 获得当前登录用户信息
 	 * 
@@ -99,7 +105,7 @@ public class PisUserController {
 			PisUserExtend userExtend = this.userExtendService.selectByUserId(user.getUserId());
 			if (userExtend != null){
 				if (StringUtils.isNoneEmpty(userExtend.getBrokingFirmId())){
-					userModel.setBrokingFirm(this.pisUserService.findUserById(userExtend.getBrokingFirmId()).getNick());
+					userModel.setBrokingFirm(this.brokingFirmService.findById(userExtend.getBrokingFirmId()).getBrokingFirmName());
 				}
 				if (StringUtils.isNoneEmpty(userExtend.getBuildingId())){
 					userModel.setBuilding(this.buildingService.getById(userExtend.getBuildingId()).getBuildingName());
@@ -339,6 +345,31 @@ public class PisUserController {
 		key.setGroupId(userGroup.getGroupId());
 		key.setUserId(pisUser.getUserId());
 		this.keyService.insert(key);
+		log.debug("添加用户扩展信息");
+		if (StringUtils.equals(PisUserGroup.TYPE.brokingFirm.name(), userModel.getGroupType())){
+			log.debug("添加经纪公司");
+			String brokingFirmId = this.brokingFirmService.add(userModel.getBrokingFirm());
+			log.debug("关联经纪公司");
+			PisUserExtend userExtend = new PisUserExtend();
+			userExtend.setBrokingFirmId(brokingFirmId);
+			userExtend.setUserId(pisUser.getUserId());
+			this.userExtendService.insert(userExtend);
+		} else if (StringUtils.equals(PisUserGroup.TYPE.salesman.name(), userModel.getGroupType())){
+			log.debug("关联经纪公司");
+			String brokingFirmId = this.brokingFirmService.findByName(userModel.getBrokingFirm()).getBrokingFirmId();
+			PisUserExtend userExtend = new PisUserExtend();
+			userExtend.setBrokingFirmId(brokingFirmId);
+			userExtend.setUserId(pisUser.getUserId());
+			this.userExtendService.insert(userExtend);
+			
+		}else if (StringUtils.equals(PisUserGroup.TYPE.commissioner.name(), userModel.getGroupType())){
+			log.debug("关联楼盘");
+			String buildingId = userModel.getBuilding();
+			PisUserExtend userExtend = new PisUserExtend();
+			userExtend.setBuildingId(buildingId);
+			userExtend.setUserId(pisUser.getUserId());
+			this.userExtendService.insert(userExtend);
+		}
 		json.setSuccess(true);
 		json.setMessage("添加成功");
 		return json;

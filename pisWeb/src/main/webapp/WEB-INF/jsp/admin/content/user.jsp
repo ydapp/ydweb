@@ -63,11 +63,11 @@
 							<option value="salesman">业务员</option>
 						</select></p>
 						<div id="brokingFirmDiv" style="display: none;">
-							<label>经纪公司名称</label><input id="brokingFirmList"></input>
+							<label>经纪公司:</label><input id="brokingFirmList"></input>
 						</div>
 						<div id="buildingDiv" style="display: none;">
-							<label>城市</label><select id="cityList"> </select>
-							<label>楼盘</label><select id="buildingList"></select>
+							<label>城市:</label><select id="cityList"> </select>
+							<label>楼盘:</label><select id="buildingList"></select>
 						</div>
 					</div>
 				</form>
@@ -99,8 +99,8 @@
 		 if (currentUserModel.nick=="admin"){
 			 $("#groupType").empty();
 			 $("#groupType").append("<option value='appAdmin'>APP管理员</option>");
-			 $("#brokingFirmDiv").style.display='none';
-			 $("#buildingDiv").style.display='none';
+			 $("#brokingFirmDiv").hide();
+			 $("#buildingDiv").hide();
 			 return;
 		 }
 		 //app管理员，可以添加经纪公司和报备员
@@ -116,8 +116,10 @@
 		 if (currentUserModel.groupType=='brokingFirm'){
 			 $("#groupType").empty();
 			 $("#groupType").append("<option value='salesman'>业务员</option>");
-			 $("#brokingFirmDiv").style.display='none';
-			 $("#buildingDiv").style.display='none';
+			 $('#brokingFirmList').val(currentUserModel.brokingFirm);
+			 $('#brokingFirmList').attr("readonly","readonly");
+			 $("#brokingFirmDiv").show();
+			 $("#buildingDiv").hide();
 			 return;
 		 }
 		 
