@@ -414,4 +414,19 @@ public class PisUserController {
 		json.setSuccess(flag);
 		return json;
 	}
+	/**
+	 * 执行用户删除操作
+	 * @return true:操作成功，false:操作失败
+	 */
+	@SuppressWarnings("rawtypes")
+	@RequestMapping(value="/api/removeUser")
+	public JsonVo removeUser(HttpServletRequest request, HttpServletResponse response){
+		JsonVo json = new JsonVo();
+		//获取用户ID
+		String userId = StringUtils.trimToEmpty(request.getParameter("userId"));
+		boolean flag = this.pisUserService.removeUser(userId);
+		//设置返回值
+		json.setSuccess(flag);
+		return json;
+	}
 }

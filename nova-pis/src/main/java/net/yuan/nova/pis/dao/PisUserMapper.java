@@ -55,9 +55,48 @@ public interface PisUserMapper {
      * @mbggenerated Wed Mar 23 14:22:23 CST 2016
      */
     int updateByPrimaryKey(PisUser record);
-    
-
-
+    /**
+     * 根据用户ID删除用户信息
+     * @param userId
+     * @return
+     */
+    int deleteUserByUserId(String userId);
+    /**
+     * 根据用户ID删除用户基本信息
+     * @param userId
+     * @return
+     */
+    int deletePisUserInfoByUserId(String userId);
+    /**
+     * 根据用户ID删除用户扩展信息
+     * @param userId
+     * @return
+     */
+    int deletePisUserExtendByUserId(String userId);
+    /**
+     * 根据用户ID删除用户关联信息
+     * @param userId
+     * @return
+     */
+    int deletePisUserGroupShipByUserId(String userId);
+    /**
+     * 根据用户ID删除用户认证信息
+     * @param userId
+     * @return
+     */
+    int deletePisUserOauthByUserId(String userId);
+    /**
+     * 删除用户上传照片附件
+     * @param userId
+     * @return
+     */
+    int deletePicUserAttachmentBlob(String userId);
+    /**
+     * 删除用户上传附件信息
+     * @param userId
+     * @return
+     */
+    int  deletePicUserAttachment(String userId);
 	// ///////////////////////////////
 	// ///// 查詢 ////////
 	// ///////////////////////////////

@@ -282,4 +282,36 @@
 	    <include refid="Base_Column_List" />
 	    from PIS_USER
 	</select>
+	
+	
+	<!-- ############################## -->
+	<!-- ###### 删除用户 ###### -->
+	<!-- ############################## -->
+	<delete id="deleteUserByUserId" parameterType="java.lang.String" >
+		DELETE  PIS_USER WHERE USER_ID=#{userId,jdbcType=VARCHAR}
+	</delete>
+	
+	<delete id="deletePisUserInfoByUserId" parameterType="java.lang.String" >
+		DELETE  PIS_USER_INFO WHERE USER_ID=#{userId,jdbcType=VARCHAR}
+	</delete>
+	
+	<delete id="deletePisUserExtendByUserId" parameterType="java.lang.String" >
+		DELETE  PIS_USER_EXTEND WHERE USER_ID=#{userId,jdbcType=VARCHAR}
+	</delete>
+	
+	<delete id="deletePisUserGroupShipByUserId" parameterType="java.lang.String" >
+		DELETE PIS_USER_GROUP_SHIP WHERE USER_ID=#{userId,jdbcType=VARCHAR}
+	</delete>
+	
+	<delete id="deletePisUserOauthByUserId" parameterType="java.lang.String" >
+		DELETE PIS_USER_OAUTH WHERE USER_ID=#{userId,jdbcType=VARCHAR}
+	</delete>
+	
+	<delete id="deletePicUserAttachmentBlob">
+ 		DELETE PIS_ATTACHMENT_BLOB WHERE ATCH_MD5 IN (SELECT MD5 FROM PIS_ATTACHMENT WHERE TABLE_NAME='PIS_USER' AND KIND_ID=#{userId,jdbcType=VARCHAR})
+	</delete>
+	
+	<delete id="deletePicUserAttachment">
+		DELETE PIS_ATTACHMENT WHERE TABLE_NAME='PIS_USER' AND KIND_ID=#{userId,jdbcType=VARCHAR}
+	</delete>
 </mapper>

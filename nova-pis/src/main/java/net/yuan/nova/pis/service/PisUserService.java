@@ -16,6 +16,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 @Service
 public class PisUserService {
@@ -160,5 +162,57 @@ public class PisUserService {
 		pisUser.setPassword(passwordHelper.encryptPassword(pisUser.getPassword(),picUser.getSalt()));
 		pisUser.setUserId(picUser.getUserId());
 		return pisUserMapper.updateUserPwd(pisUser)>0?true:false;
+	}
+	
+	/**
+	 * 执行用户删除
+	 * @param userId
+	 * @return
+	 */
+	@Transactional(rollbackFor = { Exception.class })  
+	public boolean removeUser(String userId){
+		 //执行用户信息删除
+		int ret_01= this.pisUserMapper.deleteUserByUserId(userId);
+		if(ret_01<1){
+			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+			return false;
+		}
+		//删除用户基本信息
+		int ret_02=this.pisUserMapper.deletePisUserInfoByUserId(userId);
+		if(ret_02<0){
+			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+			return false;
+		}
+		//删除用户扩展信息
+		int ret_03 =this.pisUserMapper.deletePisUserExtendByUserId(userId);
+		if(ret_03<0){
+			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+			return false;
+		}
+		//删除用户关联关系
+		int ret_04=this.pisUserMapper.deletePisUserGroupShipByUserId(userId);
+		if(ret_04<0){
+			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+			return false;
+		}
+		//删除用户认证信息
+		int ret_05 = this.pisUserMapper.deletePisUserOauthByUserId(userId);
+		if(ret_05<0){
+			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+			return false;
+		}
+		//删除用户上传附件
+		int ret_06=this.pisUserMapper.deletePicUserAttachmentBlob(userId);
+		if(ret_06<0){
+			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+			return false;
+		}
+		//用户上传附件信息
+		int ret_07 = this.pisUserMapper.deletePicUserAttachment(userId);
+		if(ret_07<0){
+			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+			return false;
+		}
+		return true;
 	}
 }
