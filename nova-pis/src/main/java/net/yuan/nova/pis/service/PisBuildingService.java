@@ -14,6 +14,8 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
+import com.github.pagehelper.PageHelper;
+
 @Service
 public class PisBuildingService {
 	@Autowired
@@ -75,7 +77,8 @@ public class PisBuildingService {
 		return pisPropertyMapper.insertSelective(pisProperty);
 	}
 
-	public List<PisProperty> selectPisProperties() {
+	public List<PisProperty> selectPisProperties(int page, int pageSize) {
+		PageHelper.startPage(page, pageSize);
 		return pisPropertyMapper.selectPisProperties();
 	}
 

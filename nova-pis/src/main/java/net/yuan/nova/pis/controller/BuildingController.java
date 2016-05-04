@@ -1,9 +1,12 @@
 package net.yuan.nova.pis.controller;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -15,11 +18,17 @@ import net.yuan.nova.core.vo.JsonVo;
 import net.yuan.nova.pis.entity.PisBuilding;
 import net.yuan.nova.pis.entity.PisProperty;
 import net.yuan.nova.pis.entity.vo.PisPropertyVo;
+import net.yuan.nova.pis.pagination.DataGridHepler;
+import net.yuan.nova.pis.pagination.PageParam;
 import net.yuan.nova.pis.service.PisBuildingService;
 import net.yuan.nova.pis.service.PisCityService;
 import net.yuan.nova.pis.service.TemplateService;
 
 import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.beanutils.ConvertUtils;
+import org.apache.commons.beanutils.converters.BigDecimalConverter;
+import org.apache.commons.beanutils.converters.DateConverter;
+import org.apache.commons.beanutils.converters.NumberConverter;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.commons.lang3.time.DateUtils;
@@ -35,6 +44,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
+
+import com.github.pagehelper.PageInfo;
 
 /**
  * 楼盘的控制器
@@ -169,22 +180,31 @@ public class BuildingController {
 	}
 
 	@RequestMapping("/admin/properties")
-	public Object selectPisProperties() {
+	public Object selectPisProperties(HttpServletRequest request) {
+		PageParam page = DataGridHepler.parseRequest(request);
 		DataGridData<PisProperty> dgd = new DataGridData<PisProperty>();
-		List<PisProperty> properties = buildingService.selectPisProperties();
+		List<PisProperty> properties = buildingService.selectPisProperties(page.getPage(), page.getPageSize());
 		for (PisProperty pisProperty : properties) {
 			if (StringUtils.isNotBlank(pisProperty.getCity())){
 				pisProperty.setCityTitle(this.cityService.getCityById(pisProperty.getCity()).getCityName());
 			}
 		}
 		dgd.setRows(properties);
-		dgd.setTotal(properties.size());
+		dgd.setTotal(new PageInfo(properties).getTotal());
 		return dgd;
 	}
 
-	@RequestMapping("/api/properties")
-	public ModelAndView pisPropertyVoList(HttpServletRequest request, ModelAndView modelAndView) {
-		List<PisProperty> properties = buildingService.selectPisProperties();
+	@RequestMapping(value="/api/properties",method=RequestMethod.GET)
+	@ResponseBody
+	public ModelMap pisPropertyVoList(HttpServletRequest request, ModelMap modelMap) {
+		String server = request.getRequestURL().substring(0, request.getRequestURL().length()-request.getRequestURI().length());
+		log.debug("server:" + server);
+		String serverURL = server + request.getContextPath();
+		log.debug("serverURL:" + serverURL);
+		PageParam page = DataGridHepler.parseRequest(request);
+		log.debug("page:" + page.getPage());
+		log.debug("pageSize:" + page.getPageSize());
+		List<PisProperty> properties = buildingService.selectPisProperties(page.getPage(), page.getPageSize());
 		List<PisPropertyVo> pisPropertyVoList = new ArrayList<PisPropertyVo>();
 		for (PisProperty pisProperty : properties) {
 			List<Attachment> attachments = attachmentService.getAttachmentsByKindId(pisProperty.getPropertyId(),
@@ -204,6 +224,8 @@ public class BuildingController {
 			}
 			PisPropertyVo pisPropertyVo = new PisPropertyVo();
 			try {
+				ConvertUtils.register(new DateConverter(null), java.util.Date.class); 
+				ConvertUtils.register(new BigDecimalConverter(null), BigDecimal.class);
 				BeanUtils.copyProperties(pisPropertyVo, pisProperty);
 			} catch (Exception e) {
 				log.error("拷贝数据出错", e);
@@ -211,11 +233,35 @@ public class BuildingController {
 			pisPropertyVo.setFilePath(filePath);
 			pisPropertyVoList.add(pisPropertyVo);
 		}
-		modelAndView.addObject("success", true);
-		modelAndView.addObject("properties", pisPropertyVoList);
-		modelAndView.addObject("size", pisPropertyVoList.size());
-		modelAndView.setViewName("ydapp/propertyList");
-		return modelAndView;
+		
+		//modelAndView.addObject("properties", pisPropertyVoList);
+		long total = new PageInfo(properties).getTotal();
+		log.debug("本次获取的大小为:" + properties.size());
+		log.debug("total:" + total);
+		
+		StringBuilder sb = new StringBuilder();
+		log.debug("pisPropertyVoList.size:" + pisPropertyVoList.size());
+		for (PisPropertyVo pisPropertyVo : pisPropertyVoList) {
+			log.debug("filePath:" + pisPropertyVo.getFilePath());
+			sb.append("<li class=\"mui-table-view-cell mui-media\">");
+			sb.append("<a href=\"property-detail.html?index=" + pisPropertyVo.getPropertyId() + "\">");
+			sb.append("	<img class=\"mui-media-object mui-pull-left\" src=\"" + serverURL + "/" + pisPropertyVo.getFilePath() + "\">");
+			sb.append("	<div class=\"mui-media-body\">");
+			sb.append("		<h4 class=\"mui-ellipsis\">" + pisPropertyVo.getPropertyName() + "</h4>");
+			sb.append("		<p class=\"mui-ellipsis\">特点：" + StringUtils.trimToEmpty(pisPropertyVo.getCharacteristic()) + "</p>");
+			sb.append("		<p class=\"mui-ellipsis\">均价：" + pisPropertyVo.getAvgPrice() + "</p>");
+			sb.append("	</div>");
+			sb.append("</a>");
+			sb.append("</li>");
+		}
+		log.debug("html:" + sb.toString());
+		Map<String, Object> json = new HashMap<String, Object>();
+		json.put("total", total);
+		json.put("html", sb.toString());
+		modelMap.addAttribute("result", json);
+		//modelMap.addAttribute("html", sb.toString());
+//		modelAndView.setViewName("ydapp/propertyList");
+		return modelMap;
 	}
 
 	/**
