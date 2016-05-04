@@ -127,6 +127,9 @@
 		 }
 		 
 	});
+	/**
+	 *执行删除用户操作
+     */
 	$('#remove').click(function(){
 		var row = $('#user_grid').datagrid('getSelected');
 		if(null==row){
@@ -137,22 +140,25 @@
 			alert("无法删除当前登录用户!");
 			return;
 		}
-		$.ajax({
-			url: "<%=path%>/api/removeUser.json",
-			dataType: "json",
-			data : 'userId=' + row.userId,
-			cache : false,
-			success: function(data){
-				if(true == data.success){
-					alert("操作成功!");
-					$('#user_grid').datagrid('reload');
-				}else{
-					alert("操作失败!");
-					$('#user_grid').datagrid('reload');
-				}
-			}
-		});
-		
+		$.messager.confirm("操作提示", "您确定要执行删除操作吗？", function (data) {  
+            if (data){ 
+	            	$.ajax({
+	        			url: "<%=path%>/api/removeUser.json",
+	        			dataType: "json",
+	        			data : 'userId=' + row.userId,
+	        			cache : false,
+	        			success: function(data){
+	        				if(true == data.success){
+	        					alert("操作成功!");
+	        					$('#user_grid').datagrid('reload');
+	        				}else{
+	        					alert("操作失败!");
+	        					$('#user_grid').datagrid('reload');
+	        				}
+	        			}
+	        		});
+            }  
+        });  
 	});
 	
 	//用户组类型值改变
