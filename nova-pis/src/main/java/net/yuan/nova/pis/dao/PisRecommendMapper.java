@@ -3,8 +3,10 @@ package net.yuan.nova.pis.dao;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
 
+import net.yuan.nova.pis.controller.model.CustomerModel;
 import net.yuan.nova.pis.entity.PisRecommend;
 
 @Repository
@@ -21,4 +23,6 @@ public interface PisRecommendMapper {
 	List<PisRecommend> getByBrokingFirmId(@Param("brokingFirmId") String brokingFirmId);
 	List<PisRecommend> getBySaleman(@Param("userId") String userId);
 	List<PisRecommend> getByBuildingId(@Param("buildingId") String buildingId);
+	@Select("select CUSTOMER_TEL as customerTel,CUSTOMER_NAME as customerName, count(*) as refreeCount from PIS_RECOMMEND group by CUSTOMER_TEL,CUSTOMER_NAME")
+	List<CustomerModel> getCustomer();
 }

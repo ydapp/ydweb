@@ -13,13 +13,17 @@ import javax.servlet.http.HttpServletResponse;
 import net.sf.json.JSONObject;
 import net.yuan.nova.core.shiro.CurrentUserUtil;
 import net.yuan.nova.core.shiro.vo.User;
+import net.yuan.nova.core.vo.DataGridData;
 import net.yuan.nova.core.vo.JsonVo;
+import net.yuan.nova.pis.controller.model.CustomerModel;
 import net.yuan.nova.pis.entity.PisBuilding;
 import net.yuan.nova.pis.entity.PisCity;
 import net.yuan.nova.pis.entity.PisRecommend;
 import net.yuan.nova.pis.entity.PisUser;
 import net.yuan.nova.pis.entity.PisUserGroup;
 import net.yuan.nova.pis.entity.vo.PisRecommendVo;
+import net.yuan.nova.pis.pagination.DataGridHepler;
+import net.yuan.nova.pis.pagination.PageParam;
 import net.yuan.nova.pis.service.PisBuildingService;
 import net.yuan.nova.pis.service.PisCityService;
 import net.yuan.nova.pis.service.PisRecommendService;
@@ -27,6 +31,7 @@ import net.yuan.nova.pis.service.PisUserExtendService;
 import net.yuan.nova.pis.service.PisUserService;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -41,6 +46,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.github.pagehelper.PageInfo;
 
 /**
  * 推荐业务控制器
@@ -410,5 +417,12 @@ public class RecommendController {
 			this.builds.put(buildingId, building.getBuildingName());
 		}
 		return this.builds.get(buildingId);
+	}
+	@ResponseBody
+	@RequestMapping(value = "/api/customers", method = RequestMethod.GET)
+	public ModelMap customer(HttpServletRequest request, ModelMap modelMap, HttpServletResponse response) {
+		PageParam param = DataGridHepler.parseRequest(request);
+		List<CustomerModel> list = this.recommendService.getCustomers(param.getPage(), param.getPageSize());
+		return DataGridHepler.addDataGrid(list, modelMap);
 	}
 }

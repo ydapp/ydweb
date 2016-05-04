@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import net.yuan.nova.pis.controller.model.CustomerModel;
 import net.yuan.nova.pis.dao.PisRecommendMapper;
 import net.yuan.nova.pis.entity.PisBuilding;
 import net.yuan.nova.pis.entity.PisCity;
@@ -16,6 +17,10 @@ import net.yuan.nova.pis.entity.vo.PisRecommendVo;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 
 /**
  * 推荐
@@ -238,6 +243,11 @@ public class PisRecommendService {
 	 */
 	public List<PisRecommend> getByBuildingId(String buildingId){
 		return this.recommendMapper.getByBuildingId(buildingId);
+	}
+
+	public List<CustomerModel> getCustomers(int page, int pageSize) {
+		PageHelper.startPage(page, pageSize);
+		return this.recommendMapper.getCustomer();
 	}
 	
 }

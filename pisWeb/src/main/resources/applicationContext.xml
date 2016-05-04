@@ -82,6 +82,17 @@
 				<value>classpath*:net/yuan/nova/pis/mapping/*Mapper.xml</value>
 			</list>
 		</property>
+		<property name="plugins">
+		    <array>
+		      <bean class="com.github.pagehelper.PageHelper">
+		        <property name="properties">
+		          <value>
+		            dialect=oracle
+		          </value>
+		        </property>
+		      </bean>
+		    </array>
+		  </property>
 	</bean>
 
 	<bean id="transactionManager"
