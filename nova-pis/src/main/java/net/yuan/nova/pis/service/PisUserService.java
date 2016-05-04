@@ -149,4 +149,16 @@ public class PisUserService {
 		String password = this.passwordHelper.encryptPassword(pwd,picUser.getSalt());
 		return picUser.getPassword().equals(password);
 	}
+	/**
+	 * 执行密码修改
+	 * @param pisUser
+	 * @return
+	 */
+	public boolean changePassword(PisUser pisUser){
+		PisUser picUser = pisUserMapper.selectUserByUserName(pisUser.getUserName());
+		// 对密码进行加密
+		pisUser.setPassword(passwordHelper.encryptPassword(pisUser.getPassword(),picUser.getSalt()));
+		pisUser.setUserId(picUser.getUserId());
+		return pisUserMapper.updateUserPwd(pisUser)>0?true:false;
+	}
 }
