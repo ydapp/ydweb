@@ -2,11 +2,8 @@ package net.yuan.nova.pis.controller;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import net.yuan.nova.commons.SystemConstant;
 import net.yuan.nova.core.shiro.CurrentUserUtil;
 import net.yuan.nova.core.shiro.PubUserAuthenticationToken;
@@ -15,8 +12,6 @@ import net.yuan.nova.core.shiro.vo.UserModel;
 import net.yuan.nova.core.vo.DataGridData;
 import net.yuan.nova.core.vo.JsonVo;
 import net.yuan.nova.pis.business.UserModelBusinessImpl;
-import net.yuan.nova.pis.entity.PisBrokingFirm;
-import net.yuan.nova.pis.entity.PisCity;
 import net.yuan.nova.pis.entity.PisUser;
 import net.yuan.nova.pis.entity.PisUserExtend;
 import net.yuan.nova.pis.entity.PisUserGroup;
@@ -46,7 +41,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.multipart.support.RequestPartServletServerHttpRequest;
 
 @Controller
 public class PisUserController {
@@ -387,7 +381,7 @@ public class PisUserController {
 	 */
 	@SuppressWarnings("rawtypes")
 	@RequestMapping(value="/api/staff/checkPassword")
-	public JsonVo  checkPassword(HttpServletRequest request, HttpServletResponse response,ModelMap modelMap){
+	public JsonVo  checkPassword(HttpServletRequest request, HttpServletResponse response){
 		JsonVo json = new JsonVo();
 		//获取原始密码
 		String oldPwd = StringUtils.trimToEmpty(request.getParameter("oldPwd"));
@@ -395,6 +389,43 @@ public class PisUserController {
 		String loginName = StringUtils.trimToEmpty(request.getParameter("loginName"));
 		//执行密码修改
 		boolean flag = this.pisUserService.checkPassword(oldPwd,loginName);
+		json.setSuccess(flag);
+		return json;
+	}
+	/**
+	 * 执行密码修改操作
+	 * @return true:操作成功，false:操作失败
+	 */
+	@SuppressWarnings("rawtypes")
+	@RequestMapping(value="/api/staff/changePassword")
+	public JsonVo changePassword(HttpServletRequest request, HttpServletResponse response){
+		JsonVo json = new JsonVo();
+		//获取新密码
+		String newPwd = StringUtils.trimToEmpty(request.getParameter("pwd1"));
+		//获取用户ID
+		String loginName = StringUtils.trimToEmpty(request.getParameter("loginName"));
+		//组装参数
+		PisUser pisUser = new PisUser();
+		pisUser.setUserName(loginName);
+		pisUser.setPassword(newPwd);
+		//执行密码修改操作
+		boolean flag = this.pisUserService.changePassword(pisUser);
+		//设置返回值
+		json.setSuccess(flag);
+		return json;
+	}
+	/**
+	 * 执行用户删除操作
+	 * @return true:操作成功，false:操作失败
+	 */
+	@SuppressWarnings("rawtypes")
+	@RequestMapping(value="/api/removeUser")
+	public JsonVo removeUser(HttpServletRequest request, HttpServletResponse response){
+		JsonVo json = new JsonVo();
+		//获取用户ID
+		String userId = StringUtils.trimToEmpty(request.getParameter("userId"));
+		boolean flag = this.pisUserService.removeUser(userId);
+		//设置返回值
 		json.setSuccess(flag);
 		return json;
 	}

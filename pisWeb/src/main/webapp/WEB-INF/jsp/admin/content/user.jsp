@@ -32,6 +32,7 @@
 	    <!-- 表格头部标签 -->
 		<div id="tb" style="padding:2px 5px;text-align:right">
 			<a href="javascript:void(0);" class="easyui-linkbutton" iconCls="icon-add" plain="true" id="add">增加用户</a>
+			<a href="javascript:void(0);" class="easyui-linkbutton" iconCls="icon-remove" plain="true" id="remove">删除用户</a>
 		</div>
 		<table id="user_grid" class="easyui-datagrid" title="用户列表" 
 		data-options="singleSelect:true,url:'<%=path%>//api/userInfos.json',method:'get',toolbar:'#tb',rownumbers:'true',pagination:'true',fit:'true',fitColumns: true">
@@ -126,6 +127,40 @@
 		 }
 		 
 	});
+	/**
+	 *执行删除用户操作
+     */
+	$('#remove').click(function(){
+		var row = $('#user_grid').datagrid('getSelected');
+		if(null==row){
+			alert("请选中要删除的用户!");
+			return;
+		}
+		if("${CURRENT_USER.userId}"==row.userId){
+			alert("无法删除当前登录用户!");
+			return;
+		}
+		$.messager.confirm("操作提示", "您确定要执行删除操作吗？", function (data) {  
+            if (data){ 
+	            	$.ajax({
+	        			url: "<%=path%>/api/removeUser.json",
+	        			dataType: "json",
+	        			data : 'userId=' + row.userId,
+	        			cache : false,
+	        			success: function(data){
+	        				if(true == data.success){
+	        					alert("操作成功!");
+	        					$('#user_grid').datagrid('reload');
+	        				}else{
+	        					alert("操作失败!");
+	        					$('#user_grid').datagrid('reload');
+	        				}
+	        			}
+	        		});
+            }  
+        });  
+	});
+	
 	//用户组类型值改变
 	 $("#groupType").change(function(e){
 		 if ("commissioner" == $("#groupType").val()){

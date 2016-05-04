@@ -36,6 +36,7 @@
 	</div>
 	<script type="text/javascript" src="<%=path%>/public/script/jquery-1.10.2.min.js"></script>
 	<script type="text/javascript" src="<%=path%>/public/script/jquery.easyui.min.js"></script>
+	<script type="text/javascript" src="<%=path%>/public/script/easyui-lang-zh_CN.js"></script>
 	<!--顶部位置start-->
 	<div id="header" data-options="region:'north',border:false" style="height: 65px;">
 	<!-- 修改密码 窗体 打开 这个div 会遮住 原先这块区域上的内容 -->
@@ -243,7 +244,7 @@
 						return;
 					}
 					$('#checkPwd').form('submit', {
-						url : '<%=request.getContextPath()%>/admin/staff/changePassword.json',
+						url : '<%=path%>/api/staff/changePassword.json',
 						success : function(data) {
 							$('#changePwd').window('close');
 							$('#checkPwd').form('clear');
@@ -260,23 +261,24 @@
 	
           <br/>
 		<form id="checkPwd" method="post">
+		<input name="loginName" type="hidden" value="${CURRENT_USER.loginName}"/>
         <table>
-	        <tr >
-	        	<td>当前密码：</td>
-	        	<td><input type="password" name="oldPwd" id="oldPwd" class="easyui-textbox" data-options="validType:'pwdIsExist'"/></td>
+	        <tr>
+	        	<td>当前密码：<font style="color:red">*</font></td>
+	        	<td><input type="password" name="oldPwd" id="oldPwd" class="easyui-textbox" data-options="validType:'pwdIsExist'" required="required" /></td>
 	        </tr>
 	        <tr >
-	        	<td>新密码：</td>
-	        	<td><input type="password" name="pwd1" class="easyui-textbox" validType="equalToOldPwd['#oldPwd']" /></td>
+	        	<td align="right">新密码：<font style="color:red">*</font></td>
+	        	<td><input type="password" name="pwd1" class="easyui-textbox" validType="equalToOldPwd['#oldPwd']"  required="required" /></td>
 	        </tr>
 	        <tr><td></td>
 	        	<td><font color="#C4C4C4">密码由5-25个字符组成，区分大<br/>小写，新密码不能与原密码相同</font></td>
 	        </tr>
 	        <tr >
-	        	<td>确认密码：</td>
-	        	<td><input type="password"  name='pwd2' class="easyui-textbox" validType="equalTo['#checkPwd input[name=pwd1]']" /></td>
+	        	<td>确认密码：<font style="color:red">*</font></td>
+	        	<td><input type="password"  name='pwd2' class="easyui-textbox" validType="equalTo['#checkPwd input[name=pwd1]']" required="required" /></td>
 	        </tr>
-		</table>     
+		</table>  
 		</form> 
     </div>
 	<script type="text/javascript">

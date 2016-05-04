@@ -8,6 +8,7 @@ import java.io.Serializable;
  *
  */
 public class UserModel implements Serializable {
+	
 	//电话
 	private String tel;
 	//姓名
@@ -20,6 +21,15 @@ public class UserModel implements Serializable {
 	private String brokingFirm;
 	//用于案场专员
 	private String building;
+	//用户ID
+	private String userId;
+	
+	public String getUserId() {
+		return userId;
+	}
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
 	public String getTel() {
 		return tel;
 	}
