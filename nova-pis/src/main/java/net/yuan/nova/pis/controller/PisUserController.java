@@ -269,12 +269,12 @@ public class PisUserController {
 	public ModelMap getUserInfos(HttpServletRequest request, ModelMap modelMap, HttpServletResponse response) {
 		PageParam param = DataGridHepler.parseRequest(request);
 		List<PisUser> users = this.pisUserService.getCustomers(param.getPage(), param.getPageSize());
-		List<UserModel> userInfoList = new ArrayList<>();
+		/*List<UserModel> userInfoList = new ArrayList<>();
 		for (PisUser user : users) {
 			UserModel vo = this.userModelBusiness.getUserModel(user.getUserId());
 			userInfoList.add(vo);
-		}
-		return  DataGridHepler.addDataGrid(userInfoList, modelMap); 
+		}*/
+		return  DataGridHepler.addDataGrid(users, modelMap); 
 	}
 	/**
 	 * 添加一个用户，同时添加用户信息和组
