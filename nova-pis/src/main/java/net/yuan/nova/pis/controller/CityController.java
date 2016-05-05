@@ -68,39 +68,24 @@ public class CityController {
 	 * @param modelMap
 	 * @return
 	 */
-	@RequestMapping(value = "/api/getCity/{parentCityId}", method = RequestMethod.GET)
+	@RequestMapping(value = "/api/getCitys/{parentCityId}", method = RequestMethod.GET)
 	@ResponseBody
-	public ModelMap getCityList(@PathVariable String parentCityId, HttpServletRequest request, ModelMap modelMap) {
+	public ModelMap getCityList(@PathVariable String parentCityId, HttpServletRequest request, ModelMap modelMap, HttpServletResponse response) {
 		if (StringUtils.isEmpty(parentCityId)) {
 			parentCityId = null;
 		}
-		DataGridData<PisCity> dgd = new DataGridData<PisCity>();
-		List<PisCity> citys = pisCityService.getCitys(parentCityId);
-		dgd.setRows(citys);
-		dgd.setTotal(citys.size());
-		modelMap.addAttribute("result", dgd);
-		return modelMap;
-	}
-	/**
-	 * 获取城市分页对象
-	 * @return
-	 */
-	@RequestMapping(value = "/api/getCitys/{parentCityId}", method = RequestMethod.GET)
-	@ResponseBody
-	public ModelMap getCityPage(@PathVariable String parentCityId, HttpServletRequest request, ModelMap modelMap, HttpServletResponse response) {
 		PageParam param = DataGridHepler.parseRequest(request);
 		List<PisCity> list = this.pisCityService.getCustomers(param.getPage(), param.getPageSize(),parentCityId);
 		return DataGridHepler.addDataGrid(list, modelMap); 
 	}
-
 	@RequestMapping(value = "/api/getCitys")
-	public ModelMap getCityList(HttpServletRequest request, ModelMap modelMap) {
+	public ModelMap getCityList(HttpServletRequest request, ModelMap modelMap, HttpServletResponse response) {
 
 		String parentCityId = request.getParameter("parentCityId");
 		if (StringUtils.isBlank(parentCityId)) {
 			parentCityId = null;
 		}
-		return getCityList(parentCityId, request, modelMap);
+		return getCityList(parentCityId, request, modelMap,response);
 	}
 	@RequestMapping(value = "/api/city/{cityId}")
 	public PisCity getCity(@PathVariable("cityId") String cityId, HttpServletRequest request, ModelMap modelMap) {
