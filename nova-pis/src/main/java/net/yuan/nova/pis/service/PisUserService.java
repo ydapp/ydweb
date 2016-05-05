@@ -216,9 +216,4 @@ public class PisUserService {
 		}
 		return true;
 	}
-	
-	public List<UserModel> getCustomers(int page, int pageSize) {
-		PageHelper.startPage(page, pageSize);
-		return this.pisUserMapper.getCustomer();
-	} 
 }
