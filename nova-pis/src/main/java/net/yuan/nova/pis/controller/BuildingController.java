@@ -272,15 +272,15 @@ public class BuildingController {
 	 * @param modelMap
 	 * @return
 	 */
-	@RequestMapping("/api/property/{id}")
-	public ModelAndView propertyDetail(@PathVariable String id, HttpServletRequest request, ModelAndView modelAndView) {
+	@RequestMapping(value="/api/property/{id}", method=RequestMethod.GET)
+	@ResponseBody
+	public ModelMap  propertyDetail(@PathVariable String id, HttpServletRequest request, ModelMap modelMap) {
 		PisProperty pisProperty = buildingService.selectByPrimaryKey(id);
-		if (pisProperty == null) {
-			modelAndView.setViewName(templateService.getErrorTemplate(404));
-			return modelAndView;
-		}
+		
 		PisPropertyVo pisPropertyVo = new PisPropertyVo();
 		try {
+			ConvertUtils.register(new DateConverter(null), java.util.Date.class); 
+			ConvertUtils.register(new BigDecimalConverter(null), BigDecimal.class);
 			BeanUtils.copyProperties(pisPropertyVo, pisProperty);
 		} catch (Exception e) {
 			log.error("拷贝数据出错", e);
@@ -307,9 +307,11 @@ public class BuildingController {
 			String basePath = HttpUtils.getBasePath(request);
 			pisPropertyVo.setFilePath(basePath + "/" + filePath);
 		}
-		modelAndView.addObject("pisPropertyVo", pisPropertyVo);
-		modelAndView.setViewName("ydapp/propertyDetail");
-		return modelAndView;
+		Map<String, Object> json = new HashMap<String, Object>();
+		json.put("building", pisPropertyVo);
+		log.debug("楼盘名称:" + pisPropertyVo.getPropertyName());
+		modelMap.addAttribute("result", json);
+		return modelMap;
 	}
 
 	/**
@@ -320,9 +322,10 @@ public class BuildingController {
 	 * @param modelMap
 	 * @return
 	 */
-	@RequestMapping("/api/property")
-	public ModelAndView propertyDetail(HttpServletRequest request, ModelAndView modelAndView) {
+	@RequestMapping(value = "/api/property", method=RequestMethod.GET)
+	@ResponseBody
+	public ModelMap propertyDetail(HttpServletRequest request, ModelMap modelMap) {
 		String id = request.getParameter("id");
-		return propertyDetail(id, request, modelAndView);
+		return propertyDetail(id, request, modelMap);
 	}
 }
