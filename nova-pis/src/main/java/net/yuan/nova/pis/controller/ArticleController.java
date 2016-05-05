@@ -3,9 +3,8 @@ package net.yuan.nova.pis.controller;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
-
+import javax.servlet.http.HttpServletResponse;
 import net.yuan.nova.commons.HttpUtils;
 import net.yuan.nova.core.entity.Attachment;
 import net.yuan.nova.core.service.AttachmentService;
@@ -13,9 +12,10 @@ import net.yuan.nova.core.vo.DataGridData;
 import net.yuan.nova.core.vo.JsonVo;
 import net.yuan.nova.pis.entity.PisArticle;
 import net.yuan.nova.pis.entity.vo.PisArticleVo;
+import net.yuan.nova.pis.pagination.DataGridHepler;
+import net.yuan.nova.pis.pagination.PageParam;
 import net.yuan.nova.pis.service.PisArticleService;
 import net.yuan.nova.pis.service.TemplateService;
-
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -78,12 +78,10 @@ public class ArticleController {
 	}
 
 	@RequestMapping("/admin/articles")
-	public Object selectArticleList(HttpServletRequest request, ModelMap modelMap) {
-		DataGridData<PisArticle> dgd = new DataGridData<PisArticle>();
-		List<PisArticle> selectArticleList = pisArticleService.selectArticleList();
-		dgd.setRows(selectArticleList);
-		dgd.setTotal(selectArticleList.size());
-		return dgd;
+	public Object selectArticleList(HttpServletRequest request, ModelMap modelMap, HttpServletResponse response) {
+		PageParam param = DataGridHepler.parseRequest(request);
+		List<PisArticle> list = this.pisArticleService.getCustomers(param.getPage(), param.getPageSize());
+		return DataGridHepler.addDataGrid(list, modelMap); 
 	}
 
 	@RequestMapping("/api/articles")

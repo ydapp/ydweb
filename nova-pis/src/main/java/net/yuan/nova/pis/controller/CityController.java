@@ -3,10 +3,14 @@ package net.yuan.nova.pis.controller;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
+import net.yuan.nova.core.shiro.vo.UserModel;
 import net.yuan.nova.core.vo.DataGridData;
 import net.yuan.nova.core.vo.JsonVo;
 import net.yuan.nova.pis.entity.PisCity;
+import net.yuan.nova.pis.pagination.DataGridHepler;
+import net.yuan.nova.pis.pagination.PageParam;
 import net.yuan.nova.pis.service.PisCityService;
 
 import org.apache.commons.lang.StringUtils;
@@ -66,26 +70,22 @@ public class CityController {
 	 */
 	@RequestMapping(value = "/api/getCitys/{parentCityId}", method = RequestMethod.GET)
 	@ResponseBody
-	public ModelMap getCityList(@PathVariable String parentCityId, HttpServletRequest request, ModelMap modelMap) {
+	public ModelMap getCityList(@PathVariable String parentCityId, HttpServletRequest request, ModelMap modelMap, HttpServletResponse response) {
 		if (StringUtils.isEmpty(parentCityId)) {
 			parentCityId = null;
 		}
-		DataGridData<PisCity> dgd = new DataGridData<PisCity>();
-		List<PisCity> citys = pisCityService.getCitys(parentCityId);
-		dgd.setRows(citys);
-		dgd.setTotal(citys.size());
-		modelMap.addAttribute("result", dgd);
-		return modelMap;
+		PageParam param = DataGridHepler.parseRequest(request);
+		List<PisCity> list = this.pisCityService.getCustomers(param.getPage(), param.getPageSize(),parentCityId);
+		return DataGridHepler.addDataGrid(list, modelMap); 
 	}
-
 	@RequestMapping(value = "/api/getCitys")
-	public ModelMap getCityList(HttpServletRequest request, ModelMap modelMap) {
+	public ModelMap getCityList(HttpServletRequest request, ModelMap modelMap, HttpServletResponse response) {
 
 		String parentCityId = request.getParameter("parentCityId");
 		if (StringUtils.isBlank(parentCityId)) {
 			parentCityId = null;
 		}
-		return getCityList(parentCityId, request, modelMap);
+		return getCityList(parentCityId, request, modelMap,response);
 	}
 	@RequestMapping(value = "/api/city/{cityId}")
 	public PisCity getCity(@PathVariable("cityId") String cityId, HttpServletRequest request, ModelMap modelMap) {

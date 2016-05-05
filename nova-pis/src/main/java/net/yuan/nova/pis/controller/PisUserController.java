@@ -17,13 +17,14 @@ import net.yuan.nova.pis.entity.PisUserExtend;
 import net.yuan.nova.pis.entity.PisUserGroup;
 import net.yuan.nova.pis.entity.PisUserGroupShipKey;
 import net.yuan.nova.pis.entity.vo.UserInfoVo;
+import net.yuan.nova.pis.pagination.DataGridHepler;
+import net.yuan.nova.pis.pagination.PageParam;
 import net.yuan.nova.pis.service.PisBrokingFirmService;
 import net.yuan.nova.pis.service.PisBuildingService;
 import net.yuan.nova.pis.service.PisUserExtendService;
 import net.yuan.nova.pis.service.PisUserService;
 import net.yuan.nova.pis.service.UserGroupService;
 import net.yuan.nova.pis.service.UserGroupShipKeyService;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
@@ -41,6 +42,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.github.pagehelper.PageInfo;
 
 @Controller
 public class PisUserController {
@@ -251,6 +254,7 @@ public class PisUserController {
 			userInfoVo.setUser(user);
 			PisUserGroup pisUserGroup = pisUserService.getPisUserGroup(user.getUserId());
 			userInfoVo.setUserGroup(pisUserGroup);
+			userInfoVo.setUserModel(this.userModelBusiness.getUserModel(user.getUserId()));
 			json.setResult(userInfoVo);
 		} else {
 			json.setSuccess(false);
@@ -263,22 +267,17 @@ public class PisUserController {
 	 * @param modelMap
 	 * @return
 	 */
+	@ResponseBody
 	@RequestMapping(value = "/api/userInfos", method=RequestMethod.GET)
-	public ModelMap getUserInfos(HttpServletRequest request, ModelMap modelMap) {
-		
-		DataGridData<UserModel> dgd = new DataGridData<UserModel>();
-		List<PisUser> users = this.pisUserService.getAll();
+	public ModelMap getUserInfos(HttpServletRequest request, ModelMap modelMap, HttpServletResponse response) {
+		PageParam param = DataGridHepler.parseRequest(request);
+		List<PisUser> users = this.pisUserService.getCustomers(param.getPage(), param.getPageSize());
 		List<UserModel> userInfoList = new ArrayList<>();
 		for (PisUser user : users) {
 			UserModel vo = this.userModelBusiness.getUserModel(user.getUserId());
 			userInfoList.add(vo);
-			
 		}
-		dgd.setRows(userInfoList);
-		dgd.setTotal(users.size());
-		modelMap.addAttribute("result", dgd);
-		modelMap.remove("pisUser");
-		return modelMap;
+		return  DataGridHepler.addDataGrid(userInfoList, new PageInfo(users).getTotal(), modelMap); 
 	}
 	/**
 	 * 添加一个用户，同时添加用户信息和组

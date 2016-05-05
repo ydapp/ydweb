@@ -6,14 +6,11 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import net.sf.json.JSONObject;
 import net.yuan.nova.core.shiro.CurrentUserUtil;
 import net.yuan.nova.core.shiro.vo.User;
-import net.yuan.nova.core.vo.DataGridData;
 import net.yuan.nova.core.vo.JsonVo;
 import net.yuan.nova.pis.controller.model.CustomerModel;
 import net.yuan.nova.pis.entity.PisBuilding;
@@ -29,9 +26,7 @@ import net.yuan.nova.pis.service.PisCityService;
 import net.yuan.nova.pis.service.PisRecommendService;
 import net.yuan.nova.pis.service.PisUserExtendService;
 import net.yuan.nova.pis.service.PisUserService;
-
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -105,11 +100,15 @@ public class RecommendController {
 		if (StringUtils.isBlank(recommend.getRemark())) {
 			jsonVo.putError("remark", "详情不能空");
 		}
+		if(this.recommendService.getCustomerByTodayAndTel(recommend.getCustomerTel(),recommend.getRecommendConfirmUserId())>3){
+			jsonVo.putError("customerTelTopthread", "同一个客户当天不能报备超过三条");
+		}
 		if (StringUtils.isBlank(recommend.getRefreeId())) {
 			User shiroUser = CurrentUserUtil.getShiroUser();
 			recommend.setRefreeId(shiroUser.getUserId());
 		}
 		recommend.setStatus(PisRecommend.Status.appointment);
+		
 		log.debug("json:" + JSONObject.fromObject(recommend).toString());
 		// 验证通过后，插入数据
 		if (jsonVo.validate()) {

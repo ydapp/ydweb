@@ -9,10 +9,12 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import net.yuan.nova.commons.HttpUtils;
 import net.yuan.nova.core.entity.Attachment;
 import net.yuan.nova.core.service.AttachmentService;
+import net.yuan.nova.core.shiro.vo.UserModel;
 import net.yuan.nova.core.vo.DataGridData;
 import net.yuan.nova.core.vo.JsonVo;
 import net.yuan.nova.pis.entity.PisBuilding;
@@ -179,20 +181,21 @@ public class BuildingController {
 		}
 		return json;
 	}
-
-	@RequestMapping("/admin/properties")
-	public Object selectPisProperties(HttpServletRequest request) {
+	/**
+	 * 获取楼盘分页信息
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value="/admin/properties",method=RequestMethod.GET)
+	public Object selectPisProperties(HttpServletRequest request, ModelMap modelMap, HttpServletResponse response) {
 		PageParam page = DataGridHepler.parseRequest(request);
-		DataGridData<PisProperty> dgd = new DataGridData<PisProperty>();
 		List<PisProperty> properties = buildingService.selectPisProperties(page.getPage(), page.getPageSize());
 		for (PisProperty pisProperty : properties) {
 			if (StringUtils.isNotBlank(pisProperty.getCity())){
 				pisProperty.setCityTitle(this.cityService.getCityById(pisProperty.getCity()).getCityName());
 			}
 		}
-		dgd.setRows(properties);
-		dgd.setTotal(new PageInfo(properties).getTotal());
-		return dgd;
+		return DataGridHepler.addDataGrid(properties, modelMap); 
 	}
 
 	@RequestMapping(value="/api/properties",method=RequestMethod.GET)

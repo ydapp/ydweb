@@ -3,6 +3,7 @@ package net.yuan.nova.pis.service;
 import java.util.List;
 import java.util.UUID;
 
+import net.yuan.nova.core.shiro.vo.UserModel;
 import net.yuan.nova.pis.dao.PisCityMapper;
 import net.yuan.nova.pis.entity.PisCity;
 
@@ -11,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+
+import com.github.pagehelper.PageHelper;
 
 /**
  * 城市
@@ -67,4 +70,8 @@ public class PisCityService {
 	public PisCity getCityByName(String cityName) {
 		return this.pisCityMapper.getCityByName(cityName);
 	}
+	public List<PisCity> getCustomers(int page, int pageSize,String parentCityId) {
+		PageHelper.startPage(page, pageSize);
+		return this.pisCityMapper.getCitys(parentCityId);
+	} 
 }

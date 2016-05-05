@@ -1,9 +1,7 @@
 package net.yuan.nova.pis.dao;
 
 import java.util.List;
-
 import net.yuan.nova.pis.entity.PisArticle;
-
 import org.springframework.stereotype.Repository;
 
 @Repository

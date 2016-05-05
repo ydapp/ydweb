@@ -17,6 +17,7 @@ public interface PisRecommendMapper {
 	int insert(PisRecommend recommend);
 	int customerPresent(PisRecommend recommend);
 	int recommendConfirm(PisRecommend recommend);
+	int getCustomerByTodayAndTel(String customerTel,String recommendConfirmUserId);
 	List<PisRecommend> getMyPresent(@Param("presentUserId") String presentUserId);
 	List<PisRecommend> getMyConfirm(@Param("confirmUserId") String confirmUserId);
 	List<PisRecommend> getAll();

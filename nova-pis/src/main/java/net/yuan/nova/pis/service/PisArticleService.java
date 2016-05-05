@@ -15,6 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.github.pagehelper.PageHelper;
+
 @Service
 public class PisArticleService {
 
@@ -58,4 +60,8 @@ public class PisArticleService {
 	public PisArticle selectByPrimaryKey(String id) {
 		return pisArticleMapper.selectByPrimaryKey(id);
 	}
+	public List<PisArticle> getCustomers(int page, int pageSize) {
+		PageHelper.startPage(page, pageSize);
+		return pisArticleMapper.selectArticleList();
+	} 
 }

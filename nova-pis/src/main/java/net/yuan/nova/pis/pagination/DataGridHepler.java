@@ -25,9 +25,12 @@ public class DataGridHepler {
 	 * @return
 	 */
 	public static ModelMap addDataGrid(List list,ModelMap modelMap){
+		return addDataGrid(list, new PageInfo(list).getTotal(), modelMap);
+	}
+	public static ModelMap addDataGrid(List list, long total,ModelMap modelMap){
 		DataGridData dgd = new DataGridData();
 		dgd.setRows(list);
-		dgd.setTotal(new PageInfo(list).getTotal());
+		dgd.setTotal(total);
 		if (modelMap == null){
 			modelMap = new ModelMap();
 		}
