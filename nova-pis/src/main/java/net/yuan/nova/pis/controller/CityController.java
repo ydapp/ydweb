@@ -3,10 +3,14 @@ package net.yuan.nova.pis.controller;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
+import net.yuan.nova.core.shiro.vo.UserModel;
 import net.yuan.nova.core.vo.DataGridData;
 import net.yuan.nova.core.vo.JsonVo;
 import net.yuan.nova.pis.entity.PisCity;
+import net.yuan.nova.pis.pagination.DataGridHepler;
+import net.yuan.nova.pis.pagination.PageParam;
 import net.yuan.nova.pis.service.PisCityService;
 
 import org.apache.commons.lang.StringUtils;
@@ -64,7 +68,7 @@ public class CityController {
 	 * @param modelMap
 	 * @return
 	 */
-	@RequestMapping(value = "/api/getCitys/{parentCityId}", method = RequestMethod.GET)
+	@RequestMapping(value = "/api/getCity/{parentCityId}", method = RequestMethod.GET)
 	@ResponseBody
 	public ModelMap getCityList(@PathVariable String parentCityId, HttpServletRequest request, ModelMap modelMap) {
 		if (StringUtils.isEmpty(parentCityId)) {
@@ -76,6 +80,17 @@ public class CityController {
 		dgd.setTotal(citys.size());
 		modelMap.addAttribute("result", dgd);
 		return modelMap;
+	}
+	/**
+	 * 获取城市分页对象
+	 * @return
+	 */
+	@RequestMapping(value = "/api/getCitys/{parentCityId}", method = RequestMethod.GET)
+	@ResponseBody
+	public ModelMap getCityPage(@PathVariable String parentCityId, HttpServletRequest request, ModelMap modelMap, HttpServletResponse response) {
+		PageParam param = DataGridHepler.parseRequest(request);
+		List<PisCity> list = this.pisCityService.getCustomers(param.getPage(), param.getPageSize(),parentCityId);
+		return DataGridHepler.addDataGrid(list, modelMap); 
 	}
 
 	@RequestMapping(value = "/api/getCitys")
