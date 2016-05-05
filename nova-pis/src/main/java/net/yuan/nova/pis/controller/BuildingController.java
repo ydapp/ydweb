@@ -187,7 +187,6 @@ public class BuildingController {
 	@RequestMapping("/admin/properties")
 	public Object selectPisProperties(HttpServletRequest request, ModelMap modelMap, HttpServletResponse response) {
 		PageParam page = DataGridHepler.parseRequest(request);
-		DataGridData<PisProperty> dgd = new DataGridData<PisProperty>();
 		List<PisProperty> properties = buildingService.selectPisProperties(page.getPage(), page.getPageSize());
 		for (PisProperty pisProperty : properties) {
 			if (StringUtils.isNotBlank(pisProperty.getCity())){
