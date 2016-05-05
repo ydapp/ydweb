@@ -244,6 +244,14 @@ public class PisRecommendService {
 	public List<PisRecommend> getByBuildingId(String buildingId){
 		return this.recommendMapper.getByBuildingId(buildingId);
 	}
+	/**
+	 * 通过用户名判断当天同一个用户是否录入过三次
+	 * @param customer_name
+	 * @return
+	 */
+	public int getCustomerByTodayAndTel(String customer_tel,String recommendConfirmUserId){
+		 return this.recommendMapper.getCustomerByTodayAndTel(customer_tel,recommendConfirmUserId);
+	}
 
 	public List<CustomerModel> getCustomers(int page, int pageSize) {
 		PageHelper.startPage(page, pageSize);
