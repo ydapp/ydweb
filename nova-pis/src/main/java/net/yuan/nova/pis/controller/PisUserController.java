@@ -18,6 +18,7 @@ import net.yuan.nova.pis.entity.PisUserGroup;
 import net.yuan.nova.pis.entity.PisUserGroupShipKey;
 import net.yuan.nova.pis.entity.vo.UserInfoVo;
 import net.yuan.nova.pis.pagination.DataGridHepler;
+import net.yuan.nova.pis.pagination.PageParam;
 import net.yuan.nova.pis.service.PisBrokingFirmService;
 import net.yuan.nova.pis.service.PisBuildingService;
 import net.yuan.nova.pis.service.PisUserExtendService;
@@ -263,9 +264,11 @@ public class PisUserController {
 	 * @param modelMap
 	 * @return
 	 */
+	@ResponseBody
 	@RequestMapping(value = "/api/userInfos", method=RequestMethod.GET)
 	public ModelMap getUserInfos(HttpServletRequest request, ModelMap modelMap, HttpServletResponse response) {
-		List<PisUser> users = this.pisUserService.getAll();
+		PageParam param = DataGridHepler.parseRequest(request);
+		List<PisUser> users = this.pisUserService.getCustomers(param.getPage(), param.getPageSize());
 		List<UserModel> userInfoList = new ArrayList<>();
 		for (PisUser user : users) {
 			UserModel vo = this.userModelBusiness.getUserModel(user.getUserId());

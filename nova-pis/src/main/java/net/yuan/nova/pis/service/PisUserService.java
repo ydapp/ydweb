@@ -8,6 +8,7 @@ import net.yuan.nova.core.shiro.PasswordHelper;
 import net.yuan.nova.core.shiro.vo.User;
 import net.yuan.nova.core.shiro.vo.UserModel;
 import net.yuan.nova.pis.dao.PisUserMapper;
+import net.yuan.nova.pis.entity.PisArticle;
 import net.yuan.nova.pis.entity.PisUser;
 import net.yuan.nova.pis.entity.PisUserGroup;
 import net.yuan.nova.pis.entity.PisUserGroupShipKey;
@@ -141,6 +142,11 @@ public class PisUserService {
 	public List<PisUser> getAll(){
 		return this.pisUserMapper.selectAll();
 	}
+	
+	public List<PisUser> getCustomers(int page, int pageSize) {
+		PageHelper.startPage(page, pageSize);
+		return this.pisUserMapper.selectAll();
+	} 
 	
 	/**
 	 * 验证密码是否正确
