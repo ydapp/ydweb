@@ -16,6 +16,7 @@ import net.yuan.nova.core.service.AttachmentService;
 import net.yuan.nova.core.vo.DataGridData;
 import net.yuan.nova.core.vo.JsonVo;
 import net.yuan.nova.pis.entity.PisBuilding;
+import net.yuan.nova.pis.entity.PisCity;
 import net.yuan.nova.pis.entity.PisProperty;
 import net.yuan.nova.pis.entity.vo.PisPropertyVo;
 import net.yuan.nova.pis.pagination.DataGridHepler;
@@ -276,7 +277,10 @@ public class BuildingController {
 	@ResponseBody
 	public ModelMap  propertyDetail(@PathVariable String id, HttpServletRequest request, ModelMap modelMap) {
 		PisProperty pisProperty = buildingService.selectByPrimaryKey(id);
-		
+		if (StringUtils.isNotEmpty(pisProperty.getCity())){
+			PisCity city = this.cityService.getCityById(pisProperty.getCity());
+			pisProperty.setCityTitle(city.getCityName());
+		}
 		PisPropertyVo pisPropertyVo = new PisPropertyVo();
 		try {
 			ConvertUtils.register(new DateConverter(null), java.util.Date.class); 

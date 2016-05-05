@@ -99,13 +99,17 @@ public class RecommendController {
 		if (StringUtils.isBlank(recommend.getBuildingId())) {
 			jsonVo.putError("buildingId", "推荐楼盘不能空");
 		}
-		if (recommend.getAppointmentLookHouseDate() == null) {
-			jsonVo.putError("recommendDate", "预约看房日期不能为空");
+//		if (recommend.getAppointmentLookHouseDate() == null) {
+//			jsonVo.putError("recommendDate", "预约看房日期不能为空");
+//		}
+		if (StringUtils.isBlank(recommend.getRemark())) {
+			jsonVo.putError("remark", "详情不能空");
 		}
 		if (StringUtils.isBlank(recommend.getRefreeId())) {
 			User shiroUser = CurrentUserUtil.getShiroUser();
 			recommend.setRefreeId(shiroUser.getUserId());
 		}
+		recommend.setStatus(PisRecommend.Status.appointment);
 		log.debug("json:" + JSONObject.fromObject(recommend).toString());
 		// 验证通过后，插入数据
 		if (jsonVo.validate()) {
