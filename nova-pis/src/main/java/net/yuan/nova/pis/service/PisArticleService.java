@@ -6,7 +6,6 @@ import java.util.UUID;
 
 import net.yuan.nova.core.entity.Attachment;
 import net.yuan.nova.core.service.AttachmentService;
-import net.yuan.nova.core.shiro.vo.UserModel;
 import net.yuan.nova.pis.dao.PisArticleMapper;
 import net.yuan.nova.pis.entity.PisArticle;
 
