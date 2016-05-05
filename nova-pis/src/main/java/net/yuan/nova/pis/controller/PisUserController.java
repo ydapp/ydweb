@@ -17,6 +17,8 @@ import net.yuan.nova.pis.entity.PisUserExtend;
 import net.yuan.nova.pis.entity.PisUserGroup;
 import net.yuan.nova.pis.entity.PisUserGroupShipKey;
 import net.yuan.nova.pis.entity.vo.UserInfoVo;
+import net.yuan.nova.pis.pagination.DataGridHepler;
+import net.yuan.nova.pis.pagination.PageParam;
 import net.yuan.nova.pis.service.PisBrokingFirmService;
 import net.yuan.nova.pis.service.PisBuildingService;
 import net.yuan.nova.pis.service.PisUserExtendService;
@@ -263,7 +265,7 @@ public class PisUserController {
 	 * @param modelMap
 	 * @return
 	 */
-	@RequestMapping(value = "/api/userInfos", method=RequestMethod.GET)
+	@RequestMapping(value = "/api/userInfo", method=RequestMethod.GET)
 	public ModelMap getUserInfos(HttpServletRequest request, ModelMap modelMap) {
 		
 		DataGridData<UserModel> dgd = new DataGridData<UserModel>();
@@ -279,6 +281,17 @@ public class PisUserController {
 		modelMap.addAttribute("result", dgd);
 		modelMap.remove("pisUser");
 		return modelMap;
+	}
+	/**
+	 * 获取用户列表分页
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/api/userInfos", method = RequestMethod.GET)
+	public ModelMap customer(HttpServletRequest request, ModelMap modelMap, HttpServletResponse response) {
+		PageParam param = DataGridHepler.parseRequest(request);
+		List<UserModel> list = this.pisUserService.getCustomers(param.getPage(), param.getPageSize());
+		return DataGridHepler.addDataGrid(list, modelMap);
 	}
 	/**
 	 * 添加一个用户，同时添加用户信息和组

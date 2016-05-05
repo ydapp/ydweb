@@ -4,20 +4,21 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
-
 import net.yuan.nova.core.shiro.PasswordHelper;
 import net.yuan.nova.core.shiro.vo.User;
+import net.yuan.nova.core.shiro.vo.UserModel;
 import net.yuan.nova.pis.dao.PisUserMapper;
 import net.yuan.nova.pis.entity.PisUser;
 import net.yuan.nova.pis.entity.PisUserGroup;
 import net.yuan.nova.pis.entity.PisUserGroupShipKey;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
+
+import com.github.pagehelper.PageHelper;
 
 @Service
 public class PisUserService {
@@ -214,5 +215,10 @@ public class PisUserService {
 			return false;
 		}
 		return true;
+	}
+	
+	public List<UserModel> getCustomers(int page, int pageSize) {
+		PageHelper.startPage(page, pageSize);
+		return this.pisUserMapper.getCustomer();
 	}
 }

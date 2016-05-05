@@ -1,9 +1,11 @@
 package net.yuan.nova.pis.dao;
 
+import net.yuan.nova.core.shiro.vo.UserModel;
 import net.yuan.nova.pis.entity.PisUser;
 
 import java.util.List;
 
+import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -119,4 +121,10 @@ public interface PisUserMapper {
 	 * @return
 	 */
 	public List<PisUser> selectAll();
+	@Select("SELECT PU.USER_ID,PU.NICK,PU.TEL,"
+			+ "(SELECT PG.NAME FROM PIS_USER_GROUP_SHIP PS, PIS_USER_GROUP PG WHERE PS.USER_ID = PU.USER_ID AND PS.GROUP_ID = PG.GROUP_ID) AS GROUPTYPETITLE,"
+			+ "(SELECT PF.BROKING_FIRM_NAME FROM PIS_USER_EXTEND PE, PIS_BROKING_FIRM PF WHERE PE.USER_ID = PU.USER_ID AND PE.BROKINGFIRM_ID = PF.BROKING_FIRM_ID) AS BROKINGFIRM,"
+			+ "(SELECT PB.BUILDING_NAME FROM PIS_USER_EXTEND PE, PIS_BUILDING PB WHERE PE.USER_ID = PU.USER_ID AND PE.BUILDING_ID = PB.BUILDING_ID) AS BUILDING   "
+			+ "FROM PIS_USER PU  GROUP BY PU.USER_ID, PU.NICK,PU.TEL,PU.CREATE_TIME  ORDER BY PU.CREATE_TIME DESC ")
+	List<UserModel> getCustomer();
 }
