@@ -266,7 +266,7 @@ public class PisUserController {
 	 * @return
 	 */
 	@RequestMapping(value = "/api/userInfo", method=RequestMethod.GET)
-	public ModelMap getUserInfos(HttpServletRequest request, ModelMap modelMap) {
+	public ModelMap getUserInfo(HttpServletRequest request, ModelMap modelMap) {
 		
 		DataGridData<UserModel> dgd = new DataGridData<UserModel>();
 		List<PisUser> users = this.pisUserService.getAll();
@@ -288,7 +288,7 @@ public class PisUserController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/api/userInfos", method = RequestMethod.GET)
-	public ModelMap customer(HttpServletRequest request, ModelMap modelMap, HttpServletResponse response) {
+	public ModelMap getUserInfos(HttpServletRequest request, ModelMap modelMap, HttpServletResponse response) {
 		PageParam param = DataGridHepler.parseRequest(request);
 		List<UserModel> list = this.pisUserService.getCustomers(param.getPage(), param.getPageSize());
 		return DataGridHepler.addDataGrid(list, modelMap); 
