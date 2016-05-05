@@ -184,7 +184,8 @@ public class BuildingController {
 	 * 获取楼盘分页信息
 	 * @return
 	 */
-	@RequestMapping("/admin/properties")
+	@ResponseBody
+	@RequestMapping(value="/admin/properties",method=RequestMethod.GET)
 	public Object selectPisProperties(HttpServletRequest request, ModelMap modelMap, HttpServletResponse response) {
 		PageParam page = DataGridHepler.parseRequest(request);
 		List<PisProperty> properties = buildingService.selectPisProperties(page.getPage(), page.getPageSize());
