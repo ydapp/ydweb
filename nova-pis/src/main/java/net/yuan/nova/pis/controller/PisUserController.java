@@ -291,7 +291,7 @@ public class PisUserController {
 	public ModelMap customer(HttpServletRequest request, ModelMap modelMap, HttpServletResponse response) {
 		PageParam param = DataGridHepler.parseRequest(request);
 		List<UserModel> list = this.pisUserService.getCustomers(param.getPage(), param.getPageSize());
-		return DataGridHepler.addDataGrid(list, modelMap);
+		return DataGridHepler.addDataGrid(list, modelMap); 
 	}
 	/**
 	 * 添加一个用户，同时添加用户信息和组
