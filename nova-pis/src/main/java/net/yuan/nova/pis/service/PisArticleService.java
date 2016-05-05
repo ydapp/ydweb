@@ -62,6 +62,6 @@ public class PisArticleService {
 	}
 	public List<PisArticle> getCustomers(int page, int pageSize) {
 		PageHelper.startPage(page, pageSize);
-		return this.pisArticleMapper.getCustomer();
+		return pisArticleMapper.selectArticleList();
 	} 
 }

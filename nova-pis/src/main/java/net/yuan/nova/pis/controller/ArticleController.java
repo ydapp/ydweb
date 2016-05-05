@@ -26,8 +26,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
@@ -79,22 +77,8 @@ public class ArticleController {
 		return json;
 	}
 
-	@RequestMapping("/admin/article")
-	public Object selectArticleList(HttpServletRequest request, ModelMap modelMap) {
-		DataGridData<PisArticle> dgd = new DataGridData<PisArticle>();
-		List<PisArticle> selectArticleList = pisArticleService.selectArticleList();
-		dgd.setRows(selectArticleList);
-		dgd.setTotal(selectArticleList.size());
-		return dgd;
-	}
-	
-	/**
-	 * 获取咨询信息列表
-	 * @return
-	 */
-	@ResponseBody
-	@RequestMapping(value = "/admin/articles", method = RequestMethod.GET)
-	public ModelMap getArticlePage(HttpServletRequest request, ModelMap modelMap, HttpServletResponse response) {
+	@RequestMapping("/admin/articles")
+	public Object selectArticleList(HttpServletRequest request, ModelMap modelMap, HttpServletResponse response) {
 		PageParam param = DataGridHepler.parseRequest(request);
 		List<PisArticle> list = this.pisArticleService.getCustomers(param.getPage(), param.getPageSize());
 		return DataGridHepler.addDataGrid(list, modelMap); 
