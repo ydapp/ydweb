@@ -6,6 +6,7 @@ import java.util.UUID;
 
 import net.yuan.nova.core.entity.Attachment;
 import net.yuan.nova.core.service.AttachmentService;
+import net.yuan.nova.core.shiro.vo.UserModel;
 import net.yuan.nova.pis.dao.PisArticleMapper;
 import net.yuan.nova.pis.entity.PisArticle;
 
@@ -14,6 +15,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+
+import com.github.pagehelper.PageHelper;
 
 @Service
 public class PisArticleService {
@@ -58,4 +61,8 @@ public class PisArticleService {
 	public PisArticle selectByPrimaryKey(String id) {
 		return pisArticleMapper.selectByPrimaryKey(id);
 	}
+	public List<PisArticle> getCustomers(int page, int pageSize) {
+		PageHelper.startPage(page, pageSize);
+		return this.pisArticleMapper.getCustomer();
+	} 
 }

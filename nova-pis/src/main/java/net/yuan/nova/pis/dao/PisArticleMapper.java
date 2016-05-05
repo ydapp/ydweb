@@ -4,6 +4,7 @@ import java.util.List;
 
 import net.yuan.nova.pis.entity.PisArticle;
 
+import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -70,4 +71,6 @@ public interface PisArticleMapper {
 	 * @return
 	 */
 	List<PisArticle> selectArticleList();
+	@Select("SELECT TILE,PUB_TIME AS PUBTIME  FROM PIS_ARTICLE ORDER BY PUB_TIME DESC")
+	List<PisArticle> getCustomer(); 
 }
