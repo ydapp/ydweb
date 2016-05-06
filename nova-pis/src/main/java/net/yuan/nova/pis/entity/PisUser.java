@@ -504,8 +504,10 @@ public class PisUser {
 		User user = new User();
 		if ("A".equals(this.getType())) {
 			user.setType(User.Type.staff);
-		} else {
+		} else if ("U".equals(this.getType())){
 			user.setType(User.Type.pubUser);
+		} else {
+			user.setType(User.Type.free);
 		}
 		user.setUserId(this.getUserId());
 		user.setUserName(this.getNick());

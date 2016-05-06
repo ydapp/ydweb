@@ -307,7 +307,7 @@ public class PisUserController {
 		PisUser pisUser = new PisUser();
 		pisUser.setNick(userModel.getNick());
 		pisUser.setUserName(userModel.getTel());
-		pisUser.setType("A");
+		pisUser.setType("F");
 		pisUser.setTel(userModel.getTel());
 		pisUser.setPassword("123456");
 		this.pisUserService.insertUser(pisUser);

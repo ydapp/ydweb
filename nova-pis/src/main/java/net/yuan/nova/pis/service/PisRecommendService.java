@@ -129,6 +129,9 @@ public class PisRecommendService {
 	public List<PisRecommend> getWaitingConfirm(String userId) {
 		// 先根据报备人员id查找楼盘id，然后根据楼盘id查找报备带确认信息
 		PisUserExtend userExtend = this.userExtendService.selectByUserId(userId);
+		if (userExtend == null){
+			return new ArrayList<PisRecommend>();
+		}
 		return this.recommendMapper.getWaitingConfirm(userExtend.getBuildingId());
 	}
 

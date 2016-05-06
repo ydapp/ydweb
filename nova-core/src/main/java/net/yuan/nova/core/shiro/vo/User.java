@@ -96,13 +96,17 @@ public class User implements Serializable {
 	 */
 	public static enum Type {
 		/**
-		 * staff：员工，即管理员
+		 * staff：员工，即管理员，web登陆
 		 */
 		staff,
 		/**
-		 * pubUser：公共用户
+		 * pubUser：公共用户，手机登陆
 		 */
-		pubUser;
+		pubUser,
+		/**
+		 * 手机和web都可以登陆的，登陆不受限制
+		 */
+		free;
 	}
 
 	/**
