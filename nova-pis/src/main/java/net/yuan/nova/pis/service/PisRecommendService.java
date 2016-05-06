@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
-
 import net.yuan.nova.pis.controller.model.CustomerModel;
 import net.yuan.nova.pis.dao.PisRecommendMapper;
 import net.yuan.nova.pis.entity.PisBuilding;
@@ -13,14 +12,10 @@ import net.yuan.nova.pis.entity.PisProject;
 import net.yuan.nova.pis.entity.PisRecommend;
 import net.yuan.nova.pis.entity.PisUser;
 import net.yuan.nova.pis.entity.vo.PisRecommendVo;
-
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
 
 /**
  * 推荐
