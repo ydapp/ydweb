@@ -97,7 +97,7 @@ public class RecommendController {
 		if (recommend.getAppointmentLookHouseDate() == null) {
 			jsonVo.putError("recommendDate", "预约看房日期不能为空");
 		}
-		if(this.recommendService.getCustomerByTodayAndTel(recommend.getCustomerTel(),recommend.getRecommendConfirmUserId())>3){
+		if(this.recommendService.getCustomerByTodayAndTel(recommend.getCustomerTel(),recommend.getRefreeId())>3){
 			jsonVo.putError("customerTelTopthread", "同一个客户当天不能报备超过三条");
 		}
 		if (StringUtils.isBlank(recommend.getRefreeId())) {

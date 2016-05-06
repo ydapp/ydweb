@@ -249,8 +249,8 @@ public class PisRecommendService {
 	 * @param customer_name
 	 * @return
 	 */
-	public int getCustomerByTodayAndTel(String customer_tel,String recommendConfirmUserId){
-		 return this.recommendMapper.getCustomerByTodayAndTel(customer_tel,recommendConfirmUserId);
+	public int getCustomerByTodayAndTel(String customer_tel,String refreeId){
+		 return this.recommendMapper.getCustomerByTodayAndTel(customer_tel,refreeId);
 	}
 
 	public List<CustomerModel> getCustomers(int page, int pageSize) {
