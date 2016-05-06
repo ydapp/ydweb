@@ -164,19 +164,56 @@ public class PisRecommend {
 		appointment,
 		// 客户到现场，经纪人进行到场确认
 		present,
-		// 报备专员进行最终确认
+		//认筹，驻场专员做
+		pledges,
+		//订购，驻场专员做
+		order,
+		//购买，驻场专员做
+		buy,
+		// 驻场专员进行最终确认
 		confirm
 	}
-	public String getStatusName(){
-		switch (this.status) {
+	public static String getStatusName(Status status){
+		switch (status) {
 		case appointment:
-			return "报备申请";
+			return "报";
 		case present:
-			return "客户到场";
+			return "来";
+		case pledges:
+			return "筹";
+		case order:
+			return "订";
+		case buy:
+			return "购";
 		case confirm:
-			return "报备确认";
+			return "报备已确认";
+		default:
+			throw new RuntimeException("未知状态:" + status.name());
 		}
-		return "";
+	}
+	public static Status getNextStatus(Status status){
+		switch (status) {
+		case appointment:
+			return Status.present;
+		case present:
+			return Status.pledges;
+		case pledges:
+			return Status.order;
+		case order:
+			return Status.buy;
+		case buy:
+			return Status.confirm;
+		case confirm:
+			return null;
+		default:
+			throw new RuntimeException("未知状态:" + status.name());
+		}
+	}
+	public Status getNextStatus(){
+		return getNextStatus(this.status);
+	}
+	public String getStatusName(){
+		return getStatusName(this.status);
 	}
 
 }

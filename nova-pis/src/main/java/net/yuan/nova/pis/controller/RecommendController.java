@@ -1,5 +1,6 @@
 package net.yuan.nova.pis.controller;
 
+import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Date;
@@ -203,10 +204,11 @@ public class RecommendController {
 	}
 
 	/**
-	 * 报备专员得到需要确认的列表
+	 * 驻场专员得到需要确认的列表
+	 * 包括筹、订、购和报备完成确认
 	 * 
 	 * @param userId
-	 *            报备专员id
+	 *            驻场专员id
 	 * @param request
 	 * @param modelMap
 	 * @return
@@ -222,12 +224,12 @@ public class RecommendController {
 	}
 
 	/**
-	 * 报备专员进行报备确认操作
-	 * 
+	 * 驻场专员进行报备确认操作
+	 * 筹、订、购、报备确认四个过程，合成一个方法
 	 * @param recommendId
 	 *            报备id
 	 * @param confirmUserId
-	 *            报备专员id
+	 *            驻场专员id
 	 * @param request 里面一般会包含recommendConfirmAdvice参数
 	 * @param modelMap
 	 * @return
@@ -290,12 +292,17 @@ public class RecommendController {
 		PisUser pisUser = this.userService.findUserById(user.getUserId());
 		PisUserGroup group = this.userService.getPisUserGroup(user.getUserId());
 		if (group == null){
-			JsonVo<Object> jsonVo = new JsonVo<Object>();
-			jsonVo.setSuccess(false);
-			jsonVo.setMessage("该用户不具备导出报备数据权限(非APP管理员/驻场专员/经纪公司/经纪人)");
-			jsonVo.validate();
-			modelMap.addAttribute("result", jsonVo);
-			return modelMap;
+			try {
+				response.getWriter().write("该用户不具备导出报备数据权限(非APP管理员/驻场专员/经纪公司/经纪人)");
+			} catch (IOException e) {
+				throw new RuntimeException(e);
+			}
+//			JsonVo<Object> jsonVo = new JsonVo<Object>();
+//			jsonVo.setSuccess(false);
+//			jsonVo.setMessage("该用户不具备导出报备数据权限(非APP管理员/驻场专员/经纪公司/经纪人)");
+//			jsonVo.validate();
+//			modelMap.addAttribute("result", jsonVo);
+			return null;
 		}
 		if (StringUtils.equals(PisUserGroup.TYPE.appAdmin.name(), group.getType())){
 			log.debug("当前用户是app管理员，可以导出所有的推荐信息");

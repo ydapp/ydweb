@@ -10,7 +10,9 @@ import net.yuan.nova.pis.entity.PisBuilding;
 import net.yuan.nova.pis.entity.PisCity;
 import net.yuan.nova.pis.entity.PisProject;
 import net.yuan.nova.pis.entity.PisRecommend;
+import net.yuan.nova.pis.entity.PisRecommend.Status;
 import net.yuan.nova.pis.entity.PisUser;
+import net.yuan.nova.pis.entity.PisUserExtend;
 import net.yuan.nova.pis.entity.vo.PisRecommendVo;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +37,8 @@ public class PisRecommendService {
 	private PisBuildingService pisBuildingService;
 	@Autowired
 	private PisUserService pisUserService;
+	@Autowired
+	private PisUserExtendService userExtendService;
 
 	/**
 	 * 根据推荐id得到推荐对象
@@ -116,7 +120,7 @@ public class PisRecommendService {
 	}
 
 	/**
-	 * 某个楼盘中等待确认的推荐（客户已经到场的）,报备专员用
+	 * 某个楼盘中等待确认的推荐（客户已经到场的）,驻场专员用
 	 * 
 	 * @param userId
 	 *            报备专员ID
@@ -124,8 +128,8 @@ public class PisRecommendService {
 	 */
 	public List<PisRecommend> getWaitingConfirm(String userId) {
 		// 先根据报备人员id查找楼盘id，然后根据楼盘id查找报备带确认信息
-		PisProject project = this.projectService.getByUserId(userId);
-		return this.recommendMapper.getWaitingConfirm(project.getBuildingId());
+		PisUserExtend userExtend = this.userExtendService.selectByUserId(userId);
+		return this.recommendMapper.getWaitingConfirm(userExtend.getBuildingId());
 	}
 
 	/**
@@ -191,12 +195,18 @@ public class PisRecommendService {
 	 * @param confirmUserId
 	 */
 	public int recommendConfirm(String recommendId, String confirmUserId, String recommendConfirmAdvice) {
+		PisRecommend old = this.getById(recommendId);
+		Status confirmStatus = old.getNextStatus();
+		recommendConfirmAdvice = PisRecommend.getStatusName(confirmStatus) + ":" + recommendConfirmAdvice;
+		if (StringUtils.isNotEmpty(old.getRecommendConfirmAdvice())){
+			recommendConfirmAdvice = old.getRecommendConfirmAdvice() + "\n\r" + recommendConfirmAdvice;
+		}
 		PisRecommend recommend = new PisRecommend();
 		recommend.setRecommendId(recommendId);
 		recommend.setRecommendConfirmUserId(confirmUserId);
 		recommend.setRecommendConfirmDate(new Date());
 		recommend.setRecommendConfirmAdvice(recommendConfirmAdvice);
-		recommend.setStatus(PisRecommend.Status.confirm);
+		recommend.setStatus(confirmStatus);
 		return this.recommendMapper.recommendConfirm(recommend);
 	}
 

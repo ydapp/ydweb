@@ -10,11 +10,12 @@ import org.springframework.stereotype.Service;
 
 /**
  * 用于处理经济人所在楼盘信息
- * 
+ * 这个服务不暂时再继续使用，请用PisUserExtendService
  * @author leasonlive
  *
  */
 @Service
+@Deprecated
 public class PisProjectService {
 	@Autowired
 	private PisProjectMapper projectMapper;

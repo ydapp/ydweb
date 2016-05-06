@@ -100,8 +100,8 @@
       select 
       <include refid="Base_Column_List" />
     from PIS_RECOMMEND
-    where STATUS = 'present'
-    and BUILDING_ID = #{buildingId,jdbcType=VARCHAR}
+    where BUILDING_ID = #{buildingId,jdbcType=VARCHAR}
+    and (STATUS = 'present' or STATUS = 'pledges' or STATUS = 'order' or STATUS = 'buy')
   </select>
   <update id="recommendConfirm" parameterType="net.yuan.nova.pis.entity.PisRecommend">
       update PIS_RECOMMEND 
