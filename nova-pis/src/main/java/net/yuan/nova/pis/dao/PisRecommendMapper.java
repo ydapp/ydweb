@@ -13,11 +13,11 @@ import net.yuan.nova.pis.entity.PisRecommend;
 public interface PisRecommendMapper {
 	PisRecommend getById(String recommendId);
 	List<PisRecommend> getWaitingPresent(PisRecommend recommend);
-	List<PisRecommend> getWaitingConfirm(String buildingId);
+	List<PisRecommend> getWaitingConfirm(@Param("buildingId") String buildingId);
 	int insert(PisRecommend recommend);
 	int customerPresent(PisRecommend recommend);
 	int recommendConfirm(PisRecommend recommend);
-	int getCustomerByTodayAndTel(String customerTel,String refreeId); 
+	int getCustomerByTodayAndTel(@Param("customerTel") String customerTel,@Param("refreeId") String refreeId); 
 	List<PisRecommend> getMyPresent(@Param("presentUserId") String presentUserId);
 	List<PisRecommend> getMyConfirm(@Param("confirmUserId") String confirmUserId);
 	List<PisRecommend> getAll();

@@ -152,7 +152,7 @@
       <include refid="Base_Column_List" />
     from PIS_RECOMMEND where BUILDING_ID=#{buildingId}
   </select>
-  <select id="getCustomerByTodayAndTel" parameterType="java.lang.String" >
+  <select id="getCustomerByTodayAndTel"  resultType="java.lang.Integer" parameterType="java.lang.String" >
   	SELECT COUNT(1) NUM FROM PIS_RECOMMEND T WHERE TO_CHAR(T.RECOMMEND_DATE,'YYYYMMDD')=TO_CHAR(SYSDATE,'YYYYMMDD')  AND T.CUSTOMER_TEL=#{customerTel,jdbcType=VARCHAR} AND T.RECOMMEND_ID=#{refreeId,jdbcType=VARCHAR}
   </select> 
 </mapper>

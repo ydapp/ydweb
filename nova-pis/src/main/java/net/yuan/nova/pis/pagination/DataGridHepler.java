@@ -44,8 +44,8 @@ public class DataGridHepler {
 	 */
 	public static PageParam parseRequest(HttpServletRequest request){
 		PageParam pageParam = new PageParam();
-		pageParam.setPage(NumberUtils.toInt(request.getParameter("page")));
-		pageParam.setPageSize(NumberUtils.toInt(request.getParameter("rows")));
+		pageParam.setPage(NumberUtils.toInt(request.getParameter("page"),1));
+		pageParam.setPageSize(NumberUtils.toInt(request.getParameter("rows"),10));
 		return pageParam;
 	}
 }
