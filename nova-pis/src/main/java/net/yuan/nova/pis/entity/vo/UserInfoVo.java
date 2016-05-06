@@ -1,6 +1,7 @@
 package net.yuan.nova.pis.entity.vo;
 
 import net.yuan.nova.core.shiro.vo.User;
+import net.yuan.nova.core.shiro.vo.UserModel;
 import net.yuan.nova.pis.entity.PisUserGroup;
 
 public class UserInfoVo {
@@ -8,6 +9,7 @@ public class UserInfoVo {
 	private User user;
 	// 用户组信息
 	private PisUserGroup userGroup;
+	private UserModel userModel;
 
 	public User getUser() {
 		return user;
@@ -23,6 +25,14 @@ public class UserInfoVo {
 
 	public void setUserGroup(PisUserGroup userGroup) {
 		this.userGroup = userGroup;
+	}
+
+	public UserModel getUserModel() {
+		return userModel;
+	}
+
+	public void setUserModel(UserModel userModel) {
+		this.userModel = userModel;
 	}
 
 }

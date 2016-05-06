@@ -43,6 +43,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.github.pagehelper.PageInfo;
+
 @Controller
 public class PisUserController {
 
@@ -252,6 +254,7 @@ public class PisUserController {
 			userInfoVo.setUser(user);
 			PisUserGroup pisUserGroup = pisUserService.getPisUserGroup(user.getUserId());
 			userInfoVo.setUserGroup(pisUserGroup);
+			userInfoVo.setUserModel(this.userModelBusiness.getUserModel(user.getUserId()));
 			json.setResult(userInfoVo);
 		} else {
 			json.setSuccess(false);
@@ -269,12 +272,12 @@ public class PisUserController {
 	public ModelMap getUserInfos(HttpServletRequest request, ModelMap modelMap, HttpServletResponse response) {
 		PageParam param = DataGridHepler.parseRequest(request);
 		List<PisUser> users = this.pisUserService.getCustomers(param.getPage(), param.getPageSize());
-		/*List<UserModel> userInfoList = new ArrayList<>();
+		List<UserModel> userInfoList = new ArrayList<>();
 		for (PisUser user : users) {
 			UserModel vo = this.userModelBusiness.getUserModel(user.getUserId());
 			userInfoList.add(vo);
-		}*/
-		return  DataGridHepler.addDataGrid(users, modelMap); 
+		}
+		return  DataGridHepler.addDataGrid(userInfoList, new PageInfo(users).getTotal(), modelMap); 
 	}
 	/**
 	 * 添加一个用户，同时添加用户信息和组
