@@ -17,12 +17,15 @@ public class PisRecommendVo extends PisRecommend {
 	// 推荐人
 	private String refreeName;
 	private String refreeNick;
+	private String refreeExtend;
 	// 客户到场确认人
 	private String customerPresentUserName;
 	private String customerPresentUserNick;
 	// 推荐确认人
 	private String recommendConfirmUserName;
 	private String recommendConfirmUserNick;
+	//状态
+	private String statusTitle;
 
 	public PisRecommendVo(PisRecommend pisRecommend) {
 		try {
@@ -98,5 +101,22 @@ public class PisRecommendVo extends PisRecommend {
 	public void setRecommendConfirmUserNick(String recommendConfirmUserNick) {
 		this.recommendConfirmUserNick = recommendConfirmUserNick;
 	}
+
+	public String getRefreeExtend() {
+		return refreeExtend;
+	}
+
+	public void setRefreeExtend(String refreeExtend) {
+		this.refreeExtend = refreeExtend;
+	}
+
+	public String getStatusTitle() {
+		return statusTitle;
+	}
+
+	public void setStatusTitle(String statusTitle) {
+		this.statusTitle = statusTitle;
+	}
+	
 
 }

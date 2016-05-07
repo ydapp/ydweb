@@ -4,15 +4,19 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.sf.json.JSONObject;
 import net.yuan.nova.core.shiro.CurrentUserUtil;
 import net.yuan.nova.core.shiro.vo.User;
 import net.yuan.nova.core.vo.JsonVo;
+import net.yuan.nova.pis.controller.model.ConfirmModel;
 import net.yuan.nova.pis.controller.model.CustomerModel;
 import net.yuan.nova.pis.entity.PisBuilding;
 import net.yuan.nova.pis.entity.PisCity;
@@ -235,15 +239,16 @@ public class RecommendController {
 	 * @return
 	 */
 	@ResponseBody
-	@RequestMapping(value = "/api/recommends/recommendConfirm/{recommendId}/{confirmUserId}", method = RequestMethod.PUT)
-	public ModelMap recommendConfirm(@PathVariable String recommendId, @PathVariable String confirmUserId,
-			HttpServletRequest request, ModelMap modelMap) {
+	@RequestMapping(value = "/api/recommends/recommendConfirm", method = RequestMethod.POST)
+	public ModelMap recommendConfirm(@RequestBody String confirmModelJSON, HttpServletRequest request,ModelMap modelMap) {
+		log.debug("confirmModelJSON:" + confirmModelJSON);
+		ConfirmModel confirmModel = (ConfirmModel)JSONObject.toBean(JSONObject.fromObject(confirmModelJSON),ConfirmModel.class);
 		JsonVo<Object> jsonVo = new JsonVo<Object>();
-		log.debug("recommendId:" + recommendId);
-		log.debug("confirmUserId:" + confirmUserId);
-		String recommendConfirmAdvice = request.getParameter("recommendConfirmAdvice");
-		log.debug("recommendConfirmAdvice:" + recommendConfirmAdvice);
-		int rows = this.recommendService.recommendConfirm(recommendId, confirmUserId,recommendConfirmAdvice);
+		
+		log.debug("recommendId:" + confirmModel.getRecommendId());
+		log.debug("confirmUserId:" + confirmModel.getConfirmUserId());
+		log.debug("recommendConfirmAdvice:" + confirmModel.getRecommendConfirmAdvice());
+		int rows = this.recommendService.recommendConfirm(confirmModel.getRecommendId(), confirmModel.getConfirmUserId(),confirmModel.getRecommendConfirmAdvice());
 		if (rows == 0) {
 			jsonVo.putError("rows", "未能匹配记录");
 		}

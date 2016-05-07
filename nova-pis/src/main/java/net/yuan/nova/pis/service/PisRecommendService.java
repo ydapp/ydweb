@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.UUID;
 import net.yuan.nova.pis.controller.model.CustomerModel;
 import net.yuan.nova.pis.dao.PisRecommendMapper;
+import net.yuan.nova.pis.entity.PisBrokingFirm;
 import net.yuan.nova.pis.entity.PisBuilding;
 import net.yuan.nova.pis.entity.PisCity;
 import net.yuan.nova.pis.entity.PisProject;
@@ -39,6 +40,8 @@ public class PisRecommendService {
 	private PisUserService pisUserService;
 	@Autowired
 	private PisUserExtendService userExtendService;
+	@Autowired
+	private PisBrokingFirmService brokingFirmService;
 
 	/**
 	 * 根据推荐id得到推荐对象
@@ -67,6 +70,14 @@ public class PisRecommendService {
 		if (refree != null) {
 			pisRecommendVo.setRefreeName(refree.getUserName());
 			pisRecommendVo.setRefreeNick(refree.getNick());
+			PisUserExtend userExtend = this.userExtendService.selectByUserId(recommend.getRefreeId());
+			if (userExtend == null){
+				pisRecommendVo.setRefreeExtend("未配置经纪公司");
+			} else {
+				PisBrokingFirm brokingFirm = this.brokingFirmService.findById(userExtend.getBrokingFirmId());
+				pisRecommendVo.setRefreeExtend(brokingFirm.getBrokingFirmName());
+			}
+			
 		}
 		// 客户到场确认人
 		String customerPresentUserId = recommend.getCustomerPresentUserId();
@@ -86,6 +97,7 @@ public class PisRecommendService {
 				pisRecommendVo.setRecommendConfirmUserNick(confirmUser.getNick());
 			}
 		}
+		pisRecommendVo.setStatusTitle(recommend.getStatusName());
 		return pisRecommendVo;
 	}
 
@@ -200,7 +212,7 @@ public class PisRecommendService {
 	public int recommendConfirm(String recommendId, String confirmUserId, String recommendConfirmAdvice) {
 		PisRecommend old = this.getById(recommendId);
 		Status confirmStatus = old.getNextStatus();
-		recommendConfirmAdvice = PisRecommend.getStatusName(confirmStatus) + ":" + recommendConfirmAdvice;
+		recommendConfirmAdvice = PisRecommend.getStatusName(confirmStatus) + ":" + StringUtils.trimToEmpty(recommendConfirmAdvice);
 		if (StringUtils.isNotEmpty(old.getRecommendConfirmAdvice())){
 			recommendConfirmAdvice = old.getRecommendConfirmAdvice() + "\n\r" + recommendConfirmAdvice;
 		}
