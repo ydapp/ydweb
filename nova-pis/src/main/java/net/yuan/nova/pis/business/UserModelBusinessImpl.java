@@ -1,12 +1,15 @@
 package net.yuan.nova.pis.business;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import net.yuan.nova.core.shiro.service.UserModelBusiness;
 import net.yuan.nova.core.shiro.vo.User;
 import net.yuan.nova.core.shiro.vo.UserModel;
+import net.yuan.nova.pis.entity.PisBuilding;
 import net.yuan.nova.pis.entity.PisUser;
 import net.yuan.nova.pis.entity.PisUserExtend;
 import net.yuan.nova.pis.entity.PisUserGroup;
@@ -19,6 +22,7 @@ import net.yuan.nova.pis.service.UserGroupShipKeyService;
 
 @Component
 public class UserModelBusinessImpl implements UserModelBusiness{
+	private static Log log = LogFactory.getLog(UserModelBusinessImpl.class);
 	@Autowired
 	private PisUserService pisUserService;
 	@Autowired
@@ -50,7 +54,10 @@ public class UserModelBusinessImpl implements UserModelBusiness{
 				userModel.setBrokingFirm(this.brokingFirmService.findById(userExtend.getBrokingFirmId()).getBrokingFirmName());
 			}
 			if (StringUtils.isNoneEmpty(userExtend.getBuildingId())){
-				userModel.setBuilding(this.buildingService.getById(userExtend.getBuildingId()).getBuildingName());
+				log.debug("buildingId:" + userExtend.getBuildingId());
+				PisBuilding building = this.buildingService.getById(userExtend.getBuildingId());
+				log.debug("building:" + building);
+				userModel.setBuilding(building.getBuildingName());
 			}
 		}
 		return userModel;

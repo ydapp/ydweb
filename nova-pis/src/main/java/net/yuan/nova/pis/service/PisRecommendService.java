@@ -227,9 +227,9 @@ public class PisRecommendService {
 		int record= this.recommendMapper.recommendConfirm(recommend);
 		if (confirmStatus != null){
 			if (confirmStatus.equals(Status.order)){
-				this.pisBuildingService.order(recommend.getBuildingId());
+				this.pisBuildingService.order(old.getBuildingId());
 			} else if (confirmStatus.equals(Status.buy)){
-				this.pisBuildingService.buy(recommend.getBuildingId());
+				this.pisBuildingService.buy(old.getBuildingId());
 			}
 		}
 		return record;
