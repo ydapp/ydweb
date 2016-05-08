@@ -11,8 +11,10 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.sf.json.JSONObject;
 import net.yuan.nova.commons.HttpUtils;
 import net.yuan.nova.core.entity.Attachment;
+import net.yuan.nova.core.entity.Attachment.TableName;
 import net.yuan.nova.core.service.AttachmentService;
 import net.yuan.nova.core.shiro.vo.UserModel;
 import net.yuan.nova.core.vo.DataGridData;
@@ -162,6 +164,11 @@ public class BuildingController {
 		property.setSubscriptionRules(multipartRequest.getParameter("subscriptionRules"));
 		property.setViewTimes(NumberUtils.createInteger(StringUtils.trimToNull(request.getParameter("viewTimes"))));
 		property.setYears(NumberUtils.createInteger(StringUtils.trimToNull(multipartRequest.getParameter("years"))));
+		
+		property.setPropertyTel(multipartRequest.getParameter("propertyTel"));
+		property.setTrafficFacilities(multipartRequest.getParameter("trafficFacilities"));
+		property.setHouseType(multipartRequest.getParameter("houseType"));
+		
 		if (StringUtils.isEmpty(property.getPropertyName())){
 			json.setSuccess(false);
 			json.setMessage("楼盘名称不能为空");
@@ -334,5 +341,53 @@ public class BuildingController {
 	public ModelMap propertyDetail(HttpServletRequest request, ModelMap modelMap) {
 		String id = request.getParameter("id");
 		return propertyDetail(id, request, modelMap);
+	}
+	/**
+	 * 插入数据
+	 * 
+	 * @param record
+	 * @return
+	 */
+	@RequestMapping("/admin/property/houseType/add")
+	public Object insertHouseTypeImage(HttpServletRequest request, ModelMap modelMap) {
+		log.debug("添加户型");
+		JsonVo<Object> json = new JsonVo<Object>();
+		MultipartFile file = null;
+		MultipartHttpServletRequest multipartRequest = null;
+		// 转型为MultipartHttpRequest，如果没有上传图片是会报出异常：ClassCastException
+		log.debug("转换request为附件方式");
+		try {
+			multipartRequest = (MultipartHttpServletRequest) request;
+			file = multipartRequest.getFile("houseTypeImage");
+		} catch (ClassCastException cce) {
+			log.error("没有上传图片", cce);
+		}
+		if (file == null) {
+			System.out.println("没有附件上传");
+		}
+		String houseTypeName = multipartRequest.getParameter("houseTypeName");
+		String houseTypeImage = null;
+		String viewWidthStr = request.getParameter("viewWidth");
+		int width = NumberUtils.toInt(viewWidthStr, 0);
+		if (json.validate()) {
+			log.debug("保存图片数据");
+			Attachment attachment = this.attachmentService.addUploadFile(file, file.getOriginalFilename(), null, TableName.NULL_TALBE, Attachment.State.A);
+			String filePath = attachment.getSavePath();
+			if (width > 10) {
+				try {
+					filePath = attachmentService.thumbnailator(attachment, width - 10);
+				} catch (IOException e) {
+					log.error("生成缩略图失败", e);
+				}
+			}
+			houseTypeImage = filePath;
+			
+		}
+		JSONObject jsonObject = new JSONObject();
+		jsonObject.put("houseTypeName", houseTypeName);
+		jsonObject.put("houseTypeImage", houseTypeImage);
+		log.debug("houseType:" + jsonObject);
+		json.setResult(jsonObject);
+		return json;
 	}
 }

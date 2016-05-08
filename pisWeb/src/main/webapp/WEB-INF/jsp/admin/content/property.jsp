@@ -69,71 +69,141 @@
 		<div class="easyui-layout" data-options="fit:true">
 			<div data-options="region:'center',border:false">
 				<form id="add_form" action="<%=path%>/admin/property/add.json" method="post" enctype="multipart/form-data">
-					<div class="fitem">
-						<label><font color="red">*</font>所在城市：</label> <select id="city" name="city"> </select>
-					</div>
-					<div class="fitem">
-						<label><font color="red">*</font>楼盘名称：</label> <input
-							name="propertyName" class="easyui-textbox" style="width: 452px;">
-					</div>
-					<div class="fitem">
-						<label><font color="red">*</font>封面图片：</label> <input
-							name="cover" class="easyui-filebox" style="width: 452px;" data-options="prompt:'选择一张图片'">
-					</div>
-					<div class="fitem">
-						<label><font color="red">*</font>楼盘类型：</label> <input
-							name="propertyType" class="easyui-textbox" style="width: 452px;" data-options="prompt:'大型'">
-					</div>
-					
-					<div class="fitem">
-						<label><font color="red">*</font>楼盘地址：</label> <input
-							name="address" class="easyui-textbox" style="width: 452px;" data-options="prompt:'南京鼓楼区xx号'">
-					</div>
-					<div class="fitem">
-						<label><font color="red">*</font>认购规则：</label> <input
-							name="subscriptionRules" class="easyui-textbox" style="width: 452px;" data-options="prompt:'首付2层'">
-					</div>
-					<div class="fitem">
-						<label><font color="red">*</font>首期开盘：</label> <input
-							name="openDate" class="easyui-textbox" style="width: 452px;" data-options="prompt:'2016-1-1'">
-					</div>
-					<div class="fitem">
-						<label><font color="red">*</font>楼盘特色：</label> <input
-							name="characteristic" class="easyui-textbox" style="width: 452px;" data-options="prompt:'靠近地铁'">
-					</div>
-					<div class="fitem">
-						<label><font color="red">*</font>装修类型：</label> <input
-							name="decoration" class="easyui-textbox" style="width: 452px;" data-options="prompt:'精装'">
-					</div>
-					<div class="fitem">
-						<label><font color="red">*</font>占地面积：</label> <input
-							name="area" class="easyui-textbox" style="width: 452px;" data-options="prompt:'20亩'">
-					</div>
-					<div class="fitem">
-						<label><font color="red">*</font>产权年限：</label> <input
-							name="years" class="easyui-textbox" style="width: 452px;" data-options="prompt:'70'">
-					</div>
-					<div class="fitem">
-						<label><font color="red">*</font>绿化率：</label> <input
-							name="greenRate" class="easyui-textbox" style="width: 452px;" data-options="prompt:'40'">
-					</div>
-					<div class="fitem">
-						<label><font color="red">*</font>物业公司：</label> <input
-							name="propertyCompany" class="easyui-textbox" style="width: 452px;" data-options="prompt:'某某物业公司'">
-					</div>
-					<div class="fitem">
-						<label><font color="red">*</font>交付时间：</label> <input
-							name="deliveryTime" class="easyui-textbox" style="width: 452px;" data-options="prompt:'2016-1-1'">
-					</div>
-					<div class="fitem">
-						<label><font color="red">*</font>均价：</label> <input
-							name="avgPrice" class="easyui-textbox" style="width: 452px;" data-options="prompt:'30000'">
-					</div>
-					<div class="fitem">
-						<label><font color="red">*</font>佣金：</label> <input
-							name="avgPrice" class="easyui-textbox" style="width: 452px;" data-options="prompt:'10'">
-					</div>
-					<script id="editor" type="text/plain" style="width:900px;height:200px;z-index:999"></script>
+					<table>
+						<tr>
+							<td><div class="fitem">
+									<label><font color="red">*</font>所在城市：</label> <select id="city" name="city"> </select>
+								</div>
+							</td>
+							<td>
+								<div class="fitem">
+									<label><font color="red">*</font>楼盘名称：</label> <input
+										name="propertyName" class="easyui-textbox" style="width: 400px;">
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<div class="fitem">
+									<label><font color="red">*</font>封面图片：</label> <input
+										name="cover" class="easyui-filebox" style="width: 400px;" data-options="prompt:'选择一张图片'">
+								</div>
+							</td>
+							<td>
+								<div class="fitem">
+									<label><font color="red">*</font>楼盘类型：</label> <input
+										name="propertyType" class="easyui-textbox" style="width: 400px;" data-options="prompt:'大型'">
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<div class="fitem">
+									<label><font color="red">*</font>楼盘地址：</label> <input
+										name="address" class="easyui-textbox" style="width: 400px;" data-options="prompt:'南京鼓楼区xx号'">
+								</div>		
+							</td>
+							<td>
+								<div class="fitem">
+									<label><font color="red">*</font>认购规则：</label> <input
+										name="subscriptionRules" class="easyui-textbox" style="width: 400px;" data-options="prompt:'首付2层'">
+								</div>		
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<div class="fitem">
+									<label><font color="red">*</font>首期开盘：</label> <input
+										name="openDate" class="easyui-textbox" style="width: 400px;" data-options="prompt:'2016-1-1'">
+								</div>		
+							</td>
+							<td>
+								<div class="fitem">
+									<label><font color="red">*</font>楼盘特色：</label> <input
+										name="characteristic" class="easyui-textbox" style="width: 400px;" data-options="prompt:'靠近地铁'">
+								</div>		
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<div class="fitem">
+									<label><font color="red">*</font>装修类型：</label> <input
+										name="decoration" class="easyui-textbox" style="width: 400px;" data-options="prompt:'精装'">
+								</div>		
+							</td>
+							<td>
+								<div class="fitem">
+									<label><font color="red">*</font>占地面积：</label> <input
+										name="area" class="easyui-textbox" style="width: 400px;" data-options="prompt:'20亩'">
+								</div>		
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<div class="fitem">
+									<label><font color="red">*</font>产权年限：</label> <input
+										name="years" class="easyui-textbox" style="width: 400px;" data-options="prompt:'70'">
+								</div>		
+							</td>
+							<td>
+								<div class="fitem">
+									<label><font color="red">*</font>绿化率：</label> <input
+										name="greenRate" class="easyui-textbox" style="width: 400px;" data-options="prompt:'40'">
+								</div>		
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<div class="fitem">
+									<label><font color="red">*</font>物业公司：</label> <input
+										name="propertyCompany" class="easyui-textbox" style="width: 400px;" data-options="prompt:'某某物业公司'">
+								</div>		
+							</td>
+							<td>
+								<div class="fitem">
+									<label><font color="red">*</font>交付时间：</label> <input
+										name="deliveryTime" class="easyui-textbox" style="width: 400px;" data-options="prompt:'2016-1-1'">
+								</div>		
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<div class="fitem">
+									<label><font color="red">*</font>均价：</label> <input
+										name="avgPrice" class="easyui-textbox" style="width: 400px;" data-options="prompt:'30000'">
+								</div>		
+							</td>
+							<td>
+								<!-- 
+								<div class="fitem">
+									<label><font color="red">*</font>佣金：</label> <input
+										name="avgPrice" class="easyui-textbox" style="width: 400px;" data-options="prompt:'10'">
+								</div>	
+								 -->
+								<div class="fitem">
+									<label><font color="red">*</font>售楼电话：</label> <input
+										name="propertyTel" class="easyui-textbox" style="width: 400px;" data-options="prompt:'025-88888888'">
+								</div>		
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<div class="fitem">
+									<label><font color="red">*</font>交通配套：</label> <textarea
+										id="trafficFacilities" name="trafficFacilities" style="width: 400px;height: 50px"></textarea><br>
+										<button type="button" id="addRafficFacilities">添加一条交通配套</button>
+								</div>
+										
+							</td>
+							<td>
+								<div class="fitem">
+									<label><font color="red">*</font>户型介绍：</label> <textarea
+										id="houseType" name="houseType"  style="width: 400px;height: 50px"></textarea><br>
+										<button type="button" id="addHouseType">添加一条户型</button>
+								</div>		
+							</td>
+						</tr>
+					</table>
 				</form>
 			</div>
 			<div data-options="region:'south',border:true" style="text-align:right;padding:5px;">
@@ -142,11 +212,101 @@
 			</div>
 		</div>
 	</div>
+	<div id="addRafficFacilitiesDialog" title="添加一个交通配套" class="easyui-dialog" data-options="maximized:true,modal:true,closed:true">
+		<div class="easyui-layout" data-options="fit:true">
+			<div data-options="region:'center',border:false">
+					<div class="fitem">
+						<label><font color="red">*</font>配套名称：</label> <input id="rafficFacilitiesName"
+							name="rafficFacilitiesName" class="easyui-textbox" style="width: 400px;" data-options="prompt:'配套名称'">
+					</div>		
+					<div class="fitem">
+						<label><font color="red">*</font>配套说明：</label> <input id="rafficFacilitiesDesc"
+							name="rafficFacilitiesDesc" class="easyui-textbox" style="width: 400px;" data-options="prompt:'配套描述'">
+					</div>
+			</div>
+			<div data-options="region:'south',border:true" style="text-align:right;padding:5px;">
+				<a class="easyui-linkbutton" data-options="iconCls:'icon-ok'" href="javascript:void(0)" onclick="saveRafficFacilities();" style="width:80px;">提交</a>
+				<a class="easyui-linkbutton" data-options="iconCls:'icon-cancel'" href="javascript:void(0)" onclick="javascript:$('#addRafficFacilitiesDialog').dialog('close');" style="width:80px">关闭</a>
+			</div>
+		</div>
+	</div>
+	<div id="addHouseTypeDialog" title="添加一个户型" class="easyui-dialog" data-options="maximized:true,modal:true,closed:true">
+		<div class="easyui-layout" data-options="fit:true">
+			<div data-options="region:'center',border:false">
+				<form id="houseType_form" action="<%=path%>/admin/property/houseType/add.json" method="post" enctype="multipart/form-data">
+					<div class="fitem">
+						<label><font color="red">*</font>户型名称：</label> <input id="houseTypeName"
+							name="houseTypeName" class="easyui-textbox" style="width: 400px;" data-options="prompt:'户型名称'">
+					</div>		
+					<div class="fitem">
+						<label><font color="red">*</font>户型图片：</label> <input id="houseTypeImage"
+							name="houseTypeImage" class="easyui-filebox" style="width: 400px;" data-options="prompt:'户型图片'">
+					</div>
+				</form>
+			</div>
+			<div data-options="region:'south',border:true" style="text-align:right;padding:5px;">
+				<a class="easyui-linkbutton" data-options="iconCls:'icon-ok'" href="javascript:void(0)" onclick="saveHouseType();" style="width:80px;">提交</a>
+				<a class="easyui-linkbutton" data-options="iconCls:'icon-cancel'" href="javascript:void(0)" onclick="javascript:$('#addHouseTypeDialog').dialog('close');" style="width:80px">关闭</a>
+			</div>
+		</div>
+	</div>
+				
 </body>
 <script type="text/javascript" src="<%=path%>/public/script/jquery-1.10.2.min.js"></script>
 <script type="text/javascript" src="<%=path%>/public/script/jquery.easyui.min.js"></script>
 <script type="text/javascript" src="<%=path%>/public/script/easyui-lang-zh_CN.js"></script>
 <script type="text/javascript">
+	//点击增加一个交通配套按钮
+	$("#addRafficFacilities").click(function(){
+		$('#addRafficFacilitiesDialog').dialog('open');
+		$("#rafficFacilitiesName").val("");
+		$("#rafficFacilitiesDesc").val("");
+		 return false;
+	});
+	//保存一条交通配套到textArea中
+	var saveRafficFacilities = function(){
+		var line = "***" + $("#rafficFacilitiesName").val() + ":::" + $("#rafficFacilitiesDesc").val();
+		if ($("#trafficFacilities").val()){
+			$("#trafficFacilities").val($("#trafficFacilities").val() + "\r\n" + line);
+		} else {
+			$("#trafficFacilities").val(line);
+		}
+		$('#addRafficFacilitiesDialog').dialog('close');
+	};
+	$('#add').click(function(){
+		 $('#mydialog').dialog('open');
+		 $('#add_form').form('clear');
+		 loadCityList();
+	});
+	//点击增加一个户型按钮
+	$("#addHouseType").click(function(){
+		$('#addHouseTypeDialog').dialog('open');
+		$("#houseTypeName").val("");
+		$("#houseTypeImage").val("");
+		 return false;
+	});
+	//保存一条交通配套到textArea中
+	var saveHouseType = function(){
+		$('#houseType_form').form('submit', {    
+		    success:function(data){
+		    	var data = eval('(' + data + ')');
+		    	console.log("houseType:" + JSON.stringify(data));
+		    	if(data.success){
+		        	$.messager.alert('温馨提示','新增成功');
+		        	var line = "***" + data.result.houseTypeName + ":::" + data.result.houseTypeImage;
+		    		if ($("#houseType").val()){
+		    			$("#houseType").val($("#houseType").val() + "\r\n" + line);
+		    		} else {
+		    			$("#houseType").val(line);
+		    		}
+		    		$('#addHouseTypeDialog').dialog('close');
+		        }else{
+		        	$.messager.alert('温馨提示',data.message);
+		        }
+		    }    
+		});
+		
+	};
 	$('#add').click(function(){
 		 $('#mydialog').dialog('open');
 		 $('#add_form').form('clear');

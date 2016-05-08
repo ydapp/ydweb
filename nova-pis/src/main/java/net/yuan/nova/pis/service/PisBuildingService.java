@@ -91,5 +91,53 @@ public class PisBuildingService {
 	public PisProperty selectByPrimaryKey(String id) {
 		return pisPropertyMapper.selectByPrimaryKey(id);
 	}
+	public void update(PisProperty record){
+		this.pisPropertyMapper.updateByPrimaryKeySelective(record);
+	}
+	/**
+	 * 增加一次推荐次数
+	 * @param id
+	 */
+	public void recommend(String id){
+		Integer recommendNumber = this.selectByPrimaryKey(id).getRecommendedNumber();
+		PisProperty pisProperty = new PisProperty();
+		pisProperty.setPropertyId(id);
+		if (recommendNumber == null){
+			pisProperty.setRecommendedNumber(1);
+		} else {
+			pisProperty.setRecommendedNumber(recommendNumber+1);
+		}
+		this.update(pisProperty);
+	}
+	/**
+	 * 增加一次订购次数
+	 * @param id
+	 */
+	public void order(String id){
+		Integer reservationNumber = this.selectByPrimaryKey(id).getReservationNumber();
+		PisProperty pisProperty = new PisProperty();
+		pisProperty.setPropertyId(id);
+		if (reservationNumber == null){
+			pisProperty.setReservationNumber(1);
+		} else {
+			pisProperty.setReservationNumber(reservationNumber+1);
+		}
+		this.update(pisProperty);
+	}
+	/**
+	 * 增加一次购买数量
+	 * @param id
+	 */
+	public void buy(String id){
+		Integer viewTimes = this.selectByPrimaryKey(id).getViewTimes();
+		PisProperty pisProperty = new PisProperty();
+		pisProperty.setPropertyId(id);
+		if (viewTimes == null){
+			pisProperty.setViewTimes(1);
+		} else {
+			pisProperty.setViewTimes(viewTimes+1);
+		}
+		this.update(pisProperty);
+	}
 
 }

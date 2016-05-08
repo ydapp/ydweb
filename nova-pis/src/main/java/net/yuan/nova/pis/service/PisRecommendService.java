@@ -10,6 +10,7 @@ import net.yuan.nova.pis.entity.PisBrokingFirm;
 import net.yuan.nova.pis.entity.PisBuilding;
 import net.yuan.nova.pis.entity.PisCity;
 import net.yuan.nova.pis.entity.PisProject;
+import net.yuan.nova.pis.entity.PisProperty;
 import net.yuan.nova.pis.entity.PisRecommend;
 import net.yuan.nova.pis.entity.PisRecommend.Status;
 import net.yuan.nova.pis.entity.PisUser;
@@ -162,6 +163,7 @@ public class PisRecommendService {
 		}
 		recommend.setStatus(PisRecommend.Status.appointment);
 		this.recommendMapper.insert(recommend);
+		this.pisBuildingService.recommend(recommend.getBuildingId());
 		return recommend.getRecommendId();
 	}
 
@@ -222,7 +224,15 @@ public class PisRecommendService {
 		recommend.setRecommendConfirmDate(new Date());
 		recommend.setRecommendConfirmAdvice(recommendConfirmAdvice);
 		recommend.setStatus(confirmStatus);
-		return this.recommendMapper.recommendConfirm(recommend);
+		int record= this.recommendMapper.recommendConfirm(recommend);
+		if (confirmStatus != null){
+			if (confirmStatus.equals(Status.order)){
+				this.pisBuildingService.order(recommend.getBuildingId());
+			} else if (confirmStatus.equals(Status.buy)){
+				this.pisBuildingService.buy(recommend.getBuildingId());
+			}
+		}
+		return record;
 	}
 
 	/**

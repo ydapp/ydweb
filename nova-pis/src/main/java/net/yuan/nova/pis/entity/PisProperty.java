@@ -64,15 +64,19 @@ public class PisProperty {
     //推荐次数
     private Integer recommendedNumber;
 
-    //预约次数
+    //预约次数，也是认购次数（在推荐中回填-订操作)
     private Integer reservationNumber;
 
-    //查看次数
+    //查看次数,成交次数(在推荐中回填-购买操作)
     private Integer viewTimes;
     //认购规则
     private String subscriptionRules;
     //楼盘电话
     private String propertyTel;
+    //交通配套
+    private String trafficFacilities;
+    //户型介绍
+    private String houseType;
     /**
      * 楼盘id
      * @return
@@ -425,6 +429,34 @@ public class PisProperty {
 	 */
 	public void setPropertyTel(String propertyTel) {
 		this.propertyTel = propertyTel;
+	}
+	/**
+	 * 交通配套
+	 * @return
+	 */
+	public String getTrafficFacilities() {
+		return trafficFacilities;
+	}
+	/**
+	 * 交通配套
+	 * @param trafficFacilities
+	 */
+	public void setTrafficFacilities(String trafficFacilities) {
+		this.trafficFacilities = trafficFacilities;
+	}
+	/**
+	 * 户型介绍
+	 * @return
+	 */
+	public String getHouseType() {
+		return houseType;
+	}
+	/**
+	 * 户型介绍
+	 * @param houseType
+	 */
+	public void setHouseType(String houseType) {
+		this.houseType = houseType;
 	}
     
 }
