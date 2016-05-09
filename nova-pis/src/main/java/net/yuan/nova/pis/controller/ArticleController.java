@@ -30,6 +30,8 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.github.pagehelper.PageInfo;
+
 @Controller
 public class ArticleController {
 
@@ -86,8 +88,11 @@ public class ArticleController {
 
 	@RequestMapping("/api/articles")
 	public Object articleList(HttpServletRequest request, ModelMap modelMap) {
+		int page = NumberUtils.toInt(request.getParameter("page"),1);
+		int pageSize = NumberUtils.toInt(request.getParameter("pageSize"), 10);
 		DataGridData<PisArticleVo> dgd = new DataGridData<PisArticleVo>();
-		List<PisArticle> selectArticleList = pisArticleService.selectArticleList();
+		List<PisArticle> selectArticleList = pisArticleService.selectArticleList(page, pageSize);
+		long total = new PageInfo(selectArticleList).getTotal();
 		List<PisArticleVo> pisArticleVoList = new ArrayList<PisArticleVo>();
 		for (PisArticle pisArticle : selectArticleList) {
 			String cover = pisArticle.getCover();
@@ -111,7 +116,7 @@ public class ArticleController {
 			pisArticleVoList.add(pisArticleVo);
 		}
 		dgd.setRows(pisArticleVoList);
-		dgd.setTotal(pisArticleVoList.size());
+		dgd.setTotal(total);
 		return dgd;
 	}
 

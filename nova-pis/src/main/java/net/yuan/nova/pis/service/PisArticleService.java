@@ -41,7 +41,8 @@ public class PisArticleService {
 		return 0;
 	}
 
-	public List<PisArticle> selectArticleList() {
+	public List<PisArticle> selectArticleList(int page, int pageSize) {
+		PageHelper.startPage(page, pageSize);
 		return pisArticleMapper.selectArticleList();
 	}
 
