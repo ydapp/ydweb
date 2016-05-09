@@ -99,6 +99,8 @@
 				<directory>src/main/java</directory>
 				<includes>
 					<include>**/*.xml</include>
+					<include>**/*.jpg</include>
+					<include>**/*.png</include>
 				</includes>
 				<filtering>false</filtering>
 			</resource>
