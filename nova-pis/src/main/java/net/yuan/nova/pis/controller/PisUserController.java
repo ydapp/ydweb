@@ -12,6 +12,7 @@ import net.yuan.nova.core.shiro.vo.UserModel;
 import net.yuan.nova.core.vo.JsonVo;
 import net.yuan.nova.pis.business.UserModelBusinessImpl;
 import net.yuan.nova.pis.entity.PisBrokingFirm;
+import net.yuan.nova.pis.entity.PisBuilding;
 import net.yuan.nova.pis.entity.PisUser;
 import net.yuan.nova.pis.entity.PisUserExtend;
 import net.yuan.nova.pis.entity.PisUserGroup;
@@ -443,7 +444,10 @@ public class PisUserController {
 		PisUserGroup pisUserGroup =this.pisUserService.getPisUserGroup(userId);
 		//通过用户ID获取扩展信息
 		PisUserExtend pisUserExtend = this.userExtendService.selectByUserId(userId);
+		//获取经纪公司
 		PisBrokingFirm pisBrokingFirm = this.brokingFirmService.findById(null!=pisUserExtend?pisUserExtend.getBrokingFirmId():"");
+		//获取楼盘
+		PisBuilding pisBuilding = this.buildingService.getById(pisUserExtend.getBuildingId());
 		//组装返回数据
 		UserModel userModel=null;
 		userModel = new UserModel();
@@ -454,6 +458,7 @@ public class PisUserController {
 		userModel.setGroupType(null!=pisUserGroup?pisUserGroup.getType():"");
 		userModel.setGroupTypeTitle(null!=pisUserGroup?pisUserGroup.getTypeTitle():"");
 		userModel.setBrokingFirm(null!=pisBrokingFirm?pisBrokingFirm.getBrokingFirmName():"");
+		userModel.setBuilding(null!=pisBuilding?pisBuilding.getBuildingId():"");
 		return userModel;
 	}
 	/**
