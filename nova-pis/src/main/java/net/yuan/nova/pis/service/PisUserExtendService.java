@@ -40,4 +40,12 @@ public class PisUserExtendService {
 	public PisUserExtend selectByUserId(String userId){
 		return this.mapper.selectByUserId(userId);
 	}
+	/**
+	 * 修改用户扩展关系
+	 * @param userExtend
+	 * @return
+	 */
+	public int updateByUserId(PisUserExtend userExtend){
+		return this.mapper.updateByUserId(userExtend);
+	}
 }

@@ -106,6 +106,8 @@ public interface PisUserMapper {
 	public PisUser selectUserByUserName(String userName);
 
 	public PisUser selectUserByTel(String tel);
+	
+	public PisUser selectUserByTelFaultIs(PisUser user);
 
 	public PisUser selectUserByEmail(String email);
 

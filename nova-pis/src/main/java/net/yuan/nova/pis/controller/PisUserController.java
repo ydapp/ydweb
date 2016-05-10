@@ -9,9 +9,9 @@ import net.yuan.nova.core.shiro.CurrentUserUtil;
 import net.yuan.nova.core.shiro.PubUserAuthenticationToken;
 import net.yuan.nova.core.shiro.vo.User;
 import net.yuan.nova.core.shiro.vo.UserModel;
-import net.yuan.nova.core.vo.DataGridData;
 import net.yuan.nova.core.vo.JsonVo;
 import net.yuan.nova.pis.business.UserModelBusinessImpl;
+import net.yuan.nova.pis.entity.PisBrokingFirm;
 import net.yuan.nova.pis.entity.PisUser;
 import net.yuan.nova.pis.entity.PisUserExtend;
 import net.yuan.nova.pis.entity.PisUserGroup;
@@ -267,6 +267,7 @@ public class PisUserController {
 	 * @param modelMap
 	 * @return
 	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@ResponseBody
 	@RequestMapping(value = "/api/userInfos", method=RequestMethod.GET)
 	public ModelMap getUserInfos(HttpServletRequest request, ModelMap modelMap, HttpServletResponse response) {
@@ -426,6 +427,98 @@ public class PisUserController {
 		boolean flag = this.pisUserService.removeUser(userId);
 		//设置返回值
 		json.setSuccess(flag);
+		return json;
+	}
+	/**
+	 * 通过用户ID获取用户信息
+	 * @return PisUser 用户实体类
+	 */
+	@RequestMapping(value="/api/getUserByUserId")
+	public UserModel getUserByUserId(HttpServletRequest request, HttpServletResponse response){
+		//接收用户ID
+		String userId = StringUtils.trimToEmpty(request.getParameter("userId"));
+		//通过用户ID获取用户信息
+		PisUser pisUser =  this.pisUserService.findUserById(userId);
+		//通过用户ID获取组
+		PisUserGroup pisUserGroup =this.pisUserService.getPisUserGroup(userId);
+		//通过用户ID获取扩展信息
+		PisUserExtend pisUserExtend = this.userExtendService.selectByUserId(userId);
+		PisBrokingFirm pisBrokingFirm = this.brokingFirmService.findById(null!=pisUserExtend?pisUserExtend.getBrokingFirmId():"");
+		//组装返回数据
+		UserModel userModel=null;
+		userModel = new UserModel();
+		userModel.setTel(null!=pisUser?pisUser.getTel():"");
+		userModel.setNick(null!=pisUser?pisUser.getNick():"");
+		userModel.setUserId(userId);
+		userModel.setGroupId(null!=pisUserGroup?pisUserGroup.getGroupId():"");
+		userModel.setGroupType(null!=pisUserGroup?pisUserGroup.getType():"");
+		userModel.setGroupTypeTitle(null!=pisUserGroup?pisUserGroup.getTypeTitle():"");
+		userModel.setBrokingFirm(null!=pisBrokingFirm?pisBrokingFirm.getBrokingFirmName():"");
+		return userModel;
+	}
+	/**
+	 * 执行修改用户操作
+	 * @return
+	 */
+	@RequestMapping(value="/api/updateUserByUserId")
+	public JsonVo<UserModel> updateUserByUserId(@RequestBody UserModel userModel, ModelMap modelMap){
+		JsonVo<UserModel> json = new JsonVo<UserModel>();
+		log.debug("修改用户:" + userModel.getNick() + "(" + userModel.getTel() + ")");
+		//组装参数
+		PisUser pisUser = new PisUser();
+		pisUser.setTel(userModel.getTel());
+		pisUser.setUserId(userModel.getUserId());
+		PisUser user = this.pisUserService.selectUserByTelFaultIs(pisUser);
+		if (user != null){
+			json.setSuccess(false);
+			json.setMessage("此电话号码已经存在:" + user.getNick() + "(" + user.getTel() + ")");
+			return json;
+		}
+		//组装参数
+		pisUser = new PisUser();
+		pisUser.setTel(userModel.getTel());
+		pisUser.setNick(userModel.getNick());
+		pisUser.setUserName(userModel.getTel());
+		pisUser.setUserId(userModel.getUserId());
+		this.pisUserService.updateUser(pisUser);
+		log.debug("修改用户和组的关系:" + userModel.getGroupType());
+		//删除原有用户与组关联关系
+		PisUserGroupShipKey key_01 = new PisUserGroupShipKey();
+		key_01.setGroupId(userModel.getGroupId());
+		key_01.setUserId(userModel.getUserId());
+		this.keyService.delete(key_01);
+		//新增用户与组关联
+		String groupType = userModel.getGroupType();
+		PisUserGroup userGroup = this.groupService.getByType(groupType);
+		PisUserGroupShipKey key_02 = new PisUserGroupShipKey();
+		key_02.setGroupId(userGroup.getGroupId());
+		key_02.setUserId(userModel.getUserId());
+		this.keyService.insert(key_02);
+		log.debug("修改用户扩展信息");
+		if (StringUtils.equals(PisUserGroup.TYPE.brokingFirm.name(),groupType)){
+			log.debug("添加关联经纪公司");
+			String brokingFirmId = this.brokingFirmService.add(userModel.getBrokingFirm());
+			log.debug("关联经纪公司");
+			PisUserExtend userExtend = new PisUserExtend();
+			userExtend.setBrokingFirmId(brokingFirmId);
+			userExtend.setUserId(userModel.getUserId());
+			this.userExtendService.updateByUserId(userExtend);
+		}else if(StringUtils.equals(PisUserGroup.TYPE.salesman.name(), userModel.getGroupType())){
+			log.debug("关联经纪公司");
+			String brokingFirmId = this.brokingFirmService.findByName(userModel.getBrokingFirm()).getBrokingFirmId();
+			PisUserExtend userExtend = new PisUserExtend();
+			userExtend.setBrokingFirmId(brokingFirmId);
+			userExtend.setUserId(userModel.getUserId());
+			this.userExtendService.updateByUserId (userExtend);
+		}else if (StringUtils.equals(PisUserGroup.TYPE.commissioner.name(), userModel.getGroupType())){
+			log.debug("关联楼盘");
+			PisUserExtend userExtend = new PisUserExtend();
+			userExtend.setBuildingId(userModel.getBuilding());
+			userExtend.setUserId(userModel.getUserId());
+			this.userExtendService.updateByUserId(userExtend);
+		}
+		json.setSuccess(true);
+		json.setMessage("修改成功");
 		return json;
 	}
 }

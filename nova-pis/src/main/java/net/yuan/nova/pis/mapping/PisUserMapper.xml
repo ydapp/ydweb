@@ -282,7 +282,13 @@
 	    <include refid="Base_Column_List" />
 	    from PIS_USER
 	</select>
-	
+	<select id="selectUserByTelFaultIs" resultMap="BaseResultMap" parameterType="net.yuan.nova.pis.entity.PisUser" >
+  		SELECT  
+  		<include refid="Base_Column_List" />
+  		FROM  PIS_USER   WHERE TEL = #{tel,jdbcType=VARCHAR} AND
+		USER_ID != #{userId,jdbcType=VARCHAR}
+		
+  	</select>
 	
 	<!-- ############################## -->
 	<!-- ###### 删除用户 ###### -->

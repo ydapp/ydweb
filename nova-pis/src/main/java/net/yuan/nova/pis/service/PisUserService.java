@@ -6,9 +6,7 @@ import java.util.List;
 import java.util.UUID;
 import net.yuan.nova.core.shiro.PasswordHelper;
 import net.yuan.nova.core.shiro.vo.User;
-import net.yuan.nova.core.shiro.vo.UserModel;
 import net.yuan.nova.pis.dao.PisUserMapper;
-import net.yuan.nova.pis.entity.PisArticle;
 import net.yuan.nova.pis.entity.PisUser;
 import net.yuan.nova.pis.entity.PisUserGroup;
 import net.yuan.nova.pis.entity.PisUserGroupShipKey;
@@ -55,6 +53,10 @@ public class PisUserService {
 	@Cacheable(value = "userCache", key = "'findUserByEmail_'+#email")
 	public PisUser findUserByEmail(String email) {
 		return pisUserMapper.selectUserByEmail(email);
+	}
+	
+	public PisUser selectUserByTelFaultIs(PisUser user){
+		return this.pisUserMapper.selectUserByTelFaultIs(user);
 	}
 
 	/**
@@ -170,6 +172,7 @@ public class PisUserService {
 		pisUser.setUserId(picUser.getUserId());
 		return pisUserMapper.updateUserPwd(pisUser)>0?true:false;
 	}
+	
 	
 	/**
 	 * 执行用户删除

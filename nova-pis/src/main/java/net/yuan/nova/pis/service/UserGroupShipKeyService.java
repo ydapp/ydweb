@@ -23,4 +23,7 @@ public class UserGroupShipKeyService {
 	public List<PisUserGroupShipKey> getByGroupId(String groupId) {
 		return this.userGroupShipMapper.getByGroupId(groupId);
 	}
+	public int delete(PisUserGroupShipKey key){
+		return this.userGroupShipMapper.deleteByPrimaryKey(key);
+	}
 }

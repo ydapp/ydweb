@@ -10,4 +10,5 @@ public interface PisUserExtendMapper {
 	public int deleteByUserId(@Param("userId") String userId);
 	public int insert(PisUserExtend userExtend);
 	public PisUserExtend selectByUserId(@Param("userId") String userId);
+	public int updateByUserId(PisUserExtend userExtend);
 }

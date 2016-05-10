@@ -23,7 +23,16 @@ public class UserModel implements Serializable {
 	private String building;
 	//用户ID
 	private String userId;
+	//类型ID
+	private String groupId;
 	
+	
+	public String getGroupId() {
+		return groupId;
+	}
+	public void setGroupId(String groupId) {
+		this.groupId = groupId;
+	}
 	public String getUserId() {
 		return userId;
 	}
