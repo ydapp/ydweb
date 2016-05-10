@@ -25,8 +25,17 @@ public class UserModel implements Serializable {
 	private String userId;
 	//类型ID
 	private String groupId;
+	//用户类型：A admin U user
+	private String type;
 	
 	
+	
+	public String getType() {
+		return type;
+	}
+	public void setType(String type) {
+		this.type = type;
+	}
 	public String getGroupId() {
 		return groupId;
 	}

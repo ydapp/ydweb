@@ -497,7 +497,13 @@ public class PisUserController {
 		log.debug("修改用户扩展信息");
 		if (StringUtils.equals(PisUserGroup.TYPE.brokingFirm.name(),groupType)){
 			log.debug("添加关联经纪公司");
-			String brokingFirmId = this.brokingFirmService.add(userModel.getBrokingFirm());
+			String brokingFirmId ="";
+			PisBrokingFirm pisBrokingFirm=this.brokingFirmService.findByName(userModel.getBrokingFirm());
+			if(null==pisBrokingFirm){
+				brokingFirmId = this.brokingFirmService.add(userModel.getBrokingFirm());
+			}else{
+				brokingFirmId=pisBrokingFirm.getBrokingFirmId();
+			}
 			log.debug("关联经纪公司");
 			PisUserExtend userExtend = new PisUserExtend();
 			userExtend.setBrokingFirmId(brokingFirmId);
@@ -505,7 +511,13 @@ public class PisUserController {
 			this.userExtendService.updateByUserId(userExtend);
 		}else if(StringUtils.equals(PisUserGroup.TYPE.salesman.name(), userModel.getGroupType())){
 			log.debug("关联经纪公司");
-			String brokingFirmId = this.brokingFirmService.findByName(userModel.getBrokingFirm()).getBrokingFirmId();
+			PisBrokingFirm pisBrokingFirm=this.brokingFirmService.findByName(userModel.getBrokingFirm());
+			String brokingFirmId="";
+			if(null==pisBrokingFirm){
+				brokingFirmId = this.brokingFirmService.add(userModel.getBrokingFirm());
+			}else{
+				brokingFirmId=pisBrokingFirm.getBrokingFirmId();
+			}
 			PisUserExtend userExtend = new PisUserExtend();
 			userExtend.setBrokingFirmId(brokingFirmId);
 			userExtend.setUserId(userModel.getUserId());

@@ -47,6 +47,7 @@ public class UserModelBusinessImpl implements UserModelBusiness{
 		userModel.setNick(pisUser.getNick());
 		userModel.setTel(pisUser.getTel());
 		userModel.setUserId(pisUser.getUserId());
+		userModel.setType(pisUser.getType());
 		
 		PisUserExtend userExtend = this.userExtendService.selectByUserId(userId);
 		if (userExtend != null){
