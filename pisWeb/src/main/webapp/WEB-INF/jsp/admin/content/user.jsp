@@ -94,7 +94,7 @@
 						<font color="red">*</font><label>名称：</label><input id="nick_update" class="easyui-textbox" required="required" style="width: 452px;"></p>
 						<font color="red">*</font><label>类型：</label> 
 						<select id="groupType_update">
-							<option value="appAdmin">APP管理员</option>
+							<option value="appAdmin" >APP管理员</option>
 							<option value="commissioner">案场专员</option>
 							<option value="brokingFirm" >经纪公司</option>
 							<option value="salesman">业务员</option>
@@ -215,6 +215,8 @@
 						  $("#groupType_update").append("<option value='brokingFirm' >经纪公司</option>");
 						  //主动出发一次组选择变化
 						  $("#groupType_update").change();
+						  $("#buildingList_update").find("option[value='"+data.building+"']").attr("selected","selected");
+						  setTimeout("$('#buildingList_update').find('option[value="+data.building+"]').attr('selected','selected');",600)
 						  return;
 					  }
 					  //业务员
