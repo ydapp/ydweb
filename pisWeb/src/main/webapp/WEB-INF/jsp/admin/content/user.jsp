@@ -237,28 +237,32 @@
 	 * 执行修改用户操作 
 	 */
 	var updateUser=function(){
-		console.log("form:", $('#update_Form'));
-		$.restPost({
-			  url: '<%=path%>/api/updateUserByUserId.json',
-			  data:{
-				  tel:$('#tel_update').val(),
-				  nick:$('#nick_update').val(),
-				  groupType:$('#groupType_update').val(),
-				  brokingFirm:$('#brokingFirmList_update').val(),
-				  building:$('#buildingList_update').val(),
-				  groupId:$("#groupId_update").val(),
-				  userId:$("#userId_update").val()
-			  },
-			  success: function(data){
-				  if (data.success){
-					  	$.messager.alert('温馨提示',data.message);
-			        	$('#user_grid').datagrid('reload');
-			        	$('#mydialogUpdate').dialog('close');
-					  } else {
-						  $.messager.alert('错误',data.message);
-					  }
-			  }
-			});
+		var tel_update=$('#tel_update').textbox("isValid");
+		var nick_update=$("#nick_update").textbox("isValid");
+		if(tel_update&&nick_update){
+			console.log("form:", $('#update_Form'));
+			$.restPost({
+				  url: '<%=path%>/api/updateUserByUserId.json',
+				  data:{
+					  tel:$('#tel_update').val(),
+					  nick:$('#nick_update').val(),
+					  groupType:$('#groupType_update').val(),
+					  brokingFirm:$('#brokingFirmList_update').val(),
+					  building:$('#buildingList_update').val(),
+					  groupId:$("#groupId_update").val(),
+					  userId:$("#userId_update").val()
+				  },
+				  success: function(data){
+					  if (data.success){
+						  	$.messager.alert('温馨提示',data.message);
+				        	$('#user_grid').datagrid('reload');
+				        	$('#mydialogUpdate').dialog('close');
+						  } else {
+							  $.messager.alert('错误',data.message);
+						  }
+				  }
+				});
+		}
 	};
 	//城市选型发生变化
 	 $("#cityList_update").change(function(e){
