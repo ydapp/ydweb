@@ -32,6 +32,7 @@
 	    <!-- 表格头部标签 -->
 		<div id="tb" style="padding:2px 5px;text-align:right">
 			<a href="javascript:void(0);" class="easyui-linkbutton" iconCls="icon-add" plain="true" id="add">增加用户</a>
+			<a href="javascript:void(0);" class="easyui-linkbutton" iconCls="icon-edit" plain="true" id="update">修改用户</a>
 			<a href="javascript:void(0);" class="easyui-linkbutton" iconCls="icon-remove" plain="true" id="remove">删除用户</a>
 		</div>
 		<table id="user_grid" class="easyui-datagrid" title="用户列表" 
@@ -47,7 +48,7 @@
 			</thead>
 		</table>
 	</div>
-	<!-- 弹出窗口 -->
+	<!-- 弹出窗口,新增 -->
 	<div id="mydialog" title="新增加用于" class="easyui-dialog" data-options="maximized:true,modal:true,closed:true">
 		<div class="easyui-layout" data-options="fit:true">
 			<div data-options="region:'center',border:false">
@@ -81,6 +82,39 @@
 			</div>
 		</div>
 	</div>
+	<!-- 弹出窗口 修改-->
+	<div id="mydialogUpdate" title="修改用户" class="easyui-dialog" data-options="maximized:true,modal:true,closed:true">
+		<div class="easyui-layout" data-options="fit:true">
+			<div data-options="region:'center',border:false">
+				<form id="update_Form">
+					<input id="groupId_update" type="hidden">
+					<input id="userId_update" type="hidden">
+					<div class="fitem">
+						<font color="red">*</font><label>电话：</label> <input id="tel_update" class="easyui-textbox" required="required" style="width: 452px;"></p>
+						<font color="red">*</font><label>名称：</label><input id="nick_update" class="easyui-textbox" required="required" style="width: 452px;"></p>
+						<font color="red">*</font><label>类型：</label> 
+						<select id="groupType_update">
+							<option value="appAdmin">APP管理员</option>
+							<option value="commissioner">案场专员</option>
+							<option value="brokingFirm" >经纪公司</option>
+							<option value="salesman">业务员</option>
+						</select></p>
+						<div id="brokingFirmDiv_update" style="display: none;">
+							<label>经纪公司:</label><input id="brokingFirmList_update"></input>
+						</div>
+						<div id="buildingDiv_update" style="display: none;">
+							<label>城市:</label><select id="cityList_update"> </select>
+							<label>楼盘:</label><select id="buildingList_update"></select>
+						</div>
+					</div>
+				</form>
+			</div>
+			<div data-options="region:'south',border:true" style="text-align:right;padding:5px;">
+				<a class="easyui-linkbutton" data-options="iconCls:'icon-ok'" href="javascript:void(0)" onclick="updateUser();" style="width:80px;">提交</a>
+				<a class="easyui-linkbutton" data-options="iconCls:'icon-cancel'" href="javascript:void(0)" onclick="javascript:$('#mydialogUpdate').dialog('close');" style="width:80px">关闭</a>
+			</div>
+		</div>
+	</div>
 </body>
 <script type="text/javascript" src="<%=path%>/public/script/jquery-1.10.2.min.js"></script>
 <script type="text/javascript" src="<%=path%>/public/script/jquery.easyui.min.js"></script>
@@ -91,8 +125,10 @@
 <script type="text/javascript" src="<%=path%>/public/baiduueditor/ueditor.all.min.js" charset="utf-8"></script>
 <script type="text/javascript" src="<%=path%>/public/baiduueditor/lang/zh-cn/zh-cn.js" charset="utf-8"></script>
 <script type="text/javascript">
+	/**
+	 *执行新增用户操作
+	 */
 	$('#add').click(function(){
-		 
 		 $('#mydialog').dialog('open');
 		 /**
 		     *如果当前是管理员，可以增加APP管理员
@@ -127,6 +163,118 @@
 		 }
 		 
 	});
+	/**
+	 *打开修改用户页面
+	 */
+	$("#update").click(function(){
+		var row = $('#user_grid').datagrid('getSelected');
+		if(null==row){
+			$.messager.alert('温馨提示',"请选中需要修改的用户!");
+			return;
+		}
+		if("A"==row.type){
+			$.messager.alert('温馨提示',"无法修改内置管理员!");
+			return;
+		}
+		$.ajax({
+			url:'<%=path%>/api/getUserByUserId.json',
+			dataType: "json",
+			data : 'userId=' + row.userId,
+			cache : false,
+			success: function(data){
+				if(null!=data){
+					  $('#mydialogUpdate').dialog("open");
+					  //修改窗口赋值 
+					  $("#tel_update").textbox('setValue',data.tel);
+					  $("#nick_update").textbox('setValue',data.nick);
+					  $("#groupId_update").val(data.groupId);
+					  $("#userId_update").val(data.userId);
+					  
+					  //app管理员修改
+					  if("appAdmin"==data.groupType){
+						 $("#groupType_update").empty();
+						 $("#groupType_update").append("<option value='appAdmin'>APP管理员</option>");
+						 $("#brokingFirmDiv_update").hide();
+						 $("#buildingDiv_update").hide();
+						 return;	
+					  }
+					  //经纪公司
+				 	  if("brokingFirm"==data.groupType){
+						  $("#groupType_update").empty();
+						  $("#groupType_update").append("<option value='commissioner'  >案场专员</option>");
+						  $("#groupType_update").append("<option value='brokingFirm' selected='selected'>经纪公司</option>");
+						  $("#brokingFirmList_update").val(data.brokingFirm)
+						  //主动出发一次组选择变化
+						  $("#groupType_update").change();
+						  return;
+					  	}
+					  //报备人
+					  if("commissioner"==data.groupType){
+						  $("#groupType_update").empty();
+						  $("#groupType_update").append("<option value='commissioner'selected='selected'  >案场专员</option>");
+						  $("#groupType_update").append("<option value='brokingFirm' >经纪公司</option>");
+						  //主动出发一次组选择变化
+						  $("#groupType_update").change();
+						  return;
+					  }
+					  //业务员
+					  if("salesman"==data.groupType){
+						  $("#groupType_update").empty();
+						  $("#groupType_update").append("<option value='salesman'>业务员</option>");
+						  $('#brokingFirmList_update').val(data.brokingFirm);
+						  $("#brokingFirmDiv_update").show();
+						  $("#buildingDiv_update").hide();
+						  return;
+					  }
+					 
+				}
+			}
+		});
+	});
+	/**
+	 * 执行修改用户操作 
+	 */
+	var updateUser=function(){
+		console.log("form:", $('#update_Form'));
+		$.restPost({
+			  url: '<%=path%>/api/updateUserByUserId.json',
+			  data:{
+				  tel:$('#tel_update').val(),
+				  nick:$('#nick_update').val(),
+				  groupType:$('#groupType_update').val(),
+				  brokingFirm:$('#brokingFirmList_update').val(),
+				  building:$('#buildingList_update').val(),
+				  groupId:$("#groupId_update").val(),
+				  userId:$("#userId_update").val()
+			  },
+			  success: function(data){
+				  if (data.success){
+					  	$.messager.alert('温馨提示',data.message);
+			        	$('#user_grid').datagrid('reload');
+			        	$('#mydialogUpdate').dialog('close');
+					  } else {
+						  $.messager.alert('错误',data.message);
+					  }
+			  }
+			});
+	};
+	//城市选型发生变化
+	 $("#cityList_update").change(function(e){
+		 loadBuildingList($("#cityList_update").val(),"buildingList_update");
+	 });
+	//用户组类型值改变
+	 $("#groupType_update").change(function(e){
+		 if ("commissioner" == $("#groupType_update").val()){
+		 	$("#buildingDiv_update").show();
+		 	$("#brokingFirmDiv_update").hide();
+		 	//加载城市列表
+		 	loadCityList("cityList_update");
+		 } else if ("brokingFirm" == $("#groupType_update").val()){
+			 $("#buildingDiv_update").hide();
+		 	 $("#brokingFirmDiv_update").show();
+		 }
+		 
+	 });
 	/**
 	 *执行删除用户操作
      */
@@ -167,7 +315,7 @@
 		 	$("#buildingDiv").show();
 		 	$("#brokingFirmDiv").hide();
 		 	//加载城市列表
-		 	loadCityList();
+		 	loadCityList("cityList");
 		 } else if ("brokingFirm" == $("#groupType").val()){
 			 $("#buildingDiv").hide();
 		 	$("#brokingFirmDiv").show();
@@ -176,9 +324,9 @@
 	 });
 	//城市选型发生变化
 	 $("#cityList").change(function(e){
-		 loadBuildingList($("#cityList").val());
+		 loadBuildingList($("#cityList").val(),"buildingList");
 	 });
-	var loadCityList = function (){
+	var loadCityList = function (cityId){
 		$.ajax({
 			url: "<%=path%>/api/getCitys.json",
 			dataType: "json",
@@ -187,11 +335,11 @@
 				console.log("citysdata", data);
 				if(data && data.success == true){
 					if(data.total > 0){
-						$("#cityList").empty();
+						$("#"+cityId).empty();
 						for (var i = 0; i < data.rows.length; i++){
-							$("#cityList").append("<option value='" + data.rows[i].cityId + "'>" + data.rows[i].cityName + "</option>");
+							$("#"+cityId).append("<option value='" + data.rows[i].cityId + "'>" + data.rows[i].cityName + "</option>");
 						}
-						$("#cityList").change();
+						$("#"+cityId).change();
 					}
 				}else {
 					alert("获取城市列表失败");
@@ -202,7 +350,7 @@
 			}
 		});
 	}
-	var loadBuildingList = function (cityId){
+	var loadBuildingList = function (cityId,buildingId){
 		$.ajax({
 			url: "<%=path%>/api/buildings/cityId/" + cityId + ".json",
 			dataType: "json",
@@ -211,9 +359,9 @@
 				console.log("buildingsdata", data);
 				if(data && data.success == true){
 					if(data.result){
-						$("#buildingList").empty();
+						$("#"+buildingId).empty();
 						for (var i = 0; i < data.result.length; i++){
-							$("#buildingList").append("<option value='" + data.result[i].buildingId + "'>" + data.result[i].buildingName + "</option>");
+							$("#"+buildingId).append("<option value='" + data.result[i].buildingId + "'>" + data.result[i].buildingName + "</option>");
 						}
 					}
 				}else {
