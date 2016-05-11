@@ -325,7 +325,7 @@
 							</td>
 							<td>
 								<div class="fitem">
-									<label><font color="red">*</font>绿化率：</label><input id="greenRate_update" name="greenRate" class="easyui-textbox" required="required" style="width: 400px;" data-options="prompt:'40'">
+									<label><font color="red">*</font>绿化率：</label><input id="greenRate_update" name="greenRate" class="easyui-textbox" validType="greenRateNum['#greenRate_update']"     required="required" style="width: 400px;" data-options="prompt:'40'">
 								</div>		
 							</td>
 						</tr>
@@ -588,6 +588,24 @@
 		    }    
 		});
 	};
+	$.extend($.fn.validatebox.defaults.rules,{
+		greenRateNum:{
+			validator:function(value){
+				if(value.indexOf(".")=="-1"&&value.length>=3){
+					return false;
+				}
+				if("-1"!=value.indexOf(".")){
+					var after = value.indexOf(".");
+					var val = value.substring(after+1,value.length);
+					if(val.length>2){
+						return false;
+					}
+				}
+				return true;
+			},
+			message : "绿化率输入数字格式不正确！"
+		}
+	});
 	/**
 	 * 执行修改操作 
 	 */
