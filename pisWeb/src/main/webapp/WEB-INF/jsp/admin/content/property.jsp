@@ -413,7 +413,7 @@
 			</div>
 			<div data-options="region:'south',border:true" style="text-align:right;padding:5px;">
 				<a class="easyui-linkbutton" data-options="iconCls:'icon-ok'" href="javascript:void(0)" onclick="saveHouseType_update();" style="width:80px;">提交</a>
-				<a class="easyui-linkbutton" data-options="iconCls:'icon-cancel'" href="javascript:void(0)" onclick="javascript:$('#addHouseTypeDialog').dialog('close');" style="width:80px">关闭</a>
+				<a class="easyui-linkbutton" data-options="iconCls:'icon-cancel'" href="javascript:void(0)" onclick="javascript:$('#addHouseTypeDialog_update').dialog('close');" style="width:80px">关闭</a>
 			</div>
 		</div>
 	</div>
