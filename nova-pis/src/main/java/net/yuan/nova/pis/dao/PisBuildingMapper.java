@@ -15,4 +15,6 @@ public interface PisBuildingMapper {
 	PisBuilding getById(String buildingId);
 
 	List<PisBuilding> getByName(String buildingName);
+	
+	int updateBuilding(PisBuilding pisBuilding);
 }

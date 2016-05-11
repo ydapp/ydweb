@@ -2,22 +2,21 @@ package net.yuan.nova.pis.controller;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import net.sf.json.JSONObject;
 import net.yuan.nova.commons.HttpUtils;
 import net.yuan.nova.core.entity.Attachment;
 import net.yuan.nova.core.entity.Attachment.TableName;
 import net.yuan.nova.core.service.AttachmentService;
-import net.yuan.nova.core.shiro.vo.UserModel;
-import net.yuan.nova.core.vo.DataGridData;
 import net.yuan.nova.core.vo.JsonVo;
 import net.yuan.nova.pis.entity.PisBuilding;
 import net.yuan.nova.pis.entity.PisCity;
@@ -28,12 +27,10 @@ import net.yuan.nova.pis.pagination.PageParam;
 import net.yuan.nova.pis.service.PisBuildingService;
 import net.yuan.nova.pis.service.PisCityService;
 import net.yuan.nova.pis.service.TemplateService;
-
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.beanutils.ConvertUtils;
 import org.apache.commons.beanutils.converters.BigDecimalConverter;
 import org.apache.commons.beanutils.converters.DateConverter;
-import org.apache.commons.beanutils.converters.NumberConverter;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.commons.lang3.time.DateUtils;
@@ -48,8 +45,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
-import org.springframework.web.servlet.ModelAndView;
-
 import com.github.pagehelper.PageInfo;
 
 /**
@@ -188,6 +183,104 @@ public class BuildingController {
 		}
 		return json;
 	}
+	
+	
+	/**
+	 * 修改楼盘信息
+	 * @return
+	 */
+	@RequestMapping("/admin/property/update")
+	@SuppressWarnings("unchecked")
+	public JsonVo<Object> updateProperty(HttpServletRequest request, ModelMap modelMap){
+		log.debug("修改楼盘");
+		JsonVo<Object> json = new JsonVo<Object>();
+		MultipartFile file = null;
+		MultipartHttpServletRequest multipartRequest = null;
+		// 转型为MultipartHttpRequest，如果没有上传图片是会报出异常：ClassCastException
+		log.debug("转换request为附件方式");
+		try {
+			multipartRequest = (MultipartHttpServletRequest) request;
+			file = multipartRequest.getFile("cover");
+		} catch (ClassCastException cce) {
+			log.error("没有上传图片", cce);
+		}
+		if (file == null) {
+			System.out.println("没有附件上传");
+		}
+		Enumeration<String> names = multipartRequest.getParameterNames();
+		while (names.hasMoreElements()){
+			String name = names.nextElement();
+			String value = multipartRequest.getParameter(name);
+			String[] values = multipartRequest.getParameterValues(name);
+			log.debug("name:" + name + " value:" + value + " values:" + values);
+		}
+		PisProperty property = new PisProperty();
+		property.setAddress(multipartRequest.getParameter("address"));
+		property.setArea(multipartRequest.getParameter("area"));
+		property.setAvgPrice(NumberUtils.createInteger(StringUtils.trimToNull(multipartRequest.getParameter("avgPrice"))));
+		property.setCharacteristic(multipartRequest.getParameter("characteristic"));
+		property.setCity(multipartRequest.getParameter("city"));
+		property.setCommission(multipartRequest.getParameter("commission"));
+		property.setCountry(multipartRequest.getParameter("country"));
+		property.setCounty(multipartRequest.getParameter("county"));
+		property.setDecoration(multipartRequest.getParameter("decoration"));
+		try {
+			String deliveryTime = StringUtils.trimToNull(multipartRequest.getParameter("deliveryTime"));
+			if (deliveryTime!= null){
+				DateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");  
+				property.setDeliveryTime(format1.parse(deliveryTime));
+			}
+		} catch (Exception e){
+			log.error("解析deliveryTime失败",e);
+		}
+		property.setGreenRate(NumberUtils.createBigDecimal(StringUtils.trimToNull(multipartRequest.getParameter("greenRate"))));
+		try {
+			String openDate = StringUtils.trimToNull(multipartRequest.getParameter("openDate"));
+			if (openDate != null){
+				DateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");  
+				property.setOpenDate(format1.parse(openDate));
+			}
+		} catch (Exception e){
+			log.error("解析openDate失败", e);
+		}
+		property.setPropertyCompany(multipartRequest.getParameter("propertyCompany"));
+		property.setPropertyId(multipartRequest.getParameter("propertyId"));
+		property.setPropertyName(multipartRequest.getParameter("propertyName"));
+		property.setPropertyType(multipartRequest.getParameter("propertyType"));
+		property.setProvince(multipartRequest.getParameter("province"));
+		property.setRealEstateAgency(multipartRequest.getParameter("realEstateAgency"));
+		property.setRecommendedNumber(NumberUtils.createInteger(StringUtils.trimToNull(multipartRequest.getParameter("recommendedNumber"))));
+		property.setReservationNumber(NumberUtils.createInteger(StringUtils.trimToNull(multipartRequest.getParameter("reservationNumber"))));
+		property.setSubscriptionRules(multipartRequest.getParameter("subscriptionRules"));
+		property.setViewTimes(NumberUtils.createInteger(StringUtils.trimToNull(request.getParameter("viewTimes"))));
+		property.setYears(NumberUtils.createInteger(StringUtils.trimToNull(multipartRequest.getParameter("years"))));
+		property.setPropertyTel(multipartRequest.getParameter("propertyTel"));
+		property.setTrafficFacilities(multipartRequest.getParameter("trafficFacilities"));
+		property.setHouseType(multipartRequest.getParameter("houseType"));
+		
+		if (StringUtils.isEmpty(property.getPropertyName())){
+			json.setSuccess(false);
+			json.setMessage("楼盘名称不能为空");
+		}
+		log.debug("属性设置完毕，开始修改数据库");
+		if (json.validate()) {
+			log.debug("修改业务数据");
+			this.buildingService.update(property);
+			log.debug("保存图片数据");
+			if(null!=file&&!StringUtils.isEmpty(file.getOriginalFilename())){
+				this.attachmentService.addUploadFile(file, file.getOriginalFilename(), property.getPropertyId(), Attachment.TableName.PIS_PROPERTY, Attachment.State.A);
+			}
+			log.debug("修改building数据");
+			PisBuilding building = new PisBuilding();
+			building.setBuildingId(property.getPropertyId());
+			building.setBuildingName(property.getPropertyName());
+			building.setCityId(property.getCity());
+			this.buildingService.updateBuilding(building);
+			json.setSuccess(true);
+			json.setMessage("修改成功");
+		}
+		return json;
+	}
 	/**
 	 * 获取楼盘分页信息
 	 * @return
@@ -322,6 +415,15 @@ public class BuildingController {
 			pisPropertyVo.setFilePath(basePath + "/" + filePath);
 		}
 		Map<String, Object> json = new HashMap<String, Object>();
+		DateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");  
+		 SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+		try {
+			pisPropertyVo.setDeliveryTime(format1.parse(formatter.format(pisPropertyVo.getDeliveryTime())));
+			pisPropertyVo.setOpenDate(format1.parse(formatter.format(pisPropertyVo.getOpenDate())));
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		System.out.println(pisPropertyVo.getOpenDate());
 		json.put("building", pisPropertyVo);
 		log.debug("楼盘名称:" + pisPropertyVo.getPropertyName());
 		modelMap.addAttribute("result", json);

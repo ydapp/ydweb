@@ -32,4 +32,9 @@
     values (#{cityId,jdbcType=VARCHAR}, #{buildingId,jdbcType=VARCHAR}, #{buildingName,jdbcType=VARCHAR}
       )
   </insert>
+  <update id="updateBuilding" parameterType="net.yuan.nova.pis.entity.PisBuilding">
+  	UPDATE PIS_BUILDING SET CITY_ID=#{cityId,jdbcType=VARCHAR},
+  							BUILDING_NAME=#{buildingName,jdbcType=VARCHAR}
+  							WHERE BUILDING_ID=#{buildingId,jdbcType=VARCHAR}
+  </update>
 </mapper>

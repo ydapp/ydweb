@@ -30,6 +30,14 @@ public class PisBuildingService {
 		}
 		return this.pisBuildingMapper.insert(pisBuilding);
 	}
+	
+	/**
+	 * 根据楼盘ID修改关联信息
+	 * @return
+	 */
+	public int updateBuilding(PisBuilding pisBuilding){
+		return this.pisBuildingMapper.updateBuilding(pisBuilding);
+	}
 
 	/**
 	 * 获取某城市的楼盘信息
