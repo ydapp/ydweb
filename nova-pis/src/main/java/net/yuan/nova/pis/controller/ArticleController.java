@@ -78,6 +78,42 @@ public class ArticleController {
 		}
 		return json;
 	}
+	/**
+	 * 修改数据
+	 * @return
+	 */
+	@RequestMapping("/admin/article/update")
+	public Object updateSelective(HttpServletRequest request, ModelMap modelMap){
+		String id = request.getParameter("id");
+		String tile = request.getParameter("tile");
+		String  cover = request.getParameter("cover");
+		String content = request.getParameter("editorValue");
+		JsonVo<Object> json = new JsonVo<Object>();
+		MultipartFile file = null;
+		MultipartHttpServletRequest multipartRequest = null;
+		// 转型为MultipartHttpRequest，如果没有上传图片是会报出异常：ClassCastException
+		try {
+			multipartRequest = (MultipartHttpServletRequest) request;
+			file = multipartRequest.getFile("cover");
+		} catch (ClassCastException cce) {
+			log.error("没有上传图片", cce);
+		}
+		if (null!=file&&file.getSize()==0) {
+			System.out.println("没有附件上传");
+		}
+		if (StringUtils.isBlank(tile)) {
+			json.putError("tile", "咨询标题不能为空");
+		}
+		if (StringUtils.isBlank(content)) {
+			json.putError("content", "咨询内容不能为空");
+		}
+		if (json.validate()) {
+			pisArticleService.updateAricle(id,tile, content,cover, file);
+			json.setSuccess(true);
+			json.setMessage("修改成功");
+		}
+		return json;
+	}
 
 	@RequestMapping("/admin/articles")
 	public Object selectArticleList(HttpServletRequest request, ModelMap modelMap, HttpServletResponse response) {

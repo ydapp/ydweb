@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.UUID;
 
 import net.yuan.nova.core.entity.Attachment;
+import net.yuan.nova.core.service.AttachmentBlobService;
 import net.yuan.nova.core.service.AttachmentService;
 import net.yuan.nova.pis.dao.PisArticleMapper;
 import net.yuan.nova.pis.entity.PisArticle;
@@ -27,6 +28,9 @@ public class PisArticleService {
 
 	@Autowired
 	private AttachmentService attachmentService;
+	
+	@Autowired
+	private AttachmentBlobService attachmentBlobService;
 
 	/**
 	 * 插入数据
@@ -57,6 +61,21 @@ public class PisArticleService {
 		article.setCover(attachment.getAppAtchId());
 		return this.insertSelective(article);
 	}
+	
+	public int updateAricle(String id,String tile,String content,String cover,MultipartFile file){
+		PisArticle article = new PisArticle();
+		article.setTile(tile);
+		article.setContent(content);
+		article.setId(id);
+		if(null!=file&&file.getSize()>0){
+			attachmentService.deleteAttachment(cover);
+			attachmentBlobService.cleanAttachmentBlob();
+			Attachment attachment = attachmentService
+					.addUploadFile(file, article.getId(), Attachment.TableName.PIS_ARTICLE);
+					article.setCover(attachment.getAppAtchId());
+		}
+		return this.updateByPrimaryKeySelective(article);
+	}
 
 	public PisArticle selectByPrimaryKey(String id) {
 		return pisArticleMapper.selectByPrimaryKey(id);
@@ -65,4 +84,7 @@ public class PisArticleService {
 		PageHelper.startPage(page, pageSize);
 		return pisArticleMapper.selectArticleList();
 	} 
+	public int updateByPrimaryKeySelective(PisArticle record){
+		return this.pisArticleMapper.updateByPrimaryKeySelective(record);
+	}
 }
