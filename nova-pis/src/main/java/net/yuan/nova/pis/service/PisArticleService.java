@@ -14,6 +14,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.github.pagehelper.PageHelper;
@@ -86,5 +88,30 @@ public class PisArticleService {
 	} 
 	public int updateByPrimaryKeySelective(PisArticle record){
 		return this.pisArticleMapper.updateByPrimaryKeySelective(record);
+	}
+	
+	/**
+	 * 执行删除咨询信息
+	 * @return true:操作成功,false:操作失败
+	 */
+	@Transactional(rollbackFor = { Exception.class })  
+	public boolean deleteByPrimaryKey(String id,String appAtchId ){
+		//删除咨询信息
+		int ret_01 = this.pisArticleMapper.deleteByPrimaryKey(id);
+		if(ret_01<1){
+			log.debug("删除咨询关联信息异常");
+			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+			return false;
+		}
+		//删除咨询信息关联信息
+		int ret_02 = this.attachmentService.deleteAttachment(appAtchId);
+		if(ret_02<0){
+			log.debug("删除咨询关联信息异常");
+			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+			return false;
+		}
+		//删除咨询信息照片表
+		attachmentBlobService.cleanAttachmentBlob();
+		return true;
 	}
 }

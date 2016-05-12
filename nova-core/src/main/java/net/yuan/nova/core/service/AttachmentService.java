@@ -223,8 +223,8 @@ public class AttachmentService {
 	 * 
 	 * @param appAtchId
 	 */
-	public void deleteAttachment(String appAtchId) {
-		attachmentDao.deleteAttachment(appAtchId);
+	public int deleteAttachment(String appAtchId) {
+		return this.attachmentDao.deleteAttachment(appAtchId);
 	}
 
 	/**

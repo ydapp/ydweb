@@ -213,5 +213,23 @@ public class ArticleController {
 		String id = request.getParameter("id");
 		return articleDetail(id, request, modelAndView);
 	}
+	/**
+	 * 执行删除操作
+	 * @return
+	 */
+	@SuppressWarnings("rawtypes")
+	@RequestMapping("/admin/article/remove")
+	public JsonVo removeArticle(HttpServletRequest request, HttpServletResponse response){
+		JsonVo json = new JsonVo();
+		//获取主键ID
+		String id=request.getParameter("id");
+		//获取与附件照片表关联主键
+		String cover = request.getParameter("cover");
+		//执行删除操作
+		boolean flag = this.pisArticleService.deleteByPrimaryKey(id,cover);
+		//设置返回值
+		json.setSuccess(flag);
+		return json;
+	}
 
 }
