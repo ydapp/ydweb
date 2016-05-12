@@ -411,7 +411,9 @@ public class RecommendController {
 	private String getUserName(String userId) {
 		if (!this.users.containsKey(userId)) {
 			PisUser user = this.userService.findUserById(userId);
-			this.users.put(userId, user.getNick() + "(" + user.getTel() + ")");
+			if(null!=user){
+				this.users.put(userId, user.getNick() + "(" + user.getTel() + ")");
+			}
 		}
 		return this.users.get(userId);
 	}
