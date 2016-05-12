@@ -287,11 +287,11 @@
 	$('#remove').click(function(){
 		var row = $('#user_grid').datagrid('getSelected');
 		if(null==row){
-			alert("请选中要删除的用户!");
+			$.messager.alert('提示信息','请选择需要删除的用户！','warning');
 			return;
 		}
 		if("${CURRENT_USER.userId}"==row.userId){
-			alert("无法删除当前登录用户!");
+			$.messager.alert('提示信息','无法删除当前登录用户！','warning');
 			return;
 		}
 		$.messager.confirm("操作提示", "您确定要执行删除操作吗？", function (data) {  
@@ -303,11 +303,11 @@
 	        			cache : false,
 	        			success: function(data){
 	        				if(true == data.success){
-	        					alert("操作成功!");
 	        					$('#user_grid').datagrid('reload');
+	        					$.messager.alert('提示信息','操作成功!');
 	        				}else{
-	        					alert("操作失败!");
 	        					$('#user_grid').datagrid('reload');
+	        					$.messager.alert('提示信息','操作失败!');
 	        				}
 	        			}
 	        		});
