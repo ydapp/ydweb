@@ -180,23 +180,27 @@
 			 $.messager.alert('温馨提示',"请选中需要删除的咨询信息!");
 			 return;
 		  }
-		 $.ajax({
-			 url:'<%=path%>/admin/article/remove.json',
-			 dataType: "json",
-			 data : 'id=' + row.id+'&cover='+row.cover,
-		     cache : false,
-		     success:function(data){
-		    	if(null!=data){
-		    		if(true==data.success){
-		    			$('#article_grid').datagrid('reload');
-    					$.messager.alert('提示信息','操作成功!');
-		    		}else{
-		    			$('#article_grid').datagrid('reload');
-    					$.messager.alert('提示信息','操作失败!');
-		    		}
-		    	} 
-		     }
-		 });
+		  $.messager.confirm("操作提示", "您确定要执行删除操作吗？", function (data) { 
+			  if (data){ 
+				  $.ajax({
+						 url:'<%=path%>/admin/article/remove.json',
+						 dataType: "json",
+						 data : 'id=' + row.id+'&cover='+row.cover,
+					     cache : false,
+					     success:function(data){
+					    	if(null!=data){
+					    		if(true==data.success){
+					    			$('#article_grid').datagrid('reload');
+			    					$.messager.alert('提示信息','操作成功!');
+					    		}else{
+					    			$('#article_grid').datagrid('reload');
+			    					$.messager.alert('提示信息','操作失败!');
+					    		}
+					    	} 
+					     }
+					 });				  
+			  }
+		  });
 	});
 </script>
 </html>
