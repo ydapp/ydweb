@@ -544,6 +544,34 @@ public class PisUserController {
 	}
 	
 	/**
+	 * 通过经纪公司ID获取公司下的通讯录中的用户
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@ResponseBody
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@RequestMapping(value = "/api/getUserByBrokingFirm", method=RequestMethod.GET)
+	public ModelMap getUserByBrokingFirm(HttpServletRequest request, HttpServletResponse response,ModelMap modelMap){
+		PageParam param = DataGridHepler.parseRequest(request);
+		//获取经济公司主键id
+		String brokingFirmId = request.getParameter("brokingFirmId");
+		//通过经济公司主键获取该公司下的用户ID
+		List<PisUserExtend>userExtendList = this.userExtendService.selectByBrokingfirmId(param.getPage(), param.getPageSize(),brokingFirmId);
+		//创建存储用户集合
+		List<PisUser> pisUserList = new ArrayList<>();
+		//判断集合不为空
+		if(null!=userExtendList&&userExtendList.size()>0){
+			//遍历循环获取用户ID
+			for (PisUserExtend pisUserExtend : userExtendList) {
+				//组装集合
+				pisUserList.add(this.pisUserService.findUserById(pisUserExtend.getUserId()));
+			}
+		}
+		return DataGridHepler.addDataGrid(pisUserList, new PageInfo(userExtendList).getTotal(),modelMap);
+	}
+	
+	/**
 	 * 通过用户名进行排序
 	 * @return
 	 */

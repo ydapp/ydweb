@@ -1,8 +1,12 @@
 package net.yuan.nova.pis.service;
 
+import java.util.List;
+
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.github.pagehelper.PageHelper;
 
 import net.yuan.nova.pis.dao.PisUserExtendMapper;
 import net.yuan.nova.pis.dao.PisUserMapper;
@@ -47,5 +51,14 @@ public class PisUserExtendService {
 	 */
 	public int updateByUserId(PisUserExtend userExtend){
 		return this.mapper.updateByUserId(userExtend);
+	}
+	/**
+	 * 通过经济公司主键ID获取该公司下的用户ID
+	 * @param brokingFirmId
+	 * @return
+	 */
+	public List<PisUserExtend> selectByBrokingfirmId(int page, int pageSize,String brokingFirmId){
+		PageHelper.startPage(page, pageSize);
+		return this.mapper.selectByBrokingfirmId(brokingFirmId);
 	}
 }
