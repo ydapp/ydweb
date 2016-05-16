@@ -36,7 +36,7 @@
   <update id="updateByUserId" parameterType="net.yuan.nova.pis.entity.PisUserExtend">
   		UPDATE PIS_USER_EXTEND SET BUILDING_ID=#{buildingId,jdbcType=VARCHAR}, BROKINGFIRM_ID=#{brokingFirmId,jdbcType=VARCHAR} WHERE USER_ID=#{userId,jdbcType=VARCHAR}
   </update>
-  <select id="selectByBrokingfirm_Id" resultMap="BaseResultMap" parameterType="java.lang.String">
+  <select id="selectByBrokingfirmId" resultMap="BaseResultMap" parameterType="java.lang.String">
   	  SELECT DISTINCT USER_ID
   	 FROM PIS_USER_EXTEND
   	 WHERE BROKINGFIRM_ID = #{brokingFirm_Id,jdbcType=VARCHAR}
