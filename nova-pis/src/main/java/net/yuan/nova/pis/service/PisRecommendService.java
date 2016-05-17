@@ -9,8 +9,6 @@ import net.yuan.nova.pis.dao.PisRecommendMapper;
 import net.yuan.nova.pis.entity.PisBrokingFirm;
 import net.yuan.nova.pis.entity.PisBuilding;
 import net.yuan.nova.pis.entity.PisCity;
-import net.yuan.nova.pis.entity.PisProject;
-import net.yuan.nova.pis.entity.PisProperty;
 import net.yuan.nova.pis.entity.PisRecommend;
 import net.yuan.nova.pis.entity.PisRecommend.Status;
 import net.yuan.nova.pis.entity.PisUser;
@@ -181,7 +179,6 @@ public class PisRecommendService {
 		recommend.setStatus(PisRecommend.Status.present);
 		return this.recommendMapper.customerPresent(recommend);
 	}
-
 	public List<PisRecommendVo> getMyPresent(String presentUserId) {
 		List<PisRecommend> myPresent = this.recommendMapper.getMyPresent(presentUserId);
 		if (myPresent == null) {
@@ -245,6 +242,15 @@ public class PisRecommendService {
 		return this.recommendMapper.getMyConfirm(confirmUserId);
 	}
 	/**
+	 * 根据报备状态和推荐用户ID获取报备数据
+	 * @param confirmUserId
+	 * @param status
+	 * @return
+	 */
+	public List<PisRecommend> getMyConfirmByStatus(String confirmUserId,String status){
+		return this.recommendMapper.getMyConfirmByStatus(confirmUserId, status);
+	}
+	/**
 	 * 得到所有报备信息，一般用于生成excell用的
 	 * @return
 	 */
@@ -287,5 +293,33 @@ public class PisRecommendService {
 		PageHelper.startPage(page, pageSize);
 		return this.recommendMapper.getCustomer();
 	}
-	
+	/**
+	 * 根据报备状态和客户用户ID获取报备数据
+	 * @param presentUserId
+	 * @param status
+	 * @return
+	 */
+	public  List<PisRecommendVo> getMyPresentByStatus(String presentUserId,String status){
+		//通过客户ID与状态获取在办报备信息
+		List<PisRecommend> myPresent = this.recommendMapper.getMyPresentByStatus(presentUserId, status);
+	    if((null==myPresent)||(null!=myPresent&&myPresent.size()==0)){
+	    	return null;
+	    }
+		List<PisRecommendVo> list = new ArrayList<PisRecommendVo>();
+		for (PisRecommend pisRecommend : myPresent) {
+			PisRecommendVo pisRecommendVo = new PisRecommendVo(pisRecommend);
+			// 获得城市数据
+			PisCity city = pisCityService.getCityById(pisRecommend.getCityId());
+			if (city != null) {
+				pisRecommendVo.setCityName(city.getCityName());
+			}
+			// 楼盘名称
+			PisBuilding building = pisBuildingService.getById(pisRecommend.getBuildingId());
+			if (building != null) {
+				pisRecommendVo.setBuildingName(building.getBuildingName());
+			}
+			list.add(pisRecommendVo);
+		}
+		return list;
+	}
 }

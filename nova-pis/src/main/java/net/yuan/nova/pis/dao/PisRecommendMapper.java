@@ -19,7 +19,9 @@ public interface PisRecommendMapper {
 	int recommendConfirm(PisRecommend recommend);
 	int getCustomerByTodayAndTel(@Param("customerTel") String customerTel,@Param("refreeId") String refreeId); 
 	List<PisRecommend> getMyPresent(@Param("presentUserId") String presentUserId);
+	List<PisRecommend> getMyPresentByStatus(@Param("presentUserId") String presentUserId,@Param("status") String status);
 	List<PisRecommend> getMyConfirm(@Param("confirmUserId") String confirmUserId);
+	List<PisRecommend> getMyConfirmByStatus(@Param("confirmUserId") String confirmUserId,@Param("status") String status);
 	List<PisRecommend> getAll();
 	List<PisRecommend> getByBrokingFirmId(@Param("brokingFirmId") String brokingFirmId);
 	List<PisRecommend> getBySaleman(@Param("userId") String userId);

@@ -4,12 +4,9 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.sf.json.JSONObject;
@@ -206,6 +203,43 @@ public class RecommendController {
 		jsonVo.setResult(list);
 		return this.getResponse(jsonVo, modelMap);
 	}
+	/**
+	 * 获取报备状态非“报备确认”的报备集合
+	 * @param presentUserId
+	 * @param request
+	 * @param modelMap
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/api/recommends/presented/doing/{presentUserId}", method = RequestMethod.GET)
+	public  ModelMap getMyDoingPresent(@PathVariable String presentUserId, HttpServletRequest request, ModelMap modelMap){
+		JsonVo<Object> jsonVo = new JsonVo<Object>();
+		log.debug("presentUserId:" + presentUserId);
+		//组装状态非“确认报备”
+		String status = "'"+PisRecommend.Status.present+"','"+PisRecommend.Status.pledges+"','"+PisRecommend.Status.order+"','"+PisRecommend.Status.buy+"'";
+		//获取自己提交的并且状态非“报备确认”的报备集合
+		List<PisRecommendVo> list =this.recommendService.getMyPresentByStatus(presentUserId, status);
+		jsonVo.setResult(list);
+		return this.getResponse(jsonVo, modelMap);
+	}
+	
+	/**
+	 * 获取报备状态“报备确认”的报备列表
+	 * @param presentUserId
+	 * @param request
+	 * @param modelMap
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/api/recommends/presented/done/{presentUserId}", method = RequestMethod.GET)
+	public ModelMap getMyDonePresent(@PathVariable String presentUserId, HttpServletRequest request, ModelMap modelMap){
+		JsonVo<Object> jsonVo = new JsonVo<Object>();
+		log.debug("presentUserId:" + presentUserId);
+		//获取自己提交的并且状态“报备确认”的报备集合
+		List<PisRecommendVo> list = this.recommendService.getMyPresentByStatus(presentUserId,"'"+PisRecommend.Status.confirm+"'");
+		jsonVo.setResult(list);
+		return this.getResponse(jsonVo, modelMap);
+	}
 
 	/**
 	 * 驻场专员得到需要确认的列表
@@ -264,6 +298,39 @@ public class RecommendController {
 		jsonVo.setResult(list);
 		return this.getResponse(jsonVo, modelMap);
 	}
+	/**
+	 * 通过推荐人ID获取状态非“报备确认”报备集合
+	 * @param confirmUserId
+	 * @param request
+	 * @param modelMap
+	 * @return
+	 */
+	 @ResponseBody
+    @RequestMapping(value = "/api/recommends/confirmed/doing/{confirmUserId}", method = RequestMethod.GET)
+	public ModelMap getMyDoingConfirm(@PathVariable String confirmUserId, HttpServletRequest request, ModelMap modelMap){
+		JsonVo<Object> jsonVo = new JsonVo<Object>();
+		//组装状态非“确认报备”
+		String status = "'"+PisRecommend.Status.pledges+"','"+PisRecommend.Status.order+"','"+PisRecommend.Status.buy+"'";
+		//通过推荐用户ID和状态获取非“确认报备”报备集合信息
+		List<PisRecommend> list = this.recommendService.getMyConfirmByStatus(confirmUserId, status);
+		jsonVo.setResult(list);
+		return this.getResponse(jsonVo, modelMap);
+	}
+	 /**
+	  * 通过推荐人ID获取状态“确认报备”报备集合
+	  * @param confirmUserId
+	  * @param request
+	  * @param modelMap
+	  * @return
+	  */
+	 @ResponseBody
+	 @RequestMapping(value = "/api/recommends/confirmed/done/{confirmUserId}", method = RequestMethod.GET)
+	 public  ModelMap getMyDoneConfirm(@PathVariable String confirmUserId, HttpServletRequest request, ModelMap modelMap){
+			JsonVo<Object> jsonVo = new JsonVo<Object>();
+			List<PisRecommend> list = this.recommendService.getMyConfirmByStatus(confirmUserId, "'"+PisRecommend.Status.confirm+"'");
+			jsonVo.setResult(list);
+			return this.getResponse(jsonVo, modelMap);
+	 }
 
 	private ModelMap getResponse(JsonVo<Object> jsonVo, ModelMap modelMap) {
 		jsonVo.validate();
@@ -288,13 +355,14 @@ public class RecommendController {
 		return modelMap;
 	}
 
+	@SuppressWarnings("resource")
 	@ResponseBody
 	@RequestMapping(value = "/api/excell", method = RequestMethod.GET)
 	public ModelMap downAsExcell(HttpServletRequest request, ModelMap modelMap, HttpServletResponse response) {
 		List<PisRecommend> list = null;
 		User user = CurrentUserUtil.getShiroUser();
 		log.debug("根据用户类型确定导出范围");
-		PisUser pisUser = this.userService.findUserById(user.getUserId());
+		//PisUser pisUser = this.userService.findUserById(user.getUserId());
 		PisUserGroup group = this.userService.getPisUserGroup(user.getUserId());
 		if (group == null){
 			try {
@@ -408,6 +476,7 @@ public class RecommendController {
 		return new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date);
 	}
 
+	@SuppressWarnings("static-access")
 	private String getUserName(String userId) {
 		if (!this.users.containsKey(userId)) {
 			PisUser user = this.userService.findUserById(userId);
@@ -417,7 +486,7 @@ public class RecommendController {
 		}
 		return this.users.get(userId);
 	}
-
+	@SuppressWarnings("static-access")
 	private String getCityName(String cityId) {
 		if (!this.cities.containsKey(cityId)) {
 			PisCity city = this.pisCityService.getCityById(cityId);
@@ -425,7 +494,7 @@ public class RecommendController {
 		}
 		return this.cities.get(cityId);
 	}
-
+	@SuppressWarnings("static-access")
 	private String getBuildingName(String buildingId) {
 		if (!this.builds.containsKey(buildingId)) {
 			PisBuilding building = this.buildingService.getById(buildingId);

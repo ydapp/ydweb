@@ -155,4 +155,22 @@
   <select id="getCustomerByTodayAndTel"  resultType="java.lang.Integer" parameterType="java.lang.String" >
   	SELECT COUNT(1) NUM FROM PIS_RECOMMEND T WHERE TO_CHAR(T.RECOMMEND_DATE,'YYYYMMDD')=TO_CHAR(SYSDATE,'YYYYMMDD')  AND T.CUSTOMER_TEL=#{customerTel,jdbcType=VARCHAR} AND T.RECOMMEND_ID=#{refreeId,jdbcType=VARCHAR}
   </select> 
+  <select id="getMyPresentByStatus"  resultMap="BaseResultMap" parameterType="java.lang.String" >
+      SELECT 
+      <include refid="Base_Column_List" />
+    FROM PIS_RECOMMEND
+    WHERE CUSTOMER_PRESENT_USER_ID = #{presentUserId, jdbcType=VARCHAR} 
+    <if test="status!=''">
+     	AND STATUS in (${status})
+    </if>
+  </select>
+   <select id="getMyConfirmByStatus"  resultMap="BaseResultMap" parameterType="java.lang.String" >
+      SELECT 
+      <include refid="Base_Column_List" />
+    FROM PIS_RECOMMEND
+    WHERE RECOMMEND_CONFIRM_USERID = #{confirmUserId, jdbcType=VARCHAR}
+    <if test="status!=''">
+    	AND STATUS IN(${status})
+    </if>
+  </select>
 </mapper>
