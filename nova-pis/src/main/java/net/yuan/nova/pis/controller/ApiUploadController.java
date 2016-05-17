@@ -107,8 +107,8 @@ public class ApiUploadController {
 
 	@PostConstruct
 	public void cleanAttachment() {
-		log.debug("clean attachment");
-		attachmentService.cleanAttachment(Attachment.TableName.NULL_TALBE);
+		log.debug("no clean attachment");
+		//attachmentService.cleanAttachment(Attachment.TableName.NULL_TALBE);
 	}
 
 }
