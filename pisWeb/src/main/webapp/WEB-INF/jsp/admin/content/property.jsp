@@ -87,7 +87,7 @@
 							<td>
 								<div class="fitem">
 									<label><font color="red">*</font>封面图片：</label> <input
-										name="cover" class="easyui-filebox" style="width: 400px;" data-options="prompt:'选择一张图片'">
+										name="cover" id="cover_add" class="easyui-filebox" style="width: 400px;" data-options="prompt:'选择一张图片'">
 								</div>
 							</td>
 							<td>

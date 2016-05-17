@@ -219,6 +219,7 @@ public class RecommendController {
 		String status = "'"+PisRecommend.Status.present+"','"+PisRecommend.Status.pledges+"','"+PisRecommend.Status.order+"','"+PisRecommend.Status.buy+"'";
 		//获取自己提交的并且状态非“报备确认”的报备集合
 		List<PisRecommendVo> list =this.recommendService.getMyPresentByStatus(presentUserId, status);
+		//装载数据集合
 		jsonVo.setResult(list);
 		return this.getResponse(jsonVo, modelMap);
 	}
@@ -237,6 +238,7 @@ public class RecommendController {
 		log.debug("presentUserId:" + presentUserId);
 		//获取自己提交的并且状态“报备确认”的报备集合
 		List<PisRecommendVo> list = this.recommendService.getMyPresentByStatus(presentUserId,"'"+PisRecommend.Status.confirm+"'");
+		//装载数据集合
 		jsonVo.setResult(list);
 		return this.getResponse(jsonVo, modelMap);
 	}
@@ -313,6 +315,7 @@ public class RecommendController {
 		String status = "'"+PisRecommend.Status.pledges+"','"+PisRecommend.Status.order+"','"+PisRecommend.Status.buy+"'";
 		//通过推荐用户ID和状态获取非“确认报备”报备集合信息
 		List<PisRecommend> list = this.recommendService.getMyConfirmByStatus(confirmUserId, status);
+		//装载数据集合
 		jsonVo.setResult(list);
 		return this.getResponse(jsonVo, modelMap);
 	}
@@ -327,7 +330,9 @@ public class RecommendController {
 	 @RequestMapping(value = "/api/recommends/confirmed/done/{confirmUserId}", method = RequestMethod.GET)
 	 public  ModelMap getMyDoneConfirm(@PathVariable String confirmUserId, HttpServletRequest request, ModelMap modelMap){
 			JsonVo<Object> jsonVo = new JsonVo<Object>();
+			//通过推荐人ID和状态获取“确认报备”集合信息
 			List<PisRecommend> list = this.recommendService.getMyConfirmByStatus(confirmUserId, "'"+PisRecommend.Status.confirm+"'");
+			//装载数据集合
 			jsonVo.setResult(list);
 			return this.getResponse(jsonVo, modelMap);
 	 }
