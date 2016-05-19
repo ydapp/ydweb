@@ -104,7 +104,7 @@ public class BuildingController {
 		MultipartFile file = null;
 		MultipartHttpServletRequest multipartRequest = null;
 		// 转型为MultipartHttpRequest，如果没有上传图片是会报出异常：ClassCastException
-		log.debug("转换request为附件方式");
+		
 		try {
 			multipartRequest = (MultipartHttpServletRequest) request;
 			file = multipartRequest.getFile("cover");

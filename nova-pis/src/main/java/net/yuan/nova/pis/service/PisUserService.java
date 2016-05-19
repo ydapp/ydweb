@@ -1,15 +1,19 @@
 package net.yuan.nova.pis.service;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 import net.yuan.nova.core.shiro.PasswordHelper;
 import net.yuan.nova.core.shiro.vo.User;
+import net.yuan.nova.pis.dao.PisUserInfoMapper;
 import net.yuan.nova.pis.dao.PisUserMapper;
 import net.yuan.nova.pis.entity.PisUser;
 import net.yuan.nova.pis.entity.PisUserGroup;
 import net.yuan.nova.pis.entity.PisUserGroupShipKey;
+import net.yuan.nova.pis.entity.PisUserInfo;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -24,6 +28,8 @@ public class PisUserService {
 
 	@Autowired
 	private PisUserMapper pisUserMapper;
+	@Autowired
+	private PisUserInfoMapper pisUserInfoMapper;
 	@Autowired
 	private PasswordHelper passwordHelper;
 	@Autowired
@@ -173,7 +179,28 @@ public class PisUserService {
 		return pisUserMapper.updateUserPwd(pisUser)>0?true:false;
 	}
 	
-	
+	/**
+	 * 维护用户个人信息
+	 * @param pisUserInfo
+	 * @param pisUser
+	 * @return
+	 */
+	@Transactional(rollbackFor = { Exception.class })  
+	public boolean updateUserAndUserInfo(PisUserInfo pisUserInfo,PisUser pisUser){
+		//执行用户表修改
+		int ret_01 = this.pisUserMapper.updateByPrimaryKeySelective(pisUser);
+		if(ret_01<1){
+			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+			return false;
+		}
+		//执行用户信息表修改
+		int ret_02 = this.pisUserInfoMapper.updateByPrimaryKeySelective(pisUserInfo);
+		if(ret_02<0){
+			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+			return false;
+		}
+		return true;
+	}
 	/**
 	 * 执行用户删除
 	 * @param userId
@@ -188,7 +215,7 @@ public class PisUserService {
 			return false;
 		}
 		//删除用户基本信息
-		int ret_02=this.pisUserMapper.deletePisUserInfoByUserId(userId);
+		int ret_02=this.pisUserInfoMapper.deleteByPrimaryKey(userId);
 		if(ret_02<0){
 			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
 			return false;

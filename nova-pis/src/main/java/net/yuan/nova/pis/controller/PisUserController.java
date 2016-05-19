@@ -5,9 +5,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.UUID;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.yuan.nova.commons.SystemConstant;
+import net.yuan.nova.core.entity.Attachment;
+import net.yuan.nova.core.service.AttachmentBlobService;
+import net.yuan.nova.core.service.AttachmentService;
 import net.yuan.nova.core.shiro.CurrentUserUtil;
 import net.yuan.nova.core.shiro.PubUserAuthenticationToken;
 import net.yuan.nova.core.shiro.vo.User;
@@ -20,12 +25,14 @@ import net.yuan.nova.pis.entity.PisUser;
 import net.yuan.nova.pis.entity.PisUserExtend;
 import net.yuan.nova.pis.entity.PisUserGroup;
 import net.yuan.nova.pis.entity.PisUserGroupShipKey;
+import net.yuan.nova.pis.entity.PisUserInfo;
 import net.yuan.nova.pis.entity.vo.UserInfoVo;
 import net.yuan.nova.pis.pagination.DataGridHepler;
 import net.yuan.nova.pis.pagination.PageParam;
 import net.yuan.nova.pis.service.PisBrokingFirmService;
 import net.yuan.nova.pis.service.PisBuildingService;
 import net.yuan.nova.pis.service.PisUserExtendService;
+import net.yuan.nova.pis.service.PisUserInfoService;
 import net.yuan.nova.pis.service.PisUserService;
 import net.yuan.nova.pis.service.UserGroupService;
 import net.yuan.nova.pis.service.UserGroupShipKeyService;
@@ -46,6 +53,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.github.pagehelper.PageInfo;
 
@@ -57,7 +66,13 @@ public class PisUserController {
 	@Autowired
 	private PisUserService pisUserService;
 	@Autowired
+	private PisUserInfoService pisUserInfoService;
+	@Autowired
 	private UserGroupShipKeyService keyService;
+	@Autowired
+    private AttachmentService attachmentService;
+	@Autowired
+	private AttachmentBlobService attachmentBlobService;
 	@Autowired
 	private UserGroupService groupService;
 	@Autowired
@@ -569,6 +584,89 @@ public class PisUserController {
 			}
 		}
 		return DataGridHepler.addDataGrid(pisUserList, new PageInfo(userExtendList).getTotal(),modelMap);
+	}
+	
+	/**
+	 * 根据用户ID获取用户信息
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/api/getUserInfoByUserId", method=RequestMethod.GET)
+	public UserModel getUserInfoByUserId(HttpServletRequest request, HttpServletResponse response){
+		//获取用户ID
+		String userId = request.getParameter("userId");
+		//根据用户ID获取用户信息
+		PisUser pisUser = this.pisUserService.findUserById(userId);
+		//根据用户ID获取用户基本信息
+		PisUserInfo pisUserInfo = this.pisUserInfoService.findUserInfoById(userId);
+		UserModel  vo = new UserModel();
+		vo.setTel(null!=pisUser?pisUser.getTel():"");
+		vo.setUserIcon(null!=pisUser?pisUser.getUserIcon():"");
+		vo.setUserId(userId);
+		vo.setIdNumber(null!=pisUserInfo?pisUserInfo.getIdNumber():"");
+		vo.setName(null!=pisUserInfo?pisUserInfo.getName():"");
+		vo.setSex(null!=pisUserInfo?pisUserInfo.getSex():"");
+		vo.setAddress(null!=pisUserInfo?pisUserInfo.getAddress():"");
+		vo.setFrontPhoto(null!=pisUserInfo?pisUserInfo.getFrontPhoto():"");
+		return vo;
+	}
+	
+	/**
+	 * 维护用户以及用户基本信息
+	 * @param userModel
+	 * @param modelMap
+	 * @return
+	 */
+	@RequestMapping("/api/updateUserAndUserInfo")
+	public JsonVo<UserModel> updateUserAndUserInfo(HttpServletRequest request){
+		JsonVo<UserModel> json = new JsonVo<UserModel>();
+		log.debug("获取用户个人头像");
+		MultipartFile file_01 = null;
+		MultipartFile file_02 = null;
+		MultipartHttpServletRequest multipartRequest = null;
+		String userIcon=UUID.randomUUID().toString();
+		String frontPhoto=UUID.randomUUID().toString();
+		log.debug("转换request为附件方式");
+		try {
+			multipartRequest = (MultipartHttpServletRequest) request;
+			file_01 = multipartRequest.getFile("userIcon");
+			file_02 = multipartRequest.getFile("cardPhoto");
+		} catch (ClassCastException cce) {
+			log.error("没有上传图片", cce);
+		}
+		//组装参数
+		PisUser pisUser = new PisUser();
+		pisUser.setUserId(multipartRequest.getParameter("userId"));
+		pisUser.setTel(multipartRequest.getParameter("tel"));
+		pisUser.setUserIcon(userIcon);
+		PisUserInfo pisUserInfo  = new PisUserInfo();
+		pisUserInfo.setFrontPhoto(frontPhoto);
+		pisUserInfo.setName(multipartRequest.getParameter("name"));
+		pisUserInfo.setIdNumber(multipartRequest.getParameter("cardId"));
+		pisUserInfo.setSex(multipartRequest.getParameter("sex"));
+		pisUserInfo.setAddress(multipartRequest.getParameter("address"));
+		pisUserInfo.setUserId(multipartRequest.getParameter("userId"));
+		boolean flag = this.pisUserService.updateUserAndUserInfo(pisUserInfo, pisUser);
+		if(flag){
+			String oldUserIcon = multipartRequest.getParameter("userIcon");
+			String oldFrontPhoto = multipartRequest.getParameter("frontPhoto");
+			log.debug("保存用户个人头像数据");
+			if(null!=file_01&&!StringUtils.isEmpty(file_01.getOriginalFilename())){
+			   this.attachmentService.deleteAttachmentsByKindId(oldUserIcon, Attachment.TableName.PIS_USER);
+			   this.attachmentBlobService.cleanAttachmentBlob();
+			   this.attachmentService.addUploadFile(file_01, file_01.getOriginalFilename(), userIcon,Attachment.TableName.PIS_USER,Attachment.State.A);
+			}
+			log.debug("保存用户身份证正面照片数据");
+			if(null!=file_02&&!StringUtils.isEmpty(file_02.getOriginalFilename())){
+				  this.attachmentService.deleteAttachmentsByKindId(oldFrontPhoto, Attachment.TableName.PIS_USER_INFO);
+				  this.attachmentBlobService.cleanAttachmentBlob();
+				 this.attachmentService.addUploadFile(file_02, file_02.getOriginalFilename(), frontPhoto,Attachment.TableName.PIS_USER_INFO,Attachment.State.A);
+			}
+		}
+		json.setSuccess(flag);
+		return json;
 	}
 	
 	/**

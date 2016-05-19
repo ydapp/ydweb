@@ -1,11 +1,9 @@
 package net.yuan.nova.pis.dao;
 
-import net.yuan.nova.core.shiro.vo.UserModel;
 import net.yuan.nova.pis.entity.PisUser;
+import net.yuan.nova.pis.entity.PisUserInfo;
 
 import java.util.List;
-
-import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -110,6 +108,7 @@ public interface PisUserMapper {
 	public PisUser selectUserByTelFaultIs(PisUser user);
 
 	public PisUser selectUserByEmail(String email);
+	
 
 	/**
 	 * 密码重置

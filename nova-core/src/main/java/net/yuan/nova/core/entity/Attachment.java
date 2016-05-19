@@ -147,7 +147,7 @@ public class Attachment implements Serializable {
 	 * 
 	 */
 	public static enum TableName {
-		NULL_TALBE,PIS_ARTICLE, PIS_PROPERTY
+		NULL_TALBE,PIS_ARTICLE, PIS_PROPERTY,PIS_USER,PIS_USER_INFO
 	}
 
 	public static enum State {

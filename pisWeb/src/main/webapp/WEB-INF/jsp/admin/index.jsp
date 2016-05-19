@@ -63,8 +63,9 @@
 		<div id="user-menu" class="easyui-menu" style="width: 130px;">
 			<div class="user-refresh" data-options="iconCls:'icon-reload'">刷新</div>
 			<div class="menu-sep"></div>
+			<div class="user-refresh" data-options="iconCls:'icon-edit'">维护个人信息</div>
 			<div class="user-refresh" data-options="iconCls:'icon-lock'">修改密码</div>
-			<div calss="user-logout" data-options="iconCls:'icon-man'">登出</div>
+			<div class="user-logout" data-options="iconCls:'icon-man'">登出</div>
 		</div>
 		<script type="text/javascript">
 			var app = {};
@@ -80,6 +81,8 @@
 				    		$("#changePwd").window('open');
 				    	} else if(text == "登出"){
 				    		window.location.href = "<%=path%>/logout.html";
+				    	} else if("维护个人信息" == text){
+				    		maintainUser();
 				    	}
 				    }
 				});
@@ -320,5 +323,116 @@
 		});
     </script>
 	<!-- 修改密码 end -->
+	<!-- 维护个人信息 start -->
+	<div id="maintainUserInfo"  class="easyui-dialog" title="维护个人信息" style="width:600px;height:250px" 
+		data-options="iconCls:'icon-edit',closable:false,
+          collapsible:false,minimizable:false,resizable:true,closed:true,maximized:false,modal:true,
+         buttons:[{
+				text:'确定',
+				handler:function(){
+				var validate = $('#maintainUserInfoForm').form('validate');
+					if(validate){
+						$('#maintainUserInfoForm').form('submit', {
+							success : function(data) {
+								if(null!=data){
+									var obj = eval('(' + data + ')');
+									if(obj.success){
+										$.messager.alert('温馨提示','操作成功!');
+										$('#maintainUserInfo').window('close');
+									}else{
+										$.messager.alert('温馨提示','操作失败!');
+									}
+								}
+							}
+						});
+					}
+				}
+			},{
+				text:'取消',
+				handler:function(){
+				$('#maintainUserInfo').window('close');
+				}
+			}]">
+		<form id="maintainUserInfoForm" action="<%=path%>/api/updateUserAndUserInfo.json" method="post" enctype="multipart/form-data">
+			<input id="userId" name="userId" type="hidden"/>
+			<input id="userIcon" name="userIcon" type="hidden"/>
+			<input id="frontPhoto" name="frontPhoto" type="hidden"/>
+			<table style="width:100%;height:100%">
+				<tr>
+					<td align="right">个人头像：</td>
+					<td colspan="4"><input name="userIcon" id="userIcon" class="easyui-filebox" style="width: 400px;" data-options="prompt:'选择一张图片'"></td>
+				</tr>
+				<tr>
+					<td align="right">身份证照片：</td>
+					<td colspan="4"><input name="cardPhoto" id="cardPhoto" class="easyui-filebox" style="width: 400px;" data-options="prompt:'选择一张图片'"></td>
+				</tr>
+				<tr>
+					<td align="right"><font color="red">*</font>身份证号：</td>
+					<td width="30%"><input type="text" name="cardId" id="cardId" class="easyui-textbox" data-options="validType:'idNumberValid'"  required="required" /></td>
+					<td align="right"><font color="red">*</font>姓名：</td>
+					<td ><input type="text" name="name" id="userName" class="easyui-textbox" required="required"></td>
+				</tr>
+				<tr>
+					<td align="right"><font color="red">*</font>手机号码：</td>
+					<td><input type="text" name="tel" id="tel" class="easyui-textbox" required="required"></td>
+					<td align="right"><font color="red">*</font>性别：</td>
+					<td>
+						<select id="sex" name="sex">
+							<option id="sex_0" value="0" >男</option>
+							<option id="sex_1" value="1">女</option>
+							<option id="sex_2"value="2">未知</option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td align="right">地址：</td>
+					<td colspan="4"><input type="text" name="address" id="address" class="easyui-textbox" required="required"></td>
+				</tr>
+			</table>
+		</form>
+	</div>
+	<script type="text/javascript">
+	// 扩展easyui表单的验证
+	$.extend($.fn.validatebox.defaults.rules,{
+		idNumberValid:{
+			validator : function(value, param) {
+				if(""!=value){
+					var re = new RegExp(/^\d{15}(\d{2}[A-Za-z0-9])?$/);
+					var result=value.match(re);
+					if(null==result){
+						return false;
+					}
+					return true;
+				}
+			},
+			message : "身份证格式错误!"
+		}
+	});
+	/**
+	 * 读取当前用户个人信息 
+	 */
+	function maintainUser(){
+		$.ajax({
+			 url:'<%=path%>/api/getUserInfoByUserId.json',
+			 dataType: "json",
+			 data : 'userId=${CURRENT_USER.userId}',
+		     cache : false,
+		     success:function(data){
+		    	 if(null!=data){
+		    		 $("#maintainUserInfo").window('open');
+		    		 $("#cardId").textbox('setValue',data.idNumber);
+		    		 $("#userName").textbox('setValue',data.name);
+		    		 $("#tel").textbox('setValue',data.tel);
+		    		 $("#address").textbox('setValue',data.address);
+		    		 $("#userId").val(data.userId);
+		    		 $("#userIcon").val(data.userIcon);
+		    		 $("#frontPhoto").val(data.frontPhoto);
+		    		 $("#sex_"+data.sex).attr("selected",true);
+		    	 }
+		     }
+		});
+	}
+	</script>
+	<!-- 维护个人信息 end -->
 </body>
 </html>

@@ -9,6 +9,10 @@ import java.io.Serializable;
  */
 public class UserModel implements Serializable {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	//电话
 	private String tel;
 	//姓名
@@ -27,9 +31,60 @@ public class UserModel implements Serializable {
 	private String groupId;
 	//用户类型：A admin U user
 	private String type;
+	//身份证号码
+	private String idNumber;
+	//姓名
+	private String name;
+	//性别
+	private String sex;
+	//地址
+	private String address;
+	//用户头像附件关联附件ID
+	private String userIcon;
+	//用户身份证照片关联附件ID
+	private String frontPhoto;
 	
 	
 	
+	
+	
+	
+	public String getUserIcon() {
+		return userIcon;
+	}
+	public void setUserIcon(String userIcon) {
+		this.userIcon = userIcon;
+	}
+	public String getFrontPhoto() {
+		return frontPhoto;
+	}
+	public void setFrontPhoto(String frontPhoto) {
+		this.frontPhoto = frontPhoto;
+	}
+	public String getIdNumber() {
+		return idNumber;
+	}
+	public void setIdNumber(String idNumber) {
+		this.idNumber = idNumber;
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	public String getSex() {
+		return sex;
+	}
+	public void setSex(String sex) {
+		this.sex = sex;
+	}
+	public String getAddress() {
+		return address;
+	}
+	public void setAddress(String address) {
+		this.address = address;
+	}
 	public String getType() {
 		return type;
 	}
