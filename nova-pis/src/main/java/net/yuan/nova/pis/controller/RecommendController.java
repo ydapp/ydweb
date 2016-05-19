@@ -13,6 +13,7 @@ import net.sf.json.JSONObject;
 import net.yuan.nova.core.shiro.CurrentUserUtil;
 import net.yuan.nova.core.shiro.vo.User;
 import net.yuan.nova.core.vo.JsonVo;
+import net.yuan.nova.pis.controller.model.AppendRemarkModel;
 import net.yuan.nova.pis.controller.model.ConfirmModel;
 import net.yuan.nova.pis.controller.model.CustomerModel;
 import net.yuan.nova.pis.entity.PisBuilding;
@@ -285,6 +286,33 @@ public class RecommendController {
 		log.debug("confirmUserId:" + confirmModel.getConfirmUserId());
 		log.debug("recommendConfirmAdvice:" + confirmModel.getRecommendConfirmAdvice());
 		int rows = this.recommendService.recommendConfirm(confirmModel.getRecommendId(), confirmModel.getConfirmUserId(),confirmModel.getRecommendConfirmAdvice());
+		if (rows == 0) {
+			jsonVo.putError("rows", "未能匹配记录");
+		}
+		return this.getResponse(jsonVo, modelMap);
+	}
+	/**
+	 * 追加详情操作
+	 * 状态只要不是确认，都可以随时追加详情
+	 * @param recommendId
+	 *            报备id
+	 * @param confirmUserId
+	 *            驻场专员id
+	 * @param request 里面一般会包含recommendConfirmAdvice参数
+	 * @param modelMap
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/api/recommends/recommendAppendRemark", method = RequestMethod.POST)
+	public ModelMap recommendAppendRemark(@RequestBody String appendRemarkModelJSON, HttpServletRequest request,ModelMap modelMap) {
+		log.debug("appendRemarkModelJSON:" + appendRemarkModelJSON);
+		AppendRemarkModel appendRemarkModel = (AppendRemarkModel)JSONObject.toBean(JSONObject.fromObject(appendRemarkModelJSON),AppendRemarkModel.class);
+		JsonVo<Object> jsonVo = new JsonVo<Object>();
+		
+		log.debug("recommendId:" + appendRemarkModel.getRecommendId());
+		log.debug("appendUserId:" + appendRemarkModel.getAppendUserId());
+		log.debug("recommendAppendRemark:" + appendRemarkModel.getRecommendAppendRemark());
+		int rows = this.recommendService.recommendAppendRemark(appendRemarkModel.getRecommendId(), appendRemarkModel.getAppendUserId(), appendRemarkModel.getRecommendAppendRemark());
 		if (rows == 0) {
 			jsonVo.putError("rows", "未能匹配记录");
 		}

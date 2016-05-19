@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 import org.springframework.stereotype.Repository;
 
 import net.yuan.nova.pis.controller.model.CustomerModel;
@@ -28,4 +29,6 @@ public interface PisRecommendMapper {
 	List<PisRecommend> getByBuildingId(@Param("buildingId") String buildingId);
 	@Select("select CUSTOMER_TEL as customerTel,CUSTOMER_NAME as customerName, count(*) as refreeCount from PIS_RECOMMEND group by CUSTOMER_TEL,CUSTOMER_NAME")
 	List<CustomerModel> getCustomer();
+	@Update("update PIS_RECOMMEND set REMARK=#{remark} where recommend_id=#{recommendId}")
+	int recommendAppendRemark(PisRecommend recommend);
 }

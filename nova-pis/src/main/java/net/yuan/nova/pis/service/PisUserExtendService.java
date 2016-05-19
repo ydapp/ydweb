@@ -61,4 +61,13 @@ public class PisUserExtendService {
 		PageHelper.startPage(page, pageSize);
 		return this.mapper.selectByBrokingfirmId(brokingFirmId);
 	}
+	/**
+	 * 通过经济公司主键ID获取该公司下的用户ID
+	 * @param brokingFirmId
+	 * @return
+	 */
+	public List<PisUserExtend> selectByBuildingId(int page, int pageSize,String buildingId){
+		PageHelper.startPage(page, pageSize);
+		return this.mapper.selectByBuildingId(buildingId);
+	}
 }
