@@ -349,7 +349,10 @@ public class BuildingController {
 			log.debug("filePath:" + pisPropertyVo.getFilePath());
 			sb.append("<li class=\"mui-table-view-cell mui-media\">");
 			sb.append("<a href=\"property-detail.html?index=" + pisPropertyVo.getPropertyId() + "\">");
-			sb.append("	<img class=\"mui-media-object mui-pull-left\" src=\"" + serverURL + "/" + pisPropertyVo.getFilePath() + "\">");
+			sb.append("	<img ");
+			//这里不添加样式，使用图片本身大小
+			sb.append("class=\"mui-media-object mui-pull-left\"");
+			sb.append(" src=\"" + serverURL + "/" + pisPropertyVo.getFilePath() + "\">");
 			sb.append("	<div class=\"mui-media-body\">");
 			sb.append("		<h4 class=\"mui-ellipsis\">" + pisPropertyVo.getPropertyName() + "</h4>");
 			sb.append("		<p class=\"mui-ellipsis\">特点：" + StringUtils.trimToEmpty(pisPropertyVo.getCharacteristic()) + "</p>");

@@ -131,24 +131,26 @@ public class ArticleController {
 		long total = new PageInfo(selectArticleList).getTotal();
 		List<PisArticleVo> pisArticleVoList = new ArrayList<PisArticleVo>();
 		for (PisArticle pisArticle : selectArticleList) {
-			String cover = pisArticle.getCover();
-			Attachment attachment = attachmentService.getAttachmentById(cover);
-			String filePath = null;
-			if (attachment != null) {
-				try {
-					filePath = attachmentService.thumbnailator(attachment, 42);
-				} catch (IOException e) {
-					log.error("生成缩略图失败", e);
-					filePath = attachment.getSavePath();
-				}
-			}
+			
 			PisArticleVo pisArticleVo = new PisArticleVo();
 			try {
 				BeanUtils.copyProperties(pisArticleVo, pisArticle);
 			} catch (Exception e) {
 				log.error("拷贝数据出错", e);
 			}
-			pisArticleVo.setFilePath(filePath);
+			//这里暂时不需要在列表中显示图片，因此暂时屏蔽图片关联部分
+//			String cover = pisArticle.getCover();
+//			Attachment attachment = attachmentService.getAttachmentById(cover);
+//			String filePath = null;
+//			if (attachment != null) {
+//				try {
+//					filePath = attachmentService.thumbnailator(attachment, 42);
+//				} catch (IOException e) {
+//					log.error("生成缩略图失败", e);
+//					filePath = attachment.getSavePath();
+//				}
+//			}
+//			pisArticleVo.setFilePath(filePath);
 			pisArticleVoList.add(pisArticleVo);
 		}
 		dgd.setRows(pisArticleVoList);

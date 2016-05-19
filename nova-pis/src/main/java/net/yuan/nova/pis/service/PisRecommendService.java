@@ -231,6 +231,25 @@ public class PisRecommendService {
 		}
 		return record;
 	}
+	/**
+	 * 追加详情
+	 * 
+	 * @param recommendId
+	 * @param confirmUserId
+	 */
+	public int recommendAppendRemark(String recommendId, String appendRemarkUserId, String recommendAppendRemark) {
+		PisRecommend old = this.getById(recommendId);
+		String userName = this.pisUserService.findUserById(appendRemarkUserId).getNick();
+		recommendAppendRemark =  userName + ":" + StringUtils.trimToEmpty(recommendAppendRemark);
+		if (StringUtils.isNotEmpty(old.getRemark())){
+			recommendAppendRemark = old.getRemark() + "\n\r" + recommendAppendRemark;
+		}
+		PisRecommend recommend = new PisRecommend();
+		recommend.setRecommendId(recommendId);
+		recommend.setRemark(recommendAppendRemark);
+		int record= this.recommendMapper.recommendAppendRemark(recommend);
+		return record;
+	}
 
 	/**
 	 * 得到我的报备确认数据
