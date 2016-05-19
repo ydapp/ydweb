@@ -14,4 +14,5 @@ public interface PisUserExtendMapper {
 	public PisUserExtend selectByUserId(@Param("userId") String userId);
 	public int updateByUserId(PisUserExtend userExtend);
 	public List<PisUserExtend> selectByBrokingfirmId(String brokingFirmId);
+	public List<PisUserExtend> selectByBuildingId(String buildingId);
 }

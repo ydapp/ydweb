@@ -9,12 +9,15 @@ import net.yuan.nova.pis.dao.PisRecommendMapper;
 import net.yuan.nova.pis.entity.PisBrokingFirm;
 import net.yuan.nova.pis.entity.PisBuilding;
 import net.yuan.nova.pis.entity.PisCity;
+import net.yuan.nova.pis.entity.PisProperty;
 import net.yuan.nova.pis.entity.PisRecommend;
 import net.yuan.nova.pis.entity.PisRecommend.Status;
 import net.yuan.nova.pis.entity.PisUser;
 import net.yuan.nova.pis.entity.PisUserExtend;
 import net.yuan.nova.pis.entity.vo.PisRecommendVo;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.github.pagehelper.PageHelper;
@@ -41,7 +44,7 @@ public class PisRecommendService {
 	private PisUserExtendService userExtendService;
 	@Autowired
 	private PisBrokingFirmService brokingFirmService;
-
+	private static Log log = LogFactory.getLog(PisRecommendService.class);
 	/**
 	 * 根据推荐id得到推荐对象
 	 * 
@@ -97,6 +100,28 @@ public class PisRecommendService {
 			}
 		}
 		pisRecommendVo.setStatusTitle(recommend.getStatusName());
+		//得到案场电话列表
+		PisProperty property = pisBuildingService.selectByPrimaryKey(building.getBuildingId());
+		String tel = property.getPropertyTel();
+		log.debug("楼盘电话:" + tel);
+		List<String> tels = new ArrayList<>();
+		if (StringUtils.isNoneEmpty(tel)){
+			String[] tmp  = StringUtils.split(tel, ";");
+			for (String string : tmp) {
+				log.debug("电话:" + string);
+				tels.add(string);
+			}
+		}
+		pisRecommendVo.setBuildingTels(tels);
+		//得到案场专员列表
+		List<PisUserExtend> list = this.userExtendService.selectByBuildingId(1, 30, building.getBuildingId());
+		List<PisUser> buildingCommissioner = new ArrayList<PisUser>();
+		for (PisUserExtend pisUserExtend : list) {
+			PisUser user = this.pisUserService.findUserById(pisUserExtend.getUserId());
+			log.debug("usertel:" + user.getTel()  + " nick:" + user.getNick());
+			buildingCommissioner.add(user);
+		}
+		pisRecommendVo.setBuildingCommissioners(buildingCommissioner);
 		return pisRecommendVo;
 	}
 

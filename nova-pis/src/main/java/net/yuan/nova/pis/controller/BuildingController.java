@@ -21,16 +21,22 @@ import net.yuan.nova.core.vo.JsonVo;
 import net.yuan.nova.pis.entity.PisBuilding;
 import net.yuan.nova.pis.entity.PisCity;
 import net.yuan.nova.pis.entity.PisProperty;
+import net.yuan.nova.pis.entity.PisUser;
+import net.yuan.nova.pis.entity.PisUserExtend;
 import net.yuan.nova.pis.entity.vo.PisPropertyVo;
 import net.yuan.nova.pis.pagination.DataGridHepler;
 import net.yuan.nova.pis.pagination.PageParam;
 import net.yuan.nova.pis.service.PisBuildingService;
 import net.yuan.nova.pis.service.PisCityService;
+import net.yuan.nova.pis.service.PisUserExtendService;
+import net.yuan.nova.pis.service.PisUserService;
 import net.yuan.nova.pis.service.TemplateService;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.beanutils.ConvertUtils;
 import org.apache.commons.beanutils.converters.BigDecimalConverter;
 import org.apache.commons.beanutils.converters.DateConverter;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.ListUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.commons.lang3.time.DateUtils;
@@ -64,7 +70,10 @@ public class BuildingController {
 	private TemplateService templateService;
 	@Autowired
 	private PisCityService cityService;
-
+	@Autowired
+	private PisUserExtendService userExtendService;
+	@Autowired
+	private PisUserService pisUserService;
 	/**
 	 * 获取某城市的楼盘信息
 	 * 
@@ -429,6 +438,26 @@ public class BuildingController {
 		System.out.println(pisPropertyVo.getOpenDate());
 		json.put("building", pisPropertyVo);
 		log.debug("楼盘名称:" + pisPropertyVo.getPropertyName());
+		//处理楼盘电话
+		String tel = pisProperty.getPropertyTel();
+		log.debug("楼盘电话:" + tel);
+		List<String> tels = new ArrayList<>();
+		if (StringUtils.isNoneEmpty(tel)){
+			String[] tmp  = StringUtils.split(tel, ";");
+			for (String string : tmp) {
+				log.debug("电话:" + string);
+				tels.add("楼盘电话:" + string);
+			}
+		}
+		//得到案场专员列表
+		List<PisUserExtend> list = this.userExtendService.selectByBuildingId(1, 30, pisProperty.getPropertyId());
+		for (PisUserExtend pisUserExtend : list) {
+			PisUser user = this.pisUserService.findUserById(pisUserExtend.getUserId());
+			log.debug("usertel:" + user.getTel()  + " nick:" + user.getNick());
+			tels.add(user.getNick() + ":" + user.getTel());
+		}
+		String telString = StringUtils.join(tels, ";");
+		pisPropertyVo.setPropertyTel(telString);
 		modelMap.addAttribute("result", json);
 		return modelMap;
 	}

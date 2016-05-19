@@ -41,4 +41,9 @@
   	 FROM PIS_USER_EXTEND
   	 WHERE BROKINGFIRM_ID = #{brokingFirm_Id,jdbcType=VARCHAR}
   </select>
+  <select id="selectByBuildingId" resultMap="BaseResultMap" parameterType="java.lang.String">
+  	  SELECT DISTINCT USER_ID
+  	 FROM PIS_USER_EXTEND
+  	 WHERE BUILDING_ID = #{buildingId,jdbcType=VARCHAR}
+  </select>
 </mapper>

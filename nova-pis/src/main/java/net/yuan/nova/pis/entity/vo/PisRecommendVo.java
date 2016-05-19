@@ -1,8 +1,10 @@
 package net.yuan.nova.pis.entity.vo;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.List;
 
 import net.yuan.nova.pis.entity.PisRecommend;
+import net.yuan.nova.pis.entity.PisUser;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.beanutils.ConvertUtils;
@@ -26,6 +28,11 @@ public class PisRecommendVo extends PisRecommend {
 	private String recommendConfirmUserNick;
 	//状态
 	private String statusTitle;
+	//案场电话集合
+	private List<String> buildingTels;
+	//案场专员集合
+	private List<PisUser> buildingCommissioners;
+	
 
 	public PisRecommendVo(PisRecommend pisRecommend) {
 		try {
@@ -116,6 +123,22 @@ public class PisRecommendVo extends PisRecommend {
 
 	public void setStatusTitle(String statusTitle) {
 		this.statusTitle = statusTitle;
+	}
+
+	public List<String> getBuildingTels() {
+		return buildingTels;
+	}
+
+	public void setBuildingTels(List<String> buildingTels) {
+		this.buildingTels = buildingTels;
+	}
+
+	public List<PisUser> getBuildingCommissioners() {
+		return buildingCommissioners;
+	}
+
+	public void setBuildingCommissioners(List<PisUser> buildingCommissioners) {
+		this.buildingCommissioners = buildingCommissioners;
 	}
 	
 
