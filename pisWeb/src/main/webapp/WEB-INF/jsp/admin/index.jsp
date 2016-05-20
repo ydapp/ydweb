@@ -412,6 +412,10 @@
 	 * 读取当前用户个人信息 
 	 */
 	function maintainUser(){
+		if(""=="${CURRENT_USER.userId}"){
+			$.messager.alert('温馨提示',"获取当前用户失败!");
+			return;
+		}
 		$.ajax({
 			 url:'<%=path%>/api/getUserInfoByUserId.json',
 			 dataType: "json",
