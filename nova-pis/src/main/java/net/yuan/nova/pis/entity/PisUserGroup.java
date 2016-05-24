@@ -7,8 +7,9 @@ import org.apache.commons.lang3.StringUtils;
 /**
  * 
  * <ul>
- * <li>管理员</li>
- * <li>报备员</li>
+ * <li>app管理员</li>
+ * <li>驻场专员</li>
+ * <li>渠道经理</li>
  * <li>经纪公司</li>
  * <li>业务员</li>
  * </ul>
@@ -20,8 +21,10 @@ public class PisUserGroup {
 	public static enum TYPE {
 		// 管理员
 		appAdmin,
-		// 报备专员
+		// 驻场专员
 		commissioner,
+		//渠道经理
+		channelManager,
 		// 经纪公司
 		brokingFirm,
 		//业务员
@@ -232,7 +235,9 @@ public class PisUserGroup {
     	case salesman:
     		return "业务员";
     	case commissioner:
-    		return "案场专员";
+    		return "驻场专员";
+    	case  channelManager:
+    		return "渠道经理";
     	default:
     		return "未知类型:" + this.type;
     	}
