@@ -691,6 +691,8 @@ public class PisUserController {
 						}else{
 							userList_02.add(pisUser);
 						}
+				 }else{
+						userList_02.add(pisUser);
 				 }
 			}
 			//按照中文姓名排序案场电话集合
