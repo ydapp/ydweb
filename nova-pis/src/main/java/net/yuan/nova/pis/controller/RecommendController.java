@@ -217,7 +217,7 @@ public class RecommendController {
 		JsonVo<Object> jsonVo = new JsonVo<Object>();
 		log.debug("presentUserId:" + presentUserId);
 		//组装状态非“确认报备”
-		String status = "'"+PisRecommend.Status.present+"','"+PisRecommend.Status.pledges+"','"+PisRecommend.Status.order+"','"+PisRecommend.Status.buy+"'";
+		String status = "'"+PisRecommend.Status.present+"','"+PisRecommend.Status.pledges+"','"+PisRecommend.Status.order+"'";
 		//获取自己提交的并且状态非“报备确认”的报备集合
 		List<PisRecommendVo> list =this.recommendService.getMyPresentByStatus(presentUserId, status);
 		//装载数据集合
@@ -340,7 +340,7 @@ public class RecommendController {
 	public ModelMap getMyDoingConfirm(@PathVariable String confirmUserId, HttpServletRequest request, ModelMap modelMap){
 		JsonVo<Object> jsonVo = new JsonVo<Object>();
 		//组装状态非“确认报备”
-		String status = "'"+PisRecommend.Status.pledges+"','"+PisRecommend.Status.order+"','"+PisRecommend.Status.buy+"'";
+		String status = "'"+PisRecommend.Status.pledges+"','"+PisRecommend.Status.order+"'";
 		//通过推荐用户ID和状态获取非“确认报备”报备集合信息
 		List<PisRecommend> list = this.recommendService.getMyConfirmByStatus(confirmUserId, status);
 		//装载数据集合

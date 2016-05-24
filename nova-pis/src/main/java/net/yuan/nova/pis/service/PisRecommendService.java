@@ -250,8 +250,8 @@ public class PisRecommendService {
 		if (confirmStatus != null){
 			if (confirmStatus.equals(Status.order)){
 				this.pisBuildingService.order(old.getBuildingId());
-			} else if (confirmStatus.equals(Status.buy)){
-				this.pisBuildingService.buy(old.getBuildingId());
+			} else if (confirmStatus.equals(Status.pledges)){
+				this.pisBuildingService.pledges(old.getBuildingId());
 			}
 		}
 		return record;
