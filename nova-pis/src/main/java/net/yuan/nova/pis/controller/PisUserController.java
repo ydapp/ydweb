@@ -294,7 +294,6 @@ public class PisUserController {
 		List<UserModel> userInfoList = new ArrayList<>();
 		//根据姓名排序
 		List<PisUser> pisUserList = this.sortUserByUserName(users);
-		//案场电话号码在通讯录中置顶
 		for (PisUser user : pisUserList) {
 			UserModel vo = this.userModelBusiness.getUserModel(user.getUserId());
 			userInfoList.add(vo);
@@ -685,11 +684,14 @@ public class PisUserController {
 			//遍历循环判断用户是否案场专员
 			for (int i = 0; i < userList.size(); i++) {
 				PisUser pisUser = userList.get(i);
-				if("commissioner".equals(pisUserService.getPisUserGroup(pisUser.getUserId()).getType())){
-					userList_01.add(pisUser);
-				}else{
-					userList_02.add(pisUser);
-				}
+				 PisUserGroup group =pisUserService.getPisUserGroup(pisUser.getUserId());
+				 if(null!=group&&!"".equals(group.getType())){
+					 if("commissioner".equals(group.getType())){
+							userList_01.add(pisUser);
+						}else{
+							userList_02.add(pisUser);
+						}
+				 }
 			}
 			//按照中文姓名排序案场电话集合
 			Collections.sort(userList_01, new Comparator<PisUser>(){
