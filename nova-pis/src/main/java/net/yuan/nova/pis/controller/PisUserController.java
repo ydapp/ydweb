@@ -705,10 +705,10 @@ public class PisUserController {
 					return  Collator.getInstance(java.util.Locale.CHINA).compare(user1.getNick(),user2.getNick());
 				}
 			});
-			//按照顺序组装返回值
+			//按照顺序组装返回值 
 			userList_03.addAll(userList_01);
 			userList_03.addAll(userList_02);
-		}
+		} 
 		return userList_03;
 	}
 }
