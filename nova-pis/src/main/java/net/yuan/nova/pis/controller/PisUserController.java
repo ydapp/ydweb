@@ -306,7 +306,7 @@ public class PisUserController {
 	 * @param modelMap
 	 * @return
 	 */
-	@RequestMapping(value = "/api/userInfo",method=RequestMethod.POST)
+	@RequestMapping(value = "/api/u serInfo",method=RequestMethod.POST)
 	public JsonVo<UserModel> addUserInfo(@RequestBody UserModel userModel, ModelMap modelMap) {
 		JsonVo<UserModel> json = new JsonVo<UserModel>();
 		if (StringUtils.equals(PisUserGroup.TYPE.appAdmin.name(), userModel.getGroupType())){
