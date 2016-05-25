@@ -147,6 +147,7 @@
 			 $("#groupType").empty();
 			 $("#groupType").append("<option value='commissioner'>案场专员</option>");
 			 $("#groupType").append("<option value='brokingFirm'>经纪公司</option>");
+			 $("#groupType").append("<option value='channelManager'>渠道经理</option>");
 			 //主动出发一次组选择变化
 			 $("#groupType").change();
 			 return;
@@ -203,16 +204,29 @@
 						  $("#groupType_update").empty();
 						  $("#groupType_update").append("<option value='commissioner'  >案场专员</option>");
 						  $("#groupType_update").append("<option value='brokingFirm' selected='selected'>经纪公司</option>");
+						  $("#groupType_update").append("<option value='channelManager'>渠道经理</option>");
 						  $("#brokingFirmList_update").val(data.brokingFirm)
 						  //主动出发一次组选择变化
 						  $("#groupType_update").change();
 						  return;
 					  	}
+				 		//渠道经理
+				 	 	if("channelManager"==data.groupType){
+						  $("#groupType_update").empty();
+						  $("#groupType_update").append("<option value='commissioner'  >案场专员</option>");
+						  $("#groupType_update").append("<option value='brokingFirm' >经纪公司</option>");
+						  $("#groupType_update").append("<option value='channelManager' selected='selected'>渠道经理</option>");
+						  $("#brokingFirmList_update").val(data.brokingFirm)
+						  //主动出发一次组选择变化
+						  $("#groupType_update").change();
+						  return;
+					  	 }
 					  //报备人
 					  if("commissioner"==data.groupType){
 						  $("#groupType_update").empty();
 						  $("#groupType_update").append("<option value='commissioner'selected='selected'  >案场专员</option>");
 						  $("#groupType_update").append("<option value='brokingFirm' >经纪公司</option>");
+						  $("#groupType_update").append("<option value='channelManager'>渠道经理</option>");
 						  //主动出发一次组选择变化
 						  $("#groupType_update").change();
 						  $("#buildingList_update").find("option[value='"+data.building+"']").attr("selected","selected");
@@ -278,6 +292,11 @@
 		 } else if ("brokingFirm" == $("#groupType_update").val()){
 			 $("#buildingDiv_update").hide();
 		 	 $("#brokingFirmDiv_update").show();
+		 } else if("channelManager"==$("#groupType_update").val()){
+			 $("#buildingDiv_update").show();
+			 $("#brokingFirmDiv_update").hide();
+			 	//加载城市列表
+			 loadCityList("cityList_update");
 		 }
 		 
 	 });
@@ -323,8 +342,13 @@
 		 	//加载城市列表
 		 	loadCityList("cityList");
 		 } else if ("brokingFirm" == $("#groupType").val()){
-			 $("#buildingDiv").hide();
+			$("#buildingDiv").hide();
 		 	$("#brokingFirmDiv").show();
+		 } else if("channelManager"==$("#groupType").val()){
+			 $("#buildingDiv").show();
+			 $("#brokingFirmDiv").hide();
+			 //加载城市列表
+			 loadCityList("cityList");
 		 }
 		 
 	 });
