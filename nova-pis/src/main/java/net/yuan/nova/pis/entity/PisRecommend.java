@@ -162,15 +162,15 @@ public class PisRecommend {
 	public static enum Status {
 		// 经纪人申请报备
 		appointment,
-		// 客户到现场，经纪人进行到场确认
+		// 客户到现场，驻场专员进行到场确认
 		present,
-		//认筹，驻场专员做
+		//认筹，渠道经理做
 		pledges,
-		//订购，驻场专员做
+		//订购，渠道经理做
 		order,
-		//购买，驻场专员做
-		buy,
-		// 驻场专员进行最终确认
+//		//购买，驻场专员做
+//		buy,
+		// 渠道经理进行最终确认
 		confirm
 	}
 	public static String getStatusName(Status status){
@@ -182,11 +182,9 @@ public class PisRecommend {
 		case pledges:
 			return "筹";
 		case order:
-			return "订";
-		case buy:
-			return "购";
+			return "定";
 		case confirm:
-			return "报备已确认";
+			return "结";
 		default:
 			throw new RuntimeException("未知状态:" + status.name());
 		}
@@ -200,8 +198,6 @@ public class PisRecommend {
 		case pledges:
 			return Status.order;
 		case order:
-			return Status.buy;
-		case buy:
 			return Status.confirm;
 		case confirm:
 			return null;

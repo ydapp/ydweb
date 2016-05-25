@@ -2,10 +2,11 @@ package net.yuan.nova.pis.controller;
 
 import java.text.Collator;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.yuan.nova.commons.SystemConstant;
@@ -292,7 +293,6 @@ public class PisUserController {
 		PageParam param = DataGridHepler.parseRequest(request);
 		List<PisUser> users = this.pisUserService.getCustomers(param.getPage(), param.getPageSize());
 		List<UserModel> userInfoList = new ArrayList<>();
-		//根据姓名排序
 		List<PisUser> pisUserList = this.sortUserByUserName(users);
 		for (PisUser user : pisUserList) {
 			UserModel vo = this.userModelBusiness.getUserModel(user.getUserId());
@@ -600,7 +600,8 @@ public class PisUserController {
 		//根据用户ID获取用户信息
 		PisUser pisUser = this.pisUserService.findUserById(userId);
 		//根据用户ID获取用户基本信息
-		PisUserInfo pisUserInfo = this.pisUserInfoService.findUserInfoById(userId);
+		PisUserInfo pisUserInfo = null;
+		this.pisUserInfoService.findUserInfoById(userId);
 		UserModel  vo = new UserModel();
 		vo.setTel(null!=pisUser?pisUser.getTel():"");
 		vo.setUserIcon(null!=pisUser?pisUser.getUserIcon():"");
@@ -673,46 +674,27 @@ public class PisUserController {
 	 * 通过用户名进行排序
 	 * @return
 	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public List<PisUser> sortUserByUserName(List<PisUser> userList){
-		//创建返回值对象
-		List<PisUser> userList_03=new ArrayList<>();
-		if(null!=userList&&userList.size()>0){
-			//创建案场电话集合
-			List<PisUser> userList_01=new ArrayList<>();
-			//创建非案场电话集合
-			List<PisUser> userList_02=new ArrayList<>();
-			//遍历循环判断用户是否案场专员
-			for (int i = 0; i < userList.size(); i++) {
-				PisUser pisUser = userList.get(i);
-				 PisUserGroup group =pisUserService.getPisUserGroup(pisUser.getUserId());
-				 if(null!=group&&!"".equals(group.getType())){
-					 if("commissioner".equals(group.getType())){
-							userList_01.add(pisUser);
-						}else{
-							userList_02.add(pisUser);
-						}
-				 }else{
-						userList_02.add(pisUser);
-				 }
-			}
-			//按照中文姓名排序案场电话集合
-			Collections.sort(userList_01, new Comparator<PisUser>(){
-				@Override
-				public int compare(PisUser user1, PisUser user2) {
-					return  Collator.getInstance(java.util.Locale.CHINA).compare(user1.getNick(),user2.getNick());
+		 //Collator 类是用来执行区分语言环境的 String 比较的，这里选择使用CHINA
+		  Comparator comparator = Collator.getInstance(java.util.Locale.CHINA);
+		  List<PisUser> pistUserList= new ArrayList<>();
+		  if(null!=userList&&userList.size()>0){
+			  String[] userArray =new String[userList.size()];
+				 for (int i = 0; i < userArray.length; i++) {
+					 userArray[i]=userList.get(i).getNick();
+				 }	
+				 // 使根据指定比较器产生的顺序对指定对象数组进行排序。
+				 Arrays.sort(userArray, comparator);
+				 //遍历控制集合中的顺序
+			     for (int i = 0; i < userArray.length; i++) {
+					 for (int j = 0; j < userList.size(); j++) {
+						 if(userArray[i].equals(userList.get(j).getNick())){
+							 pistUserList.add(userList.get(j));
+						 }
+					}
 				}
-			});
-			//按照中文排序非案场电话集合
-			Collections.sort(userList_02, new Comparator<PisUser>(){
-				@Override
-				public int compare(PisUser user1, PisUser user2) {
-					return  Collator.getInstance(java.util.Locale.CHINA).compare(user1.getNick(),user2.getNick());
-				}
-			});
-			//按照顺序组装返回值 
-			userList_03.addAll(userList_01);
-			userList_03.addAll(userList_02);
-		} 
-		return userList_03;
+		  }
+		  return pistUserList;
 	}
 }

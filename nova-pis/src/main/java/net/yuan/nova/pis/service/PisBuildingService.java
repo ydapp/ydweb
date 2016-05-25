@@ -133,10 +133,10 @@ public class PisBuildingService {
 		this.update(pisProperty);
 	}
 	/**
-	 * 增加一次购买数量
+	 * 增加一次认筹数量
 	 * @param id
 	 */
-	public void buy(String id){
+	public void pledges(String id){
 		Integer viewTimes = this.selectByPrimaryKey(id).getViewTimes();
 		PisProperty pisProperty = new PisProperty();
 		pisProperty.setPropertyId(id);
