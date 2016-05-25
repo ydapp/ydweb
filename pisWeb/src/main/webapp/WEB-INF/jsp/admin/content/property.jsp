@@ -60,7 +60,7 @@
 					<th data-options="field:'openDate',width:180,fixed:true,formatter:ChangeDateFormat">开盘时间</th>
 					
 					<th data-options="field:'avgPrice',width:180,fixed:true">均价</th>
-					<th data-options="field:'subscriptionRules',width:180,fixed:true">认购规则</th>
+					<th data-options="field:'subscriptionRules',width:180,fixed:true">游戏规则</th>
 				</tr>
 			</thead>
 		</table>
@@ -106,7 +106,7 @@
 							</td>
 							<td>
 								<div class="fitem">
-									<label><font color="red">*</font>认购规则：</label> <input
+									<label><font color="red">*</font>游戏规则：</label> <input
 										name="subscriptionRules" class="easyui-textbox" style="width: 400px;" data-options="prompt:'首付2层'">
 								</div>		
 							</td>
@@ -289,7 +289,7 @@
 							</td>
 							<td>
 								<div class="fitem">
-									<label><font color="red">*</font>认购规则：</label><input id="subscriptionRules_update"name="subscriptionRules" class="easyui-textbox"  required="required" style="width: 400px;" data-options="prompt:'首付2层'">
+									<label><font color="red">*</font>游戏规则：</label><input id="subscriptionRules_update"name="subscriptionRules" class="easyui-textbox"  required="required" style="width: 400px;" data-options="prompt:'首付2层'">
 								</div>		
 							</td>
 						</tr>
