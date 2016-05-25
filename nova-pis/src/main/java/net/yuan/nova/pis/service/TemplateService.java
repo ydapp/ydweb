@@ -40,26 +40,6 @@ public class TemplateService {
 	}
 
 	/**
-	 * 更具传入的servletPath获得相应的模版
-	 * 
-	 * @param servletPath
-	 * @return
-	 */
-	public String getAdminTemplate(String servletPath) {
-		if (StringUtils.isNotBlank(servletPath)) {
-			return servletPath.substring(0, servletPath.indexOf("."));
-		}
-		return this.getErrorTemplate(404);
-	}
-
-	public String getAdminTemplate(String[] paths) {
-		if (paths != null && paths.length > 0) {
-			return StringUtils.join(paths, "/");
-		}
-		return this.getErrorTemplate(404);
-	}
-
-	/**
 	 * 得到当前请求需要渲染的模板相对路径
 	 * 
 	 * @param theme
