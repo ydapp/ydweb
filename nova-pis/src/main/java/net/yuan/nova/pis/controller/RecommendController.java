@@ -678,7 +678,7 @@ public class RecommendController {
 		 String key="";
 		 boolean isExist=true;//是否存在
 		 PisRecommend pisR_01 =null;//数据集合对象
-		 List<Map<String,Object>> cleanListMap_=new ArrayList<>();
+		 List<Map<String,Object>> cleanListMap_=new ArrayList<>();//创建清空数据集合对象
 		 if((null!=recoList&&recoList.size()>0)&&(null!=recommends&&recommends.size()>0)){
 			 int len=recommends.size()-1;
 			 for(int b=0;b<=len;b++){
@@ -699,6 +699,9 @@ public class RecommendController {
 					 cleanListMap_.add(recommends.get(b));
 				 }
 			 }
+		 }else{
+			 //清空集合
+			 recommends.clear();
 		 }
 		 recommends.removeAll(cleanListMap_);
 	}
