@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+  <!-- 添加调度的任务bean 配置对应的class-->
+  <bean id="mySchedule" class="net.yuan.nova.pis.controller.RecommendController" />
+  <!--配置调度具体执行的方法-->
+  <bean id="myDetail"
+    class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+    <property name="targetObject" ref="mySchedule" />
+    <property name="targetMethod" value="validateRecommend" />
+    <property name="concurrent" value="false" />
+  </bean>
+  <!--配置调度执行的触发的时间-->
+  <bean id="myTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+    <property name="jobDetail" ref="myDetail" />
+   <property name="cronExpression" value="0 0 24 * * ? "/>
+  </bean>
+  <!-- quartz的调度工厂 调度工厂只能有一个，多个调度任务在list中添加 -->
+  <bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+    <property name="triggers">
+      <list>
+         <!-- 所有的调度列表-->
+        <ref local="myTrigger" />
+      </list>
+    </property>
+  </bean>
+</beans>

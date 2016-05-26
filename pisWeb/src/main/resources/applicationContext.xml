@@ -115,5 +115,5 @@
 
 	<import resource="applicationContext-cache.xml" />
 	<import resource="applicationContext-shiro.xml" />
-
+	<import resource="spring-quartz.xml"/>
 </beans>

@@ -2,6 +2,8 @@ package net.yuan.nova.pis.controller;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -68,6 +70,8 @@ public class RecommendController {
 	private static Map<String, String> users = new HashMap<String, String>();
 	private static Map<String, String> cities = new HashMap<String, String>();
 	private static Map<String, String> builds = new HashMap<String, String>();
+	private static List<Map<String,Object>> recommends = new ArrayList<>();
+	
 
 	/**
 	 * 经纪人提交一个报备信息
@@ -541,5 +545,161 @@ public class RecommendController {
 		PageParam param = DataGridHepler.parseRequest(request);
 		List<CustomerModel> list = this.recommendService.getCustomers(param.getPage(), param.getPageSize());
 		return DataGridHepler.addDataGrid(list, modelMap);
+	}
+	/**
+	 * 每天晚上十二点定时检查推荐信息
+	 */
+	public void validateRecommend(){
+		log.debug("开始执行定时验证推荐信息是否设置为'来'");
+		boolean flag = false;
+		SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd");//设置日期格式
+		String day=df.format(new Date());//获取当天日期
+		//获取报备的推荐信息状态为“appointment”申请报备
+		List<PisRecommend>recoList = this.recommendService.getRecommendByStatus(PisRecommend.Status.appointment.toString());
+		//判断内存数据集合是否为空
+		if(null!=recommends&&recommends.size()>0){
+				//判断数据集合不为空
+				if(null!=recoList&&recoList.size()>0){
+					 //判断两个集合长度是否一致
+					 log.debug("判断内存集合与数据集合长度是否一样");
+					 if(recommends.size()==recoList.size()){
+						 //判断内存集合中是否包含数据集
+						 String pisRecommendStr="";
+						 String  recommendStr="";
+						 String key="";
+						 //循环读取内存集合中key
+						 for (Map<String,Object> map_:recommends) {
+							 key=map_.keySet().toString();
+							 key=key.substring(1,key.length()-1);
+							 recommendStr+=key+",";
+						}
+						 //循环读取数据集合中主键ID
+						 for (PisRecommend pisRecommend : recoList) {
+							 pisRecommendStr+=pisRecommend.getRecommendId()+",";
+						}
+						 //根据集合顺序比对是否一样
+						 if(recommendStr.equals(pisRecommendStr)){
+							 flag = true;
+						 }
+					 }
+					 if(!flag){
+						 List<Map<String,Object>> newListMap = new ArrayList<>();//用于存新添加的推荐信息
+						 log.debug("以数据集合为准判断是否有添加新的申请推荐信息");
+						 addRecommends(recoList,recommends,newListMap,day);
+						 log.debug("以内存集合为准判断是否有改变状态的推荐信息");
+						 //以内存集合为准判断是否有改变的推荐信息
+						 cleanRecommends(recoList,recommends);
+						 //将新增的推荐信息存入内存集合中
+						 if(null!=newListMap&&newListMap.size()>0){
+							 log.debug("新增的推荐信息存入内存集合中");
+							 recommends.addAll(newListMap);
+						 }
+					 }
+					 log.debug("判断推荐信息中是否有状态为'申请'持续五天或以上没有改变的");
+					 //判断推荐信息中是否有持续5天以上没有修改的
+					 Map<String,Object> map=null;
+					 for (int a= 0; a < recommends.size(); a++) {
+						 map = recommends.get(a);
+					 	 String key = map.keySet().toString();
+					 	 key=key.substring(1,key.length()-1);
+						 String dayStr=String.valueOf(map.get(key));
+						 long d=0;
+						 try {
+							 //计算内存集合中的推荐信息与当前时间的差
+							 long c=df.parse(day).getTime()-df.parse(dayStr).getTime();
+							 d = c/(3600 * 24 * 1000);//天
+						} catch (ParseException e) {
+							 log.debug("计算内存集合中状态为'申请'的推荐信息与当前的时间差异常:"+e.getMessage());
+						}
+						 //判断内存集合中是否存在五天或以上的推荐信息
+						 if(d>=5){
+							 int ret = this.recommendService.updateRecommendStatusByRecommendId(String.valueOf(key));
+							 if(ret>0){
+								 log.debug("修改推荐信息状态为X成功,ID："+key);
+								 //以内存集合为准判断是否有改变的推荐信息
+								 recoList = this.recommendService.getRecommendByStatus(PisRecommend.Status.appointment.toString());
+								 cleanRecommends(recoList,recommends);
+							 }else{
+								 log.debug("修改推荐信息状态为X失败,ID："+key);
+							 }
+						 }
+					}
+				}
+		}else{
+			 log.debug("第一次执行验证");
+			//第一次存入内存集合
+			Map<String,Object> map=null;//声明内存集合map
+			//循环遍历数据集合存入内存中
+			 for (PisRecommend pisRecommend : recoList) {
+				 map = new HashMap<>();
+				 map.put(pisRecommend.getRecommendId(),day);
+				 recommends.add(map);
+			}
+		}
+	}
+	
+	/**
+	 * 新增内存集合数据
+	 * @param recoList 即时数据集合
+	 * @param recommends 内存数据集合
+	 * @param newListMap 新增数据集合
+	 */
+	public void addRecommends(List<PisRecommend> recoList,List<Map<String,Object>> recommends,List<Map<String,Object>>newListMap,String day){
+		 boolean isExist=true;//是否存在
+		 String key= null;//内存集合对象
+		 PisRecommend pisR_01 =null;//数据集合对象
+		 Map<String,Object> map = null;
+		 //以数据集合为准判断是否有添加的新推荐信息
+		 for(int a=0;a<=recoList.size()-1;a++){
+			 for (int b = 0; b <recommends.size(); b++) {
+				 key = recommends.get(b).keySet().toString();
+				 key=key.substring(1,key.length()-1);
+				 pisR_01=recoList.get(a);
+				 if(pisR_01.getRecommendId().equals(key)){
+					 isExist = false; 
+				 }
+			}
+			 //组装新的推荐信息
+			 if(isExist){
+				 map = new HashMap<>();
+				 map.put(pisR_01.getRecommendId(),day);
+				 newListMap.add(map);
+			 }
+			 isExist = true;
+		 }
+	}
+	/**
+	 * 清除内存集合中旧数据
+	 * @param recoList即时数据集合
+	 * @param recommends内存数据集合
+	 */
+	public void cleanRecommends(List<PisRecommend> recoList,List<Map<String,Object>> recommends){
+		 log.debug("清理内存集合中已经修改状态为X的推荐信息");
+		 String key="";
+		 boolean isExist=true;//是否存在
+		 PisRecommend pisR_01 =null;//数据集合对象
+		 List<Map<String,Object>> cleanListMap_=new ArrayList<>();
+		 if((null!=recoList&&recoList.size()>0)&&(null!=recommends&&recommends.size()>0)){
+			 int len=recommends.size()-1;
+			 for(int b=0;b<=len;b++){
+				 key = recommends.get(b).keySet().toString();
+				 key=key.substring(1,key.length()-1);
+				 for(int c=0;c<recoList.size();c++){
+					 pisR_01 =recoList.get(c);
+					  //判断内存集合对象中是否存在于数据集合对象
+					 if(key.equals(pisR_01.getRecommendId())){
+						 isExist = true; 
+						 break;
+					 }else{
+						 isExist = false; 
+					 }
+				 }
+				 //删除不存在的数据
+				 if(!isExist){
+					 cleanListMap_.add(recommends.get(b));
+				 }
+			 }
+		 }
+		 recommends.removeAll(cleanListMap_);
 	}
 }

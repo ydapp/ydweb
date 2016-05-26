@@ -332,10 +332,26 @@ public class PisRecommendService {
 	public int getCustomerByTodayAndTel(String customer_tel,String refreeId){
 		 return this.recommendMapper.getCustomerByTodayAndTel(customer_tel,refreeId);
 	}
+	/**
+	 * 根据推荐信息主键ID修改状态
+	 * @param recommendId
+	 * @return
+	 */
+	public int updateRecommendStatusByRecommendId(String recommendId){
+		return this.recommendMapper.updateRecommendStatusByRecommendId(recommendId);
+	}
 
 	public List<CustomerModel> getCustomers(int page, int pageSize) {
 		PageHelper.startPage(page, pageSize);
 		return this.recommendMapper.getCustomer();
+	}
+	/**
+	 * 根据状态获取推荐信息集合
+	 * @param status
+	 * @return
+	 */
+	public List<PisRecommend>getRecommendByStatus(String status){
+		return this.recommendMapper.getRecommendByStatus(status);
 	}
 	/**
 	 * 根据报备状态和客户用户ID获取报备数据

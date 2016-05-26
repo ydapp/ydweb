@@ -18,11 +18,13 @@ public interface PisRecommendMapper {
 	int insert(PisRecommend recommend);
 	int customerPresent(PisRecommend recommend);
 	int recommendConfirm(PisRecommend recommend);
-	int getCustomerByTodayAndTel(@Param("customerTel") String customerTel,@Param("refreeId") String refreeId); 
+	int getCustomerByTodayAndTel(@Param("customerTel") String customerTel,@Param("refreeId") String refreeId);
+	int updateRecommendStatusByRecommendId(String recommendId);
 	List<PisRecommend> getMyPresent(@Param("presentUserId") String presentUserId);
 	List<PisRecommend> getMyPresentByStatus(@Param("presentUserId") String presentUserId,@Param("status") String status);
 	List<PisRecommend> getMyConfirm(@Param("confirmUserId") String confirmUserId);
 	List<PisRecommend> getMyConfirmByStatus(@Param("confirmUserId") String confirmUserId,@Param("status") String status);
+	List<PisRecommend>getRecommendByStatus(@Param("status") String status);
 	List<PisRecommend> getAll();
 	List<PisRecommend> getByBrokingFirmId(@Param("brokingFirmId") String brokingFirmId);
 	List<PisRecommend> getBySaleman(@Param("userId") String userId);

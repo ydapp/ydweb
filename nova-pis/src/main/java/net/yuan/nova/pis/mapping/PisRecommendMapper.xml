@@ -173,4 +173,12 @@
     	AND STATUS IN(${status})
     </if>
   </select>
+  <select id="getRecommendByStatus" resultMap="BaseResultMap" parameterType="java.lang.String">
+  		SELECT 
+      	<include refid="Base_Column_List" />
+    	FROM PIS_RECOMMEND WHERE STATUS=#{status, jdbcType=VARCHAR}
+  </select>
+  <update id="updateRecommendStatusByRecommendId" parameterType="net.yuan.nova.pis.entity.PisRecommend">
+  	UPDATE PIS_RECOMMEND A  SET A.STATUS='X' WHERE A.RECOMMEND_ID=#{recommendId,jdbcType=VARCHAR}
+  </update>
 </mapper>
