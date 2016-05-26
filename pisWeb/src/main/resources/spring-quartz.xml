@@ -14,7 +14,7 @@
   <!--配置调度执行的触发的时间-->
   <bean id="myTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
     <property name="jobDetail" ref="myDetail" />
-   <property name="cronExpression" value="0 0 24 * * ? "/>
+   <property name="cronExpression" value="0 0 0 * * ?"/>
   </bean>
   <!-- quartz的调度工厂 调度工厂只能有一个，多个调度任务在list中添加 -->
   <bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
