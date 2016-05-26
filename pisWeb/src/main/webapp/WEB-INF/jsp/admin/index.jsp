@@ -230,7 +230,7 @@
 				<%-- <iframe scrolling="auto" frameborder="0"  src="<%=path%>/monitoring" style="width:100%;height:100%;"></iframe> --%>	
 				<h3 align="left">可扫描二维码，下载app</h3>
 				<img title="二维码下载" align="middle"  width="280" height="280" src="<%=path%>/public/images/downCode.png">
-			</div>
+			</div> 
 		</div>
 	</div>
 	
