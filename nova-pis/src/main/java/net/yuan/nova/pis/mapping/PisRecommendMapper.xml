@@ -101,7 +101,7 @@
       <include refid="Base_Column_List" />
     from PIS_RECOMMEND
     where BUILDING_ID = #{buildingId,jdbcType=VARCHAR}
-    and (STATUS = 'present' or STATUS = 'pledges' or STATUS = 'order' or STATUS = 'buy') 
+    and (STATUS = 'present' or STATUS = 'pledges' or STATUS = 'order') 
   </select>
   <select id="getWaitingCome"  resultMap="BaseResultMap" parameterType="java.lang.String" >
       select 
