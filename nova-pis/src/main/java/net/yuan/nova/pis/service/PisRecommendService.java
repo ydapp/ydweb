@@ -170,6 +170,20 @@ public class PisRecommendService {
 		}
 		return this.recommendMapper.getWaitingConfirm(userExtend.getBuildingId());
 	}
+	
+	/**
+	 * 某一个楼盘中等待确认“来”的推荐信息（客户到场），驻场专用
+	 * @param userId
+	 * @return
+	 */
+	public List<PisRecommend> getWaitingCome(String userId){
+		// 先根据报备人员id查找楼盘id，然后根据楼盘id查找报备带确认信息
+		PisUserExtend userExtend = this.userExtendService.selectByUserId(userId);
+		if (userExtend == null){
+			return new ArrayList<PisRecommend>();
+		}
+		return this.recommendMapper.getWaitingCome(userExtend.getBuildingId());
+	}
 
 	/**
 	 * 新建一条推荐
@@ -287,6 +301,16 @@ public class PisRecommendService {
 	}
 	/**
 	 * 根据报备状态和推荐用户ID获取报备数据
+	 * @param confirmUserId
+	 * @param status
+	 * @return
+	 */
+	public List<PisRecommend> getMyWaitingComeByStatus(String confirmUserId,String status){
+		return this.recommendMapper.getMyWaitingComeByStatus(confirmUserId, status);
+	}
+	
+	/**
+	 * 根据确认用户ID获取推荐信息
 	 * @param confirmUserId
 	 * @param status
 	 * @return

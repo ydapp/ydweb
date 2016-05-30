@@ -15,6 +15,7 @@ public interface PisRecommendMapper {
 	PisRecommend getById(String recommendId);
 	List<PisRecommend> getWaitingPresent(PisRecommend recommend);
 	List<PisRecommend> getWaitingConfirm(@Param("buildingId") String buildingId);
+	List<PisRecommend> getWaitingCome(@Param("buildingId") String buildingId);
 	int insert(PisRecommend recommend);
 	int customerPresent(PisRecommend recommend);
 	int recommendConfirm(PisRecommend recommend);
@@ -23,6 +24,7 @@ public interface PisRecommendMapper {
 	List<PisRecommend> getMyPresent(@Param("presentUserId") String presentUserId);
 	List<PisRecommend> getMyPresentByStatus(@Param("presentUserId") String presentUserId,@Param("status") String status);
 	List<PisRecommend> getMyConfirm(@Param("confirmUserId") String confirmUserId);
+	List<PisRecommend> getMyWaitingComeByStatus(@Param("confirmUserId") String confirmUserId,@Param("status") String status);
 	List<PisRecommend> getMyConfirmByStatus(@Param("confirmUserId") String confirmUserId,@Param("status") String status);
 	List<PisRecommend>getRecommendByStatus(@Param("status") String status);
 	List<PisRecommend> getAll();

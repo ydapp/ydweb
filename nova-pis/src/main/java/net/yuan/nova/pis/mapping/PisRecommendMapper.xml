@@ -101,7 +101,14 @@
       <include refid="Base_Column_List" />
     from PIS_RECOMMEND
     where BUILDING_ID = #{buildingId,jdbcType=VARCHAR}
-    and (STATUS = 'present' or STATUS = 'pledges' or STATUS = 'order' or STATUS = 'buy')
+    and (STATUS = 'present' or STATUS = 'pledges' or STATUS = 'order' or STATUS = 'buy') 
+  </select>
+  <select id="getWaitingCome"  resultMap="BaseResultMap" parameterType="java.lang.String" >
+      select 
+      <include refid="Base_Column_List" />
+    from PIS_RECOMMEND
+    where BUILDING_ID = #{buildingId,jdbcType=VARCHAR}
+    AND (STATUS='appointment')
   </select>
   <update id="recommendConfirm" parameterType="net.yuan.nova.pis.entity.PisRecommend">
       update PIS_RECOMMEND 
@@ -159,9 +166,18 @@
       SELECT 
       <include refid="Base_Column_List" />
     FROM PIS_RECOMMEND
-    WHERE CUSTOMER_PRESENT_USER_ID = #{presentUserId, jdbcType=VARCHAR} 
+    WHERE REFREE_ID = #{presentUserId, jdbcType=VARCHAR} 
     <if test="status!=''">
      	AND STATUS in (${status})
+    </if>
+  </select>
+   <select id="getMyWaitingComeByStatus"  resultMap="BaseResultMap" parameterType="java.lang.String" >
+      SELECT 
+      <include refid="Base_Column_List" />
+    FROM PIS_RECOMMEND
+    WHERE CUSTOMER_PRESENT_USER_ID = #{confirmUserId, jdbcType=VARCHAR}
+    <if test="status!=''">
+    	AND STATUS IN(${status})
     </if>
   </select>
    <select id="getMyConfirmByStatus"  resultMap="BaseResultMap" parameterType="java.lang.String" >

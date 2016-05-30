@@ -250,7 +250,7 @@ public class RecommendController {
 
 	/**
 	 * 驻场专员得到需要确认的列表
-	 * 包括筹、订、购和报备完成确认
+	 * 包括来
 	 * 
 	 * @param userId
 	 *            驻场专员id
@@ -264,6 +264,26 @@ public class RecommendController {
 		JsonVo<Object> jsonVo = new JsonVo<Object>();
 		log.debug("userId:" + userId);
 		List<PisRecommend> list = this.recommendService.getWaitingConfirm(userId);
+		jsonVo.setResult(list);
+		return getResponse(jsonVo, modelMap);
+	}
+	
+	
+	
+	/**
+	 * 驻场专员确认“来”
+	 * @param userId
+	 * 				驻场专员ID
+	 * @param request
+	 * @param modelMap
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/api/recommends/waitingCome/{userId}", method = RequestMethod.GET)
+	public ModelMap getWaitingCome(@PathVariable String userId, HttpServletRequest request, ModelMap modelMap){
+		JsonVo<Object> jsonVo = new JsonVo<Object>();
+		log.debug("userId:" + userId);
+		List<PisRecommend> list = this.recommendService.getWaitingCome(userId);
 		jsonVo.setResult(list);
 		return getResponse(jsonVo, modelMap);
 	}
@@ -332,6 +352,26 @@ public class RecommendController {
 		jsonVo.setResult(list);
 		return this.getResponse(jsonVo, modelMap);
 	}
+	
+	/**
+	 * 驻场专员正在处理的报备
+	 * @param confirmUserId
+	 * @param request
+	 * @param modelMap
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/api/recommends/waitingCome/doing/{confirmUserId}", method = RequestMethod.GET)
+	public ModelMap getMyDoingWaitingCome(@PathVariable String confirmUserId, HttpServletRequest request, ModelMap modelMap){
+		JsonVo<Object> jsonVo = new JsonVo<Object>();
+		//组装状态非“确认报备”
+		String status = "'"+PisRecommend.Status.present+"','"+PisRecommend.Status.pledges+"','"+PisRecommend.Status.order+"'";
+		//通过推荐用户ID和状态获取非“确认报备”报备集合信息
+		List<PisRecommend> list = this.recommendService.getMyWaitingComeByStatus(confirmUserId, status);
+		//装载数据集合
+		jsonVo.setResult(list);
+		return this.getResponse(jsonVo, modelMap);
+	}
 	/**
 	 * 通过推荐人ID获取状态非“报备确认”报备集合
 	 * @param confirmUserId
@@ -344,13 +384,31 @@ public class RecommendController {
 	public ModelMap getMyDoingConfirm(@PathVariable String confirmUserId, HttpServletRequest request, ModelMap modelMap){
 		JsonVo<Object> jsonVo = new JsonVo<Object>();
 		//组装状态非“确认报备”
-		String status = "'"+PisRecommend.Status.pledges+"','"+PisRecommend.Status.order+"'";
+		String status = "'"+PisRecommend.Status.present+"','"+PisRecommend.Status.pledges+"','"+PisRecommend.Status.order+"'";
 		//通过推荐用户ID和状态获取非“确认报备”报备集合信息
 		List<PisRecommend> list = this.recommendService.getMyConfirmByStatus(confirmUserId, status);
 		//装载数据集合
 		jsonVo.setResult(list);
 		return this.getResponse(jsonVo, modelMap);
 	}
+	 
+	 /**
+	  * 驻场专员“确定报备”来
+	  * @param confirmUserId
+	  * @param request
+	  * @param modelMap
+	  * @return
+	  */
+	 @ResponseBody
+	 @RequestMapping(value = "/api/recommends/waitingCome/done/{confirmUserId}", method = RequestMethod.GET)
+	 public ModelMap getMyDoneWaitingCome(@PathVariable String confirmUserId, HttpServletRequest request, ModelMap modelMap){
+			JsonVo<Object> jsonVo = new JsonVo<Object>();
+			//通过推荐人ID和状态获取“确认报备”集合信息
+			List<PisRecommend> list = this.recommendService.getMyWaitingComeByStatus(confirmUserId, "'"+PisRecommend.Status.confirm+"'");
+			//装载数据集合
+			jsonVo.setResult(list);
+			return this.getResponse(jsonVo, modelMap);
+	 }
 	 /**
 	  * 通过推荐人ID获取状态“确认报备”报备集合
 	  * @param confirmUserId
@@ -550,12 +608,13 @@ public class RecommendController {
 	 * 每天晚上十二点定时检查推荐信息
 	 */
 	public void validateRecommend(){
-		log.debug("开始执行定时验证推荐信息是否设置为'来'");
+		SimpleDateFormat test= new SimpleDateFormat("yyyy-MM-dd HH:MM:ss");//设置日期格式
+		log.debug("开始执行定时验证推荐信息是否设置为'来',执行时间："+test.format(new Date()));
 		boolean flag = false;
 		SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd");//设置日期格式
 		String day=df.format(new Date());//获取当天日期
 		//获取报备的推荐信息状态为“appointment”申请报备
-		List<PisRecommend>recoList = this.recommendService.getRecommendByStatus(PisRecommend.Status.appointment.toString());
+		List<PisRecommend>recoList = recommendService.getRecommendByStatus(PisRecommend.Status.appointment.toString());
 		//判断内存数据集合是否为空
 		if(null!=recommends&&recommends.size()>0){
 				//判断数据集合不为空
@@ -626,7 +685,7 @@ public class RecommendController {
 					}
 				}
 		}else{
-			 log.debug("第一次执行验证");
+			 log.debug("第一次读取即时数据存入内存集合中");
 			//第一次存入内存集合
 			Map<String,Object> map=null;//声明内存集合map
 			//循环遍历数据集合存入内存中
