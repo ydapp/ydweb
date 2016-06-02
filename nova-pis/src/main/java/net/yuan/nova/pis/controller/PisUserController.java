@@ -684,7 +684,22 @@ public class PisUserController {
 		json.setSuccess(flag);
 		return json;
 	}
-	
+	/**
+	 * 判断系统中是否存在app管理员
+	 * @return
+	 */
+	@SuppressWarnings("rawtypes")
+	@RequestMapping(value = "/api/vaildAppManager",method=RequestMethod.GET)
+	public  JsonVo vaildAppManager(){
+		JsonVo json = new JsonVo();
+		UserModel appManager = this.getAppAdmin();
+		if (appManager != null){
+			json.setSuccess(false);
+		}else{
+			json.setSuccess(true);
+		}
+		return json;
+	} 
 	/**
 	 * 通过用户名进行排序
 	 * @return

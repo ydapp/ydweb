@@ -55,10 +55,8 @@
 				<form id="add_form">
 					<div class="fitem">
 						
-						<font color="red">*</font><label>电话：</label> <input
-							id="tel" class="easyui-textbox" style="width: 452px;"></p>
-							<font color="red">*</font><label>名称：</label> <input
-							id="nick" class="easyui-textbox" style="width: 452px;"></p>
+						<font color="red">*</font><label>电话：</label> <input id="tel" validType="maxLen['#tel',20]"  required="required" class="easyui-textbox" style="width: 452px;"></p>
+							<font color="red">*</font><label>名称：</label><input id="nick" validType="maxLen['#nick',20]" required="required" class="easyui-textbox" style="width: 452px;"></p>
 						<font color="red">*</font><label>类型：</label> 
 						<select id="groupType">
 							<option value="appAdmin">APP管理员</option>
@@ -90,8 +88,8 @@
 					<input id="groupId_update" type="hidden">
 					<input id="userId_update" type="hidden">
 					<div class="fitem">
-						<font color="red">*</font><label>电话：</label> <input id="tel_update" class="easyui-textbox" required="required" style="width: 452px;"></p>
-						<font color="red">*</font><label>名称：</label><input id="nick_update" class="easyui-textbox" required="required" style="width: 452px;"></p>
+						<font color="red">*</font><label>电话：</label> <input id="tel_update" class="easyui-textbox" validType="maxLen['#tel_update',20]" required="required" style="width: 452px;"></p>
+						<font color="red">*</font><label>名称：</label><input  id="nick_update" class="easyui-textbox" validType="maxLen['#nick_update',20]" required="required" style="width: 452px;"></p>
 						<font color="red">*</font><label>类型：</label> 
 						<select id="groupType_update">
 							<option value="appAdmin" >APP管理员</option>
@@ -125,6 +123,25 @@
 <script type="text/javascript" src="<%=path%>/public/baiduueditor/ueditor.all.min.js" charset="utf-8"></script>
 <script type="text/javascript" src="<%=path%>/public/baiduueditor/lang/zh-cn/zh-cn.js" charset="utf-8"></script>
 <script type="text/javascript">
+	/**
+	 *初始化
+	 */
+	 var adminId="f77e0b96-1b88-4f58-a818-604fd33c61e1";
+	$(function(){
+		//验证内置管理下，是否有app管理，如果有则隐藏新增按钮
+		if("${CURRENT_USER.userId}"==adminId){
+			$.ajax({
+				url:'<%=path%>/api/vaildAppManager.json',
+				dataType: "json",
+				cache : false,
+				success: function(data){
+					if(!data.success){
+						$("#add").hide();
+					}
+				}
+			});
+		}
+	});
 	/**
 	 *执行新增用户操作
 	 */
@@ -253,7 +270,8 @@
 	var updateUser=function(){
 		var tel_update=$('#tel_update').textbox("isValid");
 		var nick_update=$("#nick_update").textbox("isValid");
-		if(tel_update&&nick_update){
+		var groupType_update = $("#groupType_update").val();
+		if(tel_update&&nick_update&&""!=groupType_update){
 			console.log("form:", $('#update_Form'));
 			$.restPost({
 				  url: '<%=path%>/api/updateUserByUserId.json',
@@ -404,26 +422,31 @@
 		});
 	}
 	var saveUser = function(){
-		console.log("form:", $('#add_form'));
-		$.restPost({
-			  url: '/pisWeb/api/userInfo.json',
-			  data:{
-				  tel:$('#tel').val(),
-				  nick:$('#nick').val(),
-				  groupType:$('#groupType').val(),
-				  brokingFirm:$('#brokingFirmList').val(),
-				  building:$('#buildingList').val()
-			  },
-			  success: function(data){
-				  if (data.success){
-				  $.messager.alert('温馨提示','新增成功');
-		        	$('#user_grid').datagrid('reload');
-		        	$('#mydialog').dialog('close');
-				  } else {
-					  $.messager.alert('错误',data.message);
+		var tel=$('#tel').textbox("isValid");
+		var nick=$("#nick").textbox("isValid");
+		var groupType = $("#groupType").val();
+		if(tel&&nick&&""!=groupType){
+			console.log("form:", $('#add_form'));
+			$.restPost({
+				  url: '<%=path%>/api/userInfo.json',
+				  data:{
+					  tel:$('#tel').val(),
+					  nick:$('#nick').val(),
+					  groupType:$('#groupType').val(),
+					  brokingFirm:$('#brokingFirmList').val(),
+					  building:$('#buildingList').val()
+				  },
+				  success: function(data){
+					  if (data.success){
+					  $.messager.alert('温馨提示','新增成功');
+			        	$('#user_grid').datagrid('reload');
+			        	$('#mydialog').dialog('close');
+					  } else {
+						  $.messager.alert('错误',data.message);
+					  }
 				  }
-			  }
-			});
+				});
+		}
 	}
 	var currentUserModel;
 	$.ajax({
@@ -442,6 +465,19 @@
 		},
 		error: function(){
 			alert("发生异常");
+		}
+	});
+	$.extend($.fn.validatebox.defaults.rules,{
+		maxLen:{
+			validator:function(value,arrays){
+				if(""!=value){
+					if(value.length>arrays[1]){
+						return false;
+					}
+					return true;
+				}
+			},
+			message : "输入内容超过最大长度!"
 		}
 	});
 </script>
