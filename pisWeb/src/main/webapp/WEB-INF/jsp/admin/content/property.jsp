@@ -78,8 +78,7 @@
 							</td>
 							<td>
 								<div class="fitem">
-									<label><font color="red">*</font>楼盘名称：</label> <input
-										name="propertyName" class="easyui-textbox" style="width: 400px;">
+									<label><font color="red">*</font>楼盘名称：</label> <input id="propertyName" name="propertyName" validType="maxLen['#propertyName',200]" required="required"  class="easyui-textbox" style="width: 400px;">
 								</div>
 							</td>
 						</tr>
@@ -87,91 +86,79 @@
 							<td>
 								<div class="fitem">
 									<label><font color="red">*</font>封面图片：</label> <input
-										name="cover" id="cover_add" class="easyui-filebox" style="width: 400px;" data-options="prompt:'选择一张图片'">
+										name="cover" id="cover_add" required="required" class="easyui-filebox" style="width: 400px;" data-options="prompt:'选择一张图片'">
 								</div>
 							</td>
 							<td>
 								<div class="fitem">
-									<label><font color="red">*</font>楼盘类型：</label> <input
-										name="propertyType" class="easyui-textbox" style="width: 400px;" data-options="prompt:'大型'">
+									<label><font color="red">*</font>楼盘类型：</label> <input id="propertyType" name="propertyType"validType="maxLen['#propertyType',100]" required="required"  class="easyui-textbox" style="width: 400px;" data-options="prompt:'大型'">
 								</div>
 							</td>
 						</tr>
 						<tr>
 							<td>
 								<div class="fitem">
-									<label><font color="red">*</font>楼盘地址：</label> <input
-										name="address" class="easyui-textbox" style="width: 400px;" data-options="prompt:'南京鼓楼区xx号'">
+									<label><font color="red">*</font>楼盘地址：</label> <input id="address" name="address" validType="maxLen['#address',200]"  required="required"  class="easyui-textbox" style="width: 400px;" data-options="prompt:'南京鼓楼区xx号'">
 								</div>		
 							</td>
 							<td>
 								<div class="fitem">
-									<label><font color="red">*</font>游戏规则：</label> <input
-										name="subscriptionRules" class="easyui-textbox" style="width: 400px;" data-options="prompt:'首付2层'">
-								</div>		
-							</td>
-						</tr>
-						<tr>
-							<td>
-								<div class="fitem">
-									<label><font color="red">*</font>首期开盘：</label> <input
-										name="openDate" class="easyui-textbox" style="width: 400px;" data-options="prompt:'2016-1-1'">
-								</div>		
-							</td>
-							<td>
-								<div class="fitem">
-									<label><font color="red">*</font>楼盘特色：</label> <input
-										name="characteristic" class="easyui-textbox" style="width: 400px;" data-options="prompt:'靠近地铁'">
+									<label><font color="red">*</font>游戏规则：</label> <input id="subscriptionRules" name="subscriptionRules" validType="maxLen['#subscriptionRules',500]" required="required"  class="easyui-textbox" style="width: 400px;" data-options="prompt:'首付2层'">
 								</div>		
 							</td>
 						</tr>
 						<tr>
 							<td>
 								<div class="fitem">
-									<label><font color="red">*</font>装修类型：</label> <input
-										name="decoration" class="easyui-textbox" style="width: 400px;" data-options="prompt:'精装'">
+									<label><font color="red">*</font>首期开盘：</label> <input id="openDate"	name="openDate" required="required"  class="easyui-textbox" style="width: 400px;" data-options="prompt:'2016-1-1'">
 								</div>		
 							</td>
 							<td>
 								<div class="fitem">
-									<label><font color="red">*</font>占地面积：</label> <input
-										name="area" class="easyui-textbox" style="width: 400px;" data-options="prompt:'20亩'">
-								</div>		
-							</td>
-						</tr>
-						<tr>
-							<td>
-								<div class="fitem">
-									<label><font color="red">*</font>产权年限：</label> <input
-										name="years" class="easyui-textbox" style="width: 400px;" data-options="prompt:'70'">
-								</div>		
-							</td>
-							<td>
-								<div class="fitem">
-									<label><font color="red">*</font>绿化率：</label> <input
-										name="greenRate" class="easyui-textbox" style="width: 400px;" data-options="prompt:'40'">
+									<label><font color="red">*</font>楼盘特色：</label> <input id="characteristic" name="characteristic" validType="maxLen['#characteristic',500]" required="required"  class="easyui-textbox" style="width: 400px;" data-options="prompt:'靠近地铁'">
 								</div>		
 							</td>
 						</tr>
 						<tr>
 							<td>
 								<div class="fitem">
-									<label><font color="red">*</font>物业公司：</label> <input
-										name="propertyCompany" class="easyui-textbox" style="width: 400px;" data-options="prompt:'某某物业公司'">
+									<label><font color="red">*</font>装修类型：</label> <input id="decoration" name="decoration" validType="maxLen['#decoration',100]" required="required"  class="easyui-textbox" style="width: 400px;" data-options="prompt:'精装'">
 								</div>		
 							</td>
 							<td>
 								<div class="fitem">
-									<label><font color="red">*</font>交付时间：</label> <input
-										name="deliveryTime" class="easyui-textbox" style="width: 400px;" data-options="prompt:'2016-1-1'">
+									<label><font color="red">*</font>占地面积：</label> <input id="area" name="area" validType="maxLen['#area',100]" required="required"  class="easyui-textbox" style="width: 400px;" data-options="prompt:'20亩'">
 								</div>		
 							</td>
 						</tr>
 						<tr>
 							<td>
 								<div class="fitem">
-									<label><font color="red">*</font>均价：</label> <input
-										name="avgPrice" class="easyui-textbox" style="width: 400px;" data-options="prompt:'30000'">
+									<label><font color="red">*</font>产权年限：</label> <input id="years" name="years" required="required"  class="easyui-textbox" style="width: 400px;" data-options="prompt:'70'">
+								</div>		
+							</td>
+							<td>
+								<div class="fitem">
+									<label><font color="red">*</font>绿化率：</label> <input id="greenRate" 	name="greenRate" required="required" validType="greenRateNum['#greenRate']"  class="easyui-textbox" style="width: 400px;" data-options="prompt:'40'">
+								</div>		
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<div class="fitem">
+									<label><font color="red">*</font>物业公司：</label> <input id="propertyCompany" name="propertyCompany" validType="maxLen['#propertyCompany',100]" required="required"  class="easyui-textbox" style="width: 400px;" data-options="prompt:'某某物业公司'">
+								</div>		
+							</td>
+							<td>
+								<div class="fitem">
+									<label><font color="red">*</font>交付时间：</label> <input id="deliveryTime"  name="deliveryTime"  required="required"  class="easyui-textbox" style="width: 400px;" data-options="prompt:'2016-1-1'">
+								</div>		
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<div class="fitem">
+									<label><font color="red">*</font>均价：</label> <input id="avgPrice"	name="avgPrice" required="required"  class="easyui-textbox" style="width: 400px;" data-options="prompt:'30000'">
 								</div>		
 							</td>
 							<td>
@@ -182,8 +169,7 @@
 								</div>	
 								 -->
 								<div class="fitem">
-									<label><font color="red">*</font>售楼电话：</label> <input
-										name="propertyTel" class="easyui-textbox" style="width: 400px;" data-options="prompt:'025-88888888'">
+									<label><font color="red">*</font>售楼电话：</label> <input id="propertyTel" name="propertyTel" validType="maxLen['#propertyTel',240]" required="required"  class="easyui-textbox" style="width: 400px;" data-options="prompt:'025-88888888'">
 								</div>		
 							</td>
 						</tr>
@@ -191,7 +177,7 @@
 							<td>
 								<div class="fitem">
 									<label><font color="red">*</font>交通配套：</label> <textarea
-										id="trafficFacilities" name="trafficFacilities" style="width: 400px;height: 50px"></textarea><br>
+										id="trafficFacilities" name="trafficFacilities" validType="maxLen['#trafficFacilities',1000]" required="required" readonly="readonly" style="width: 400px;height: 50px"></textarea><br>
 										<button type="button" id="addRafficFacilities">添加一条交通配套</button>
 								</div>
 										
@@ -199,7 +185,7 @@
 							<td>
 								<div class="fitem">
 									<label><font color="red">*</font>户型介绍：</label> <textarea
-										id="houseType" name="houseType"  style="width: 400px;height: 50px"></textarea><br>
+										id="houseType" name="houseType" validType="maxLen['#houseType',1000]"required="required"  readonly="readonly"  style="width: 400px;height: 50px"></textarea><br>
 										<button type="button" id="addHouseType">添加一条户型</button>
 								</div>		
 							</td>
@@ -265,7 +251,7 @@
 							</td>
 							<td>
 								<div class="fitem">
-									<label><font color="red">*</font>楼盘名称：</label><input  id="propertyName_update" name="propertyName" class="easyui-textbox" required="required" class="easyui-textbox" style="width: 400px;">
+									<label><font color="red">*</font>楼盘名称：</label><input  id="propertyName_update" name="propertyName" class="easyui-textbox" validType="maxLen['#propertyName_update',200]" required="required" class="easyui-textbox" style="width: 400px;">
 								</div>
 							</td>
 						</tr>
@@ -277,43 +263,43 @@
 							</td>
 							<td>
 								<div class="fitem">
-									<label><font color="red">*</font>楼盘类型：</label><input id="propertyType_update"	name="propertyType" class="easyui-textbox" required="required" style="width: 400px;" data-options="prompt:'大型'">
+									<label><font color="red">*</font>楼盘类型：</label><input id="propertyType_update"	name="propertyType" class="easyui-textbox" validType="maxLen['#propertyType_update',100]" required="required" style="width: 400px;" data-options="prompt:'大型'">
 								</div>
 							</td>
 						</tr>
 						<tr>
 							<td>
 								<div class="fitem">
-									<label><font color="red">*</font>楼盘地址：</label><input id="address_update"	name="address" class="easyui-textbox"  required="required" style="width: 400px;" data-options="prompt:'南京鼓楼区xx号'">
+									<label><font color="red">*</font>楼盘地址：</label><input id="address_update"	name="address" class="easyui-textbox"validType="maxLen['#address_update',200]"  required="required" style="width: 400px;" data-options="prompt:'南京鼓楼区xx号'">
 								</div>		
 							</td>
 							<td>
 								<div class="fitem">
-									<label><font color="red">*</font>游戏规则：</label><input id="subscriptionRules_update"name="subscriptionRules" class="easyui-textbox"  required="required" style="width: 400px;" data-options="prompt:'首付2层'">
-								</div>		
-							</td>
-						</tr>
-						<tr>
-							<td>
-								<div class="fitem">
-									<label><font color="red">*</font>首期开盘：</label><input id="openDate_update" name="openDate" class="easyui-textbox"  required="required" style="width: 400px;" data-options="prompt:'2016-1-1'">
-								</div>		
-							</td>
-							<td>
-								<div class="fitem">
-									<label><font color="red">*</font>楼盘特色：</label><input id="characteristic_update" name="characteristic" class="easyui-textbox"  required="required" style="width: 400px;" data-options="prompt:'靠近地铁'">
+									<label><font color="red">*</font>游戏规则：</label><input id="subscriptionRules_update"name="subscriptionRules" class="easyui-textbox" validType="maxLen['#subscriptionRules_update',500]" required="required" style="width: 400px;" data-options="prompt:'首付2层'">
 								</div>		
 							</td>
 						</tr>
 						<tr>
 							<td>
 								<div class="fitem">
-									<label><font color="red">*</font>装修类型：</label><input id="decoration_update" 	name="decoration" class="easyui-textbox"  required="required" style="width: 400px;" data-options="prompt:'精装'">
+									<label><font color="red">*</font>首期开盘：</label><input id="openDate_update" name="openDate" class="easyui-textbox"   required="required" style="width: 400px;" data-options="prompt:'2016-1-1'">
 								</div>		
 							</td>
 							<td>
 								<div class="fitem">
-									<label><font color="red">*</font>占地面积：</label><input id="area_update" name="area" class="easyui-textbox" required="required" style="width: 400px;" data-options="prompt:'20亩'">
+									<label><font color="red">*</font>楼盘特色：</label><input id="characteristic_update" name="characteristic" class="easyui-textbox" validType="maxLen['#characteristic_update',500]"  required="required" style="width: 400px;" data-options="prompt:'靠近地铁'">
+								</div>		
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<div class="fitem">
+									<label><font color="red">*</font>装修类型：</label><input id="decoration_update" 	name="decoration" class="easyui-textbox" validType="maxLen['#decoration_update',100]"  required="required" style="width: 400px;" data-options="prompt:'精装'">
+								</div>		
+							</td>
+							<td>
+								<div class="fitem">
+									<label><font color="red">*</font>占地面积：</label><input id="area_update" name="area" class="easyui-textbox" validType="maxLen['#area_update',100]" required="required" style="width: 400px;" data-options="prompt:'20亩'">
 								</div>		
 							</td>
 						</tr>
@@ -332,7 +318,7 @@
 						<tr>
 							<td>
 								<div class="fitem">
-									<label><font color="red">*</font>物业公司：</label><input id="propertyCompany_update"	name="propertyCompany" class="easyui-textbox" required="required" style="width: 400px;" data-options="prompt:'某某物业公司'">
+									<label><font color="red">*</font>物业公司：</label><input id="propertyCompany_update"	name="propertyCompany" class="easyui-textbox" validType="maxLen['#propertyCompany_update',100]" required="required" style="width: 400px;" data-options="prompt:'某某物业公司'">
 								</div>		
 							</td>
 							<td>
@@ -349,7 +335,7 @@
 							</td>
 							<td>
 								<div class="fitem">
-									<label><font color="red">*</font>售楼电话：</label><input id="propertyTel_update"	name="propertyTel" class="easyui-textbox" required="required" style="width: 400px;" data-options="prompt:'025-88888888'">
+									<label><font color="red">*</font>售楼电话：</label><input id="propertyTel_update"	name="propertyTel" class="easyui-textbox" validType="maxLen['#propertyTel_update',240]" required="required" style="width: 400px;" data-options="prompt:'025-88888888'">
 								</div>		
 							</td>
 						</tr>
@@ -357,7 +343,7 @@
 							<td>
 								<div class="fitem">
 									<label><font color="red">*</font>交通配套：</label> <textarea
-										id="trafficFacilities_update" name="trafficFacilities" class="easyui-textbox" required="required" readonly="readonly"  style="width: 400px;height: 50px"></textarea><br>
+										id="trafficFacilities_update" name="trafficFacilities" class="easyui-textbox" required="required" validType="maxLen['#trafficFacilities_update',1000]" readonly="readonly"  style="width: 400px;height: 50px"></textarea><br>
 										<button type="button" id="addRafficFacilities_update">添加一条交通配套</button>
 								</div>
 										
@@ -365,7 +351,7 @@
 							<td>
 								<div class="fitem">
 									<label><font color="red">*</font>户型介绍：</label> <textarea
-										id="houseType_update" name="houseType" class="easyui-textbox" required="required" readonly="readonly"  style="width: 400px;height: 50px"></textarea><br>
+										id="houseType_update" name="houseType" class="easyui-textbox" validType="maxLen['#houseType_update',1000]"required="required" readonly="readonly"  style="width: 400px;height: 50px"></textarea><br>
 										<button type="button" id="addHouseType_update">添加一条户型</button>
 								</div>		
 							</td>
@@ -474,18 +460,21 @@
 		});
 	};
 	var saveBuilding = function(){
-		$('#add_form').form('submit', {    
-		    success:function(data){
-		    	var data = eval('(' + data + ')');
-		    	if(data.success){
-		        	$.messager.alert('温馨提示','新增成功');
-		        	$('#article_grid').datagrid('reload');
-		        	$('#mydialog').dialog('close');
-		        }else{
-		        	$.messager.alert('温馨提示',data.message);
-		        }
-		    }    
-		});
+		var validate = $("#add_form").form('validate');
+		if(validate){
+			$('#add_form').form('submit', {    
+			    success:function(data){
+			    	var data = eval('(' + data + ')');
+			    	if(data.success){
+			        	$.messager.alert('温馨提示','新增成功');
+			        	$('#article_grid').datagrid('reload');
+			        	$('#mydialog').dialog('close');
+			        }else{
+			        	$.messager.alert('温馨提示',data.message);
+			        }
+			    }    
+			});
+		}
 	}
 	$('#add').click(function(){
 		 $('#mydialog').dialog('open');
@@ -604,6 +593,17 @@
 				return true;
 			},
 			message : "绿化率输入数字格式不正确！"
+		},
+		maxLen:{
+			validator:function(value,arrays){
+				if(""!=value){
+					if(value.length>arrays[1]){
+						return false;
+					}
+					return true;
+				}
+			},
+			message : "输入内容超过最大长度!"
 		}
 	});
 	/**

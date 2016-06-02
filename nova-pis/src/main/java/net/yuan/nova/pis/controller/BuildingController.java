@@ -35,8 +35,6 @@ import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.beanutils.ConvertUtils;
 import org.apache.commons.beanutils.converters.BigDecimalConverter;
 import org.apache.commons.beanutils.converters.DateConverter;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.ListUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.commons.lang3.time.DateUtils;
@@ -263,7 +261,7 @@ public class BuildingController {
 		property.setSubscriptionRules(multipartRequest.getParameter("subscriptionRules"));
 		property.setViewTimes(NumberUtils.createInteger(StringUtils.trimToNull(request.getParameter("viewTimes"))));
 		property.setYears(NumberUtils.createInteger(StringUtils.trimToNull(multipartRequest.getParameter("years"))));
-		property.setPropertyTel(multipartRequest.getParameter("propertyTel"));
+		property.setPropertyTel(multipartRequest.getParameter("propertyTel").trim());
 		property.setTrafficFacilities(multipartRequest.getParameter("trafficFacilities"));
 		property.setHouseType(multipartRequest.getParameter("houseType"));
 		
