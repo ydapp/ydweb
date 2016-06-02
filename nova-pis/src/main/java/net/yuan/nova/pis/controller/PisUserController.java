@@ -700,6 +700,31 @@ public class PisUserController {
 		}
 		return json;
 	} 
+	
+	/**
+	 * 判断登录用户是否是：业务员、案场专员、渠道经理
+	 * @return
+	 */
+	@SuppressWarnings("rawtypes")
+	@RequestMapping(value = "/api/loginUserType",method=RequestMethod.GET)
+	public JsonVo loginUserType(){
+		JsonVo json = new JsonVo();
+		Subject currentUser = SecurityUtils.getSubject();
+		// 判断登录是否成功
+		if (currentUser.isAuthenticated()) {
+			Session session = currentUser.getSession();
+			User user = (User) session.getAttribute(SystemConstant.SESSION_USER);
+			PisUserGroup pisUserGroup = pisUserService.getPisUserGroup(user.getUserId());
+			String type = null!=pisUserGroup?pisUserGroup.getType():"";
+			String  types=PisUserGroup.TYPE.salesman+","+PisUserGroup.TYPE.commissioner+","+PisUserGroup.TYPE.channelManager;
+			if(types.indexOf(type)!=-1){
+				json.setSuccess(false);
+			}else{
+				json.setSuccess(true);
+			}
+		}
+		return json;
+	}
 	/**
 	 * 通过用户名进行排序
 	 * @return

@@ -140,6 +140,19 @@
 					}
 				}
 			});
+		}else{
+			//判断登录用户的类型来确定是否展示用户新增按钮
+			$.ajax({
+				url:'<%=path%>/api/loginUserType.json',
+				dataTpe:'json',
+				cache:false,
+				success:function(data){
+					if(!data.success){
+						$("#add").hide();
+					}
+				}
+				
+			});
 		}
 	});
 	/**
