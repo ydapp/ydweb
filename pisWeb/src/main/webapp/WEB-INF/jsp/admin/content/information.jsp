@@ -51,12 +51,11 @@
 			<div data-options="region:'center',border:false">
 				<form id="add_form" action="<%=path%>/admin/article/add.json" method="post" enctype="multipart/form-data">
 					<div class="fitem">
-						<font color="red">*</font><label>文章标题：</label> <input
-							name="tile" class="easyui-textbox" style="width: 452px;">
+						<font color="red">*</font><label>文章标题：</label> <input id="tile" name="tile" validType="maxLen['#tile',200]"  required="required" class="easyui-textbox" style="width: 452px;">
 					</div>
 					<div class="fitem">
-						<font color="red">*</font><label>封面图片：</label> <input
-							name="cover" class="easyui-filebox" style="width: 452px;" data-options="prompt:'选择一张图片'">
+						<font color="red">*</font><label>封面图片：</label> <input id="cover"
+							name="cover"  required="required" class="easyui-filebox" style="width: 452px;" data-options="prompt:'选择一张图片'">
 					</div>
 					<script id="editor" type="text/plain" style="width:900px;height:200px;z-index:999"></script>
 				</form>
@@ -75,7 +74,7 @@
 					<input id="id_update" name="id" type="hidden">
 					<input id="cover_update" name="cover" type="hidden">
 					<div class="fitem">
-						<font color="red">*</font><label>文章标题：</label><input id="tile_update" name="tile" class="easyui-textbox"required="required" style="width: 452px;">
+						<font color="red">*</font><label>文章标题：</label><input id="tile_update" name="tile" validType="maxLen['#tile_update',200]" class="easyui-textbox"required="required" style="width: 452px;">
 					</div>
 					<div class="fitem">
 						<label>封面图片：</label><input name="cover" class="easyui-filebox" style="width: 452px;" data-options="prompt:'选择一张图片'">
@@ -107,18 +106,22 @@
 	 * 提交
 	  */
 	var saveArticle = function(){
-		$('#add_form').form('submit', {    
-		    success:function(data){
-		    	var data = eval('(' + data + ')');
-		    	if(data.success){
-		        	$.messager.alert('温馨提示','新增成功');
-		        	$('#article_grid').datagrid('reload');
-		        	$('#mydialog').dialog('close');
-		        }else{
-		        	$.messager.alert('温馨提示',data.message);
-		        }
-		    }    
-		});
+		var tile=$('#tile').textbox("isValid");
+		var cover=$('#cover').filebox("isValid");
+		if(tile&&cover){
+			$('#add_form').form('submit', {    
+			    success:function(data){
+			    	var data = eval('(' + data + ')');
+			    	if(data.success){
+			        	$.messager.alert('温馨提示','新增成功');
+			        	$('#article_grid').datagrid('reload');
+			        	$('#mydialog').dialog('close');
+			        }else{
+			        	$.messager.alert('温馨提示',data.message);
+			        }
+			    }    
+			});
+		}
 	}
 	
 	/**
@@ -157,18 +160,21 @@
 	 * 执行修改操作
 	 */
 	var saveArticle_update=function(){
-		$("#update_form").form('submit',{
-			 success:function(data){
-				 var data = eval('(' + data + ')');
-			    	if(data.success){
-			        	$.messager.alert('温馨提示',data.message);
-			        	$('#article_grid').datagrid('reload');
-			        	$('#mydialogUpdate').dialog('close');
-			        }else{
-			        	$.messager.alert('温馨提示',data.message);
-			        }
-			 }
-		});
+		var tile_update=$('#tile_update').textbox("isValid");
+		if(tile_update){
+			$("#update_form").form('submit',{
+				 success:function(data){
+					 var data = eval('(' + data + ')');
+				    	if(data.success){
+				        	$.messager.alert('温馨提示',data.message);
+				        	$('#article_grid').datagrid('reload');
+				        	$('#mydialogUpdate').dialog('close');
+				        }else{
+				        	$.messager.alert('温馨提示',data.message);
+				        }
+				 }
+			});
+		}
 	};
 	/**
 	 *执行删除操作
@@ -201,6 +207,19 @@
 					 });				  
 			  }
 		  });
+	});
+	$.extend($.fn.validatebox.defaults.rules,{
+		maxLen:{
+			validator:function(value,arrays){
+				if(""!=value){
+					if(value.length>arrays[1]){
+						return false;
+					}
+					return true;
+				}
+			},
+			message : "输入内容超过最大长度!"
+		}
 	});
 </script>
 </html>
