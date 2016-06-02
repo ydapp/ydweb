@@ -48,8 +48,7 @@
 			<div data-options="region:'center',border:false">
 				<form id="add_form">
 					<div class="fitem">
-						<font color="red">*</font><label>城市：</label> <input
-							id="cityName" class="easyui-textbox" style="width: 452px;">
+						<font color="red">*</font><label>城市：</label> <input	id="cityName" validType="maxLen['#cityName',255]" required="required" class="easyui-textbox" style="width: 452px;">
 					</div>
 				</form>
 			</div>
@@ -75,16 +74,32 @@
 		 //UE.getEditor('editor').setContent('');
 	});
 	var saveCity = function(){
-		console.log("form:", $('#add_form'));
-		$.restPost({
-			  url: '/pisWeb/api/addCity.json',
-			  data:{cityName:$('#cityName').val()},
-			  success: function(data){
-				  $.messager.alert('温馨提示','新增成功');
-		        	$('#city_grid').datagrid('reload');
-		        	$('#mydialog').dialog('close');
-			  }
-			});
+		var cityName=$('#cityName').textbox("isValid");
+		if(cityName){
+			console.log("form:", $('#add_form'));
+			$.restPost({
+				  url: '/pisWeb/api/addCity.json',
+				  data:{cityName:$('#cityName').val()},
+				  success: function(data){
+					  $.messager.alert('温馨提示','新增成功');
+			        	$('#city_grid').datagrid('reload');
+			        	$('#mydialog').dialog('close');
+				  }
+				});
+		}
 	}
+	$.extend($.fn.validatebox.defaults.rules,{
+		maxLen:{
+			validator:function(value,arrays){
+				if(""!=value){
+					if(value.length>arrays[1]){
+						return false;
+					}
+					return true;
+				}
+			},
+			message : "输入内容超过最大长度!"
+		}
+	});
 </script>
 </html>
