@@ -224,7 +224,7 @@ public class BuildingController {
 		PisProperty property = new PisProperty();
 		property.setAddress(multipartRequest.getParameter("address"));
 		property.setArea(multipartRequest.getParameter("area"));
-		property.setAvgPrice(NumberUtils.createInteger(StringUtils.trimToNull(multipartRequest.getParameter("avgPrice"))));
+		property.setAvgPrice(NumberUtils.createInteger(String.valueOf(StringUtils.trimToNull(multipartRequest.getParameter("avgPrice")))));
 		property.setCharacteristic(multipartRequest.getParameter("characteristic"));
 		property.setCity(multipartRequest.getParameter("city"));
 		property.setCommission(multipartRequest.getParameter("commission"));
@@ -433,7 +433,6 @@ public class BuildingController {
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
-		System.out.println(pisPropertyVo.getOpenDate());
 		json.put("building", pisPropertyVo);
 		log.debug("楼盘名称:" + pisPropertyVo.getPropertyName());
 		//处理楼盘电话

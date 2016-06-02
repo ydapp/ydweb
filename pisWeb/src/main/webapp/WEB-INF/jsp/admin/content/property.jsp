@@ -20,6 +20,7 @@
 <title>楼市信息管理页面</title>
 <link rel="stylesheet" type="text/css" href="<%=path%>/public/style/metro_blue.css" />
 <link rel="stylesheet" type="text/css" href="<%=path%>/public/style/icon.css" />
+<script type="text/javascript" src="<%=path%>/public/script/My97DatePicker/WdatePicker.js"></script>
 <style type="text/css">
 .fitem {
 	height: 36px;
@@ -110,7 +111,7 @@
 						<tr>
 							<td>
 								<div class="fitem">
-									<label><font color="red">*</font>首期开盘：</label> <input id="openDate"	name="openDate" required="required"  class="easyui-textbox" style="width: 400px;" data-options="prompt:'2016-1-1'">
+									<label><font color="red">*</font>首期开盘：</label> <input id="openDate"	name="openDate" required="required"  class="Wdate" style="width: 400px;" data-options="prompt:'2016-1-1'"  onFocus="WdatePicker({maxDate:'#F{$dp.$D(\'deliveryTime\')}'})" >
 								</div>		
 							</td>
 							<td>
@@ -151,14 +152,14 @@
 							</td>
 							<td>
 								<div class="fitem">
-									<label><font color="red">*</font>交付时间：</label> <input id="deliveryTime"  name="deliveryTime"  required="required"  class="easyui-textbox" style="width: 400px;" data-options="prompt:'2016-1-1'">
+									<label><font color="red">*</font>交付时间：</label> <input id="deliveryTime"  name="deliveryTime"  required="required"  class="easyui-textbox" style="width: 400px;" data-options="prompt:'2016-1-1'" onFocus="WdatePicker({minDate:'#F{$dp.$D(\'openDate\')}'})" >
 								</div>		
 							</td>
 						</tr>
 						<tr>
 							<td>
 								<div class="fitem">
-									<label><font color="red">*</font>均价：</label> <input id="avgPrice"	name="avgPrice" required="required"  class="easyui-textbox" style="width: 400px;" data-options="prompt:'30000'">
+									<label><font color="red">*</font>均价：</label> <input id="avgPrice"	name="avgPrice" validType="valiNum['#avgPrice']"  required="required"  class="easyui-textbox" style="width: 400px;" data-options="prompt:'30000'">
 								</div>		
 							</td>
 							<td>
@@ -282,7 +283,7 @@
 						<tr>
 							<td>
 								<div class="fitem">
-									<label><font color="red">*</font>首期开盘：</label><input id="openDate_update" name="openDate" class="easyui-textbox"   required="required" style="width: 400px;" data-options="prompt:'2016-1-1'">
+									<label><font color="red">*</font>首期开盘：</label><input id="openDate_update" name="openDate" class="Wdate"   required="required" style="width: 400px;" data-options="prompt:'2016-1-1'" readonly="readonly"  onFocus="WdatePicker({maxDate:'#F{$dp.$D(\'deliveryTime_update\')}'})"/>
 								</div>		
 							</td>
 							<td>
@@ -323,14 +324,14 @@
 							</td>
 							<td>
 								<div class="fitem">
-									<label><font color="red">*</font>交付时间：</label><input id="deliveryTime_update" name="deliveryTime" class="easyui-textbox" required="required" style="width: 400px;" data-options="prompt:'2016-1-1'">
+									<label><font color="red">*</font>交付时间：</label><input id="deliveryTime_update" name="deliveryTime" class="Wdate" required="required" style="width: 400px;" data-options="prompt:'2016-1-1'" readonly="readonly"   onFocus="WdatePicker({minDate:'#F{$dp.$D(\'openDate_update\')}'})" >
 								</div>		
 							</td>
 						</tr>
 						<tr>
 							<td>
 								<div class="fitem">
-									<label><font color="red">*</font>均价：</label><input id="avgPrice_update"name="avgPrice" class="easyui-textbox" required="required" style="width: 400px;" data-options="prompt:'30000'">
+									<label><font color="red">*</font>均价：</label><input id="avgPrice_update"name="avgPrice" class="easyui-textbox"  validType="valiNum['#avgPrice_update']" required="required" style="width: 400px;" data-options="prompt:'30000'">
 								</div>		
 							</td>
 							<td>
@@ -505,7 +506,7 @@
 					//循环遍历组装输入框数据 
 					for(var i=0;i<inputObj.size();i++){
 						//判断需要组装输入框的数据 
-				 		if(null!=inputObj[i]&&""!=inputObj[i].id&&"cover_update"!=inputObj[i].id&&"filebox_file_id_3"!=inputObj[i].id){
+				 		if(null!=inputObj[i]&&""!=inputObj[i].id&&"cover_update"!=inputObj[i].id&&"filebox_file_id_3"!=inputObj[i].id&&"openDate_update"!=inputObj[i].id&&"deliveryTime_update"!=inputObj[i].id){
 				 			var len=inputObj[i].id.indexOf("_");
 				 			var file=inputObj[i].id.substring(0,len);
 				 			if(""!=buildingObj[file]){
@@ -515,6 +516,8 @@
 				 	}
 					//手动组装数据 
 					$("#propertyId_update").val(row.propertyId);
+					$("#openDate_update").val(buildingObj['openDate']);
+					$("#deliveryTime_update").val(buildingObj['deliveryTime']);
 					$("#trafficFacilities_update").textbox('setValue',buildingObj['trafficFacilities']);
 					$("#houseType_update").textbox('setValue',buildingObj['houseType']);
 				}
@@ -604,6 +607,13 @@
 				}
 			},
 			message : "输入内容超过最大长度!"
+		},
+		valiNum:{
+			validator:function(value){
+				var r = /^\+?[1-9][0-9]*$/;
+			    return r.test(value);
+			},
+			message : "输入内容不能是非数字！"
 		}
 	});
 	/**
