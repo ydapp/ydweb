@@ -111,7 +111,7 @@
 						<tr>
 							<td>
 								<div class="fitem">
-									<label><font color="red">*</font>首期开盘：</label> <input id="openDate"	name="openDate" required="required"  class="Wdate" style="width: 400px;" data-options="prompt:'2016-1-1'"  onFocus="WdatePicker({maxDate:'#F{$dp.$D(\'deliveryTime\')}'})" >
+									<label><font color="red">*</font>首期开盘：</label> <input id="openDate"	name="openDate" required="required"  class="Wdate" readonly="readonly" style="width: 400px;" data-options="prompt:'2016-1-1'"  onFocus="WdatePicker({maxDate:'#F{$dp.$D(\'deliveryTime\')}'})" >
 								</div>		
 							</td>
 							<td>
@@ -152,7 +152,7 @@
 							</td>
 							<td>
 								<div class="fitem">
-									<label><font color="red">*</font>交付时间：</label> <input id="deliveryTime"  name="deliveryTime"  required="required"  class="Wdate" style="width: 400px;" data-options="prompt:'2016-1-1'" onFocus="WdatePicker({minDate:'#F{$dp.$D(\'openDate\')}'})" >
+									<label><font color="red">*</font>交付时间：</label> <input id="deliveryTime"  name="deliveryTime"  required="required" readonly="readonly"  class="Wdate" style="width: 400px;" data-options="prompt:'2016-1-1'" onFocus="WdatePicker({minDate:'#F{$dp.$D(\'openDate\')}'})" >
 								</div>		
 							</td>
 						</tr>
