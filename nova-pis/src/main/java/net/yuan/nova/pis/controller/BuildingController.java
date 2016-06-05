@@ -443,15 +443,22 @@ public class BuildingController {
 			String[] tmp  = StringUtils.split(tel, ";");
 			for (String string : tmp) {
 				log.debug("电话:" + string);
-				tels.add("楼盘电话:" + string);
+				if(""!=string){
+					tels.add(string);
+				}
 			}
 		}
 		//得到案场专员列表
 		List<PisUserExtend> list = this.userExtendService.selectByBuildingId(1, 30, pisProperty.getPropertyId());
 		for (PisUserExtend pisUserExtend : list) {
 			PisUser user = this.pisUserService.findUserById(pisUserExtend.getUserId());
-			log.debug("usertel:" + user.getTel()  + " nick:" + user.getNick());
-			tels.add(user.getNick() + ":" + user.getTel());
+			if(null!=user){
+				log.debug("usertel:" + user.getTel()  + " nick:" + user.getNick());
+				System.out.println(tel.indexOf(user.getTel()));
+				if(""!=user.getTel()&&tel.indexOf(user.getTel())==-1){
+					tels.add(user.getNick() + ":" + user.getTel());
+				}
+			}
 		}
 		String telString = StringUtils.join(tels, ";");
 		pisPropertyVo.setPropertyTel(telString);
