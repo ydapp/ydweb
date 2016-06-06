@@ -454,7 +454,6 @@ public class BuildingController {
 			PisUser user = this.pisUserService.findUserById(pisUserExtend.getUserId());
 			if(null!=user){
 				log.debug("usertel:" + user.getTel()  + " nick:" + user.getNick());
-				System.out.println(tel.indexOf(user.getTel()));
 				if(""!=user.getTel()&&tel.indexOf(user.getTel())==-1){
 					tels.add(user.getNick() + ":" + user.getTel());
 				}
