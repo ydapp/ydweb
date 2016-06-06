@@ -537,7 +537,7 @@ public class BuildingController {
 	@RequestMapping(value = "/api/property", method=RequestMethod.GET)
 	@ResponseBody
 	public ModelMap propertyDetail(HttpServletRequest request, ModelMap modelMap) {
-		String id = request.getParameter("id");
+		String id = request.getParameter("id"); 
 		return propertyInfo(id, request, modelMap);
 	}
 	/**
