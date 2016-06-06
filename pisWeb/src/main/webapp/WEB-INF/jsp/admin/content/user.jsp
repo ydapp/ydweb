@@ -197,6 +197,7 @@
 	/**
 	 *打开修改用户页面
 	 */
+	 var appAdminUserId="743ab7ab-15c4-4365-b2c0-0c702b576be3";
 	$("#update").click(function(){
 		var row = $('#user_grid').datagrid('getSelected');
 		if(null==row){
@@ -220,59 +221,84 @@
 					  $("#nick_update").textbox('setValue',data.nick);
 					  $("#groupId_update").val(data.groupId);
 					  $("#userId_update").val(data.userId);
-					  
-					  //app管理员修改
-					  if("appAdmin"==data.groupType){
-						 $("#groupType_update").empty();
-						 $("#groupType_update").append("<option value='appAdmin'>APP管理员</option>");
-						 $("#brokingFirmDiv_update").hide();
-						 $("#buildingDiv_update").hide();
-						 return;	
-					  }
-					  //经纪公司
-				 	  if("brokingFirm"==data.groupType){
+					  if(appAdminUserId=="${CURRENT_USER.userId}"){
 						  $("#groupType_update").empty();
-						  $("#groupType_update").append("<option value='commissioner'  >案场专员</option>");
-						  $("#groupType_update").append("<option value='brokingFirm' selected='selected'>经纪公司</option>");
-						  $("#groupType_update").append("<option value='channelManager'>渠道经理</option>");
+						  if("commissioner"==data.groupType){
+							  $("#groupType_update").append("<option value='commissioner'  selected='selected'>案场专员</option>");
+						  }else{
+							  $("#groupType_update").append("<option value='commissioner'>案场专员</option>");
+						  }
+						  if("brokingFirm"==data.groupType){
+							  $("#groupType_update").append("<option value='brokingFirm' selected='selected'>经纪公司</option>");
+						  }else{
+							  $("#groupType_update").append("<option value='brokingFirm'>经纪公司</option>");
+						  }
+						  if("channelManager"==data.groupType){
+							  $("#groupType_update").append("<option value='channelManager' selected='selected'>渠道经理</option>");
+						  }else{
+							  $("#groupType_update").append("<option value='channelManager'>渠道经理</option>");
+						  }
+						  if("salesman"==data.groupType){
+							  $("#groupType_update").append("<option value='salesman' selected='selected'>业务员</option>");
+						  }else{
+							  $("#groupType_update").append("<option value='salesman'>业务员</option>");
+						  }
 						  $("#brokingFirmList_update").val(data.brokingFirm)
 						  //主动出发一次组选择变化
 						  $("#groupType_update").change();
-						  return;
-					  	}
-				 		//渠道经理
-				 	 	if("channelManager"==data.groupType){
-						  $("#groupType_update").empty();
-						  $("#groupType_update").append("<option value='commissioner'  >案场专员</option>");
-						  $("#groupType_update").append("<option value='brokingFirm' >经纪公司</option>");
-						  $("#groupType_update").append("<option value='channelManager' selected='selected'>渠道经理</option>");
-						  $("#brokingFirmList_update").val(data.brokingFirm)
-						  //主动出发一次组选择变化
-						  $("#groupType_update").change();
-						  return;
-					  	 }
-					  //报备人
-					  if("commissioner"==data.groupType){
-						  $("#groupType_update").empty();
-						  $("#groupType_update").append("<option value='commissioner'selected='selected'  >案场专员</option>");
-						  $("#groupType_update").append("<option value='brokingFirm' >经纪公司</option>");
-						  $("#groupType_update").append("<option value='channelManager'>渠道经理</option>");
-						  //主动出发一次组选择变化
-						  $("#groupType_update").change();
-						  $("#buildingList_update").find("option[value='"+data.building+"']").attr("selected","selected");
-						  setTimeout("$('#buildingList_update').find('option[value="+data.building+"]').attr('selected','selected');",600)
-						  return;
+					  }else{
+						  //app管理员修改
+						  if("appAdmin"==data.groupType){
+							 $("#groupType_update").empty();
+							 $("#groupType_update").append("<option value='appAdmin'>APP管理员</option>");
+							 $("#brokingFirmDiv_update").hide();
+							 $("#buildingDiv_update").hide();
+							 return;	
+						  }
+						  //经纪公司
+					 	  if("brokingFirm"==data.groupType){
+							  $("#groupType_update").empty();
+							  $("#groupType_update").append("<option value='commissioner'  >案场专员</option>");
+							  $("#groupType_update").append("<option value='brokingFirm' selected='selected'>经纪公司</option>");
+							  $("#groupType_update").append("<option value='channelManager'>渠道经理</option>");
+							  $("#brokingFirmList_update").val(data.brokingFirm)
+							  //主动出发一次组选择变化
+							  $("#groupType_update").change();
+							  return;
+						  	}
+					 		//渠道经理
+					 	 	if("channelManager"==data.groupType){
+							  $("#groupType_update").empty();
+							  $("#groupType_update").append("<option value='commissioner'  >案场专员</option>");
+							  $("#groupType_update").append("<option value='brokingFirm' >经纪公司</option>");
+							  $("#groupType_update").append("<option value='channelManager' selected='selected'>渠道经理</option>");
+							  $("#brokingFirmList_update").val(data.brokingFirm)
+							  //主动出发一次组选择变化
+							  $("#groupType_update").change();
+							  return;
+						  	 }
+						  //报备人
+						  if("commissioner"==data.groupType){
+							  $("#groupType_update").empty();
+							  $("#groupType_update").append("<option value='commissioner'selected='selected'  >案场专员</option>");
+							  $("#groupType_update").append("<option value='brokingFirm' >经纪公司</option>");
+							  $("#groupType_update").append("<option value='channelManager'>渠道经理</option>");
+							  //主动出发一次组选择变化
+							  $("#groupType_update").change();
+							  $("#buildingList_update").find("option[value='"+data.building+"']").attr("selected","selected");
+							  setTimeout("$('#buildingList_update').find('option[value="+data.building+"]').attr('selected','selected');",600)
+							  return;
+						  }
+						  //业务员
+						  if("salesman"==data.groupType){
+							  $("#groupType_update").empty();
+							  $("#groupType_update").append("<option value='salesman'>业务员</option>");
+							  $('#brokingFirmList_update').val(data.brokingFirm);
+							  $("#brokingFirmDiv_update").show();
+							  $("#buildingDiv_update").hide();
+							  return;
+						  }
 					  }
-					  //业务员
-					  if("salesman"==data.groupType){
-						  $("#groupType_update").empty();
-						  $("#groupType_update").append("<option value='salesman'>业务员</option>");
-						  $('#brokingFirmList_update').val(data.brokingFirm);
-						  $("#brokingFirmDiv_update").show();
-						  $("#buildingDiv_update").hide();
-						  return;
-					  }
-					 
 				}
 			}
 		});
@@ -328,6 +354,9 @@
 			 $("#brokingFirmDiv_update").hide();
 			 	//加载城市列表
 			 loadCityList("cityList_update");
+		 }else if("salesman"==$("#groupType_update").val()){
+			 $("#brokingFirmDiv_update").show();
+			  $("#buildingDiv_update").hide();
 		 }
 		 
 	 });
@@ -381,7 +410,6 @@
 			 //加载城市列表
 			 loadCityList("cityList");
 		 }
-		 
 	 });
 	//城市选型发生变化
 	 $("#cityList").change(function(e){
