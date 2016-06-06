@@ -464,6 +464,67 @@ public class BuildingController {
 		modelMap.addAttribute("result", json);
 		return modelMap;
 	}
+	
+	
+	/**
+	 * 楼盘详情
+	 * 
+	 * @param id
+	 * @param request
+	 * @param modelMap
+	 * @return
+	 */
+	public ModelMap  propertyInfo(@PathVariable String id, HttpServletRequest request, ModelMap modelMap) {
+		PisProperty pisProperty = buildingService.selectByPrimaryKey(id);
+		if (StringUtils.isNotEmpty(pisProperty.getCity())){
+			PisCity city = this.cityService.getCityById(pisProperty.getCity());
+			pisProperty.setCityTitle(city.getCityName());
+		}
+		PisPropertyVo pisPropertyVo = new PisPropertyVo();
+		try {
+			ConvertUtils.register(new DateConverter(null), java.util.Date.class); 
+			ConvertUtils.register(new BigDecimalConverter(null), BigDecimal.class);
+			BeanUtils.copyProperties(pisPropertyVo, pisProperty);
+		} catch (Exception e) {
+			log.error("拷贝数据出错", e);
+		}
+		String viewWidthStr = request.getParameter("viewWidth");
+		int width = NumberUtils.toInt(viewWidthStr, 0);
+		// 对图片进行相应的压缩
+		List<Attachment> attachments = attachmentService.getAttachmentsByKindId(pisProperty.getPropertyId(),
+				Attachment.TableName.PIS_PROPERTY, Attachment.State.A);
+		Attachment attachment = null;
+		if (attachments.size() > 0) {
+			attachment = attachments.get(0);
+		}
+		if (attachment != null) {
+			String filePath = attachment.getSavePath();
+			if (width > 10) {
+				try {
+					filePath = attachmentService.thumbnailator(attachment, width - 10);
+				} catch (IOException e) {
+					log.error("生成缩略图失败", e);
+				}
+			}
+			// 获得请求图片的完整地址
+			String basePath = HttpUtils.getBasePath(request);
+			pisPropertyVo.setFilePath(basePath + "/" + filePath);
+		}
+		Map<String, Object> json = new HashMap<String, Object>();
+		DateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");  
+		 SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+		try {
+			pisPropertyVo.setDeliveryTime(format1.parse(formatter.format(pisPropertyVo.getDeliveryTime())));
+			pisPropertyVo.setOpenDate(format1.parse(formatter.format(pisPropertyVo.getOpenDate())));
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		json.put("building", pisPropertyVo);
+		log.debug("楼盘名称:" + pisPropertyVo.getPropertyName());
+		//处理楼盘电话
+		modelMap.addAttribute("result", json);
+		return modelMap;
+	}
 
 	/**
 	 * 楼盘详情
@@ -477,7 +538,7 @@ public class BuildingController {
 	@ResponseBody
 	public ModelMap propertyDetail(HttpServletRequest request, ModelMap modelMap) {
 		String id = request.getParameter("id");
-		return propertyDetail(id, request, modelMap);
+		return propertyInfo(id, request, modelMap);
 	}
 	/**
 	 * 插入数据
