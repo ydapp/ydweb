@@ -444,7 +444,7 @@ public class BuildingController {
 			for (String string : tmp) {
 				log.debug("电话:" + string);
 				if(""!=string){
-					tels.add(string);
+					tels.add("楼盘电话:"+string);
 				}
 			}
 		}
