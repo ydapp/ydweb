@@ -149,11 +149,17 @@
 				dataTpe:'json',
 				cache:false,
 				success:function(data){
-					if(!data.success){
-						$("#add").hide();
+					if(doVerificationBrowser()){
+						var obj = eval("("+data+")");
+						if(!obj.success){
+							$("#add").hide();
+						}
+					}else{
+						if(!data.success){
+							$("#add").hide();
+						}
 					}
 				}
-				
 			});
 		}
 	});
@@ -563,6 +569,18 @@
 		if("salesman"==obj.value){
 			$("#type_update").val("P");
 		}
+	}
+	/**
+	 *  判断浏览器是否为IE或者其他浏览器
+	 */
+	function doVerificationBrowser(){
+		var userAgent = navigator.userAgent; //取得浏览器的userAgent字符串
+		//判断浏览是否为IE
+		 if (!!window.ActiveXObject || "ActiveXObject" in window || userAgent.indexOf("trident")>-1) {
+			 return true;
+		 } else{
+			 return false;
+		 }
 	}
 	$.extend($.fn.validatebox.defaults.rules,{
 		maxLen:{
