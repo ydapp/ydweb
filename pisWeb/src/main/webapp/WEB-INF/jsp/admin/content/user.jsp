@@ -36,7 +36,7 @@
 			<a href="javascript:void(0);" class="easyui-linkbutton" iconCls="icon-remove" plain="true" id="remove">删除用户</a>
 		</div>
 		<table id="user_grid" class="easyui-datagrid" title="用户列表" 
-		data-options="singleSelect:true,url:'<%=path%>//api/userInfos.json',method:'get',toolbar:'#tb',rownumbers:'true',pagination:'true',fit:'true',fitColumns: true">
+		data-options="singleSelect:true,url:'<%=path%>//api/userInfos.json',method:'get',toolbar:'#tb',rownumbers:'true',pagination:'true',fit:'true',fitColumns: true,pageSize:20,pageList:[20,30,40,50]">
 			<thead>
 				<tr>
 					<th data-options="field:'nick',width:180">用户</th>
