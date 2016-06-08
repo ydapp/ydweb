@@ -815,6 +815,7 @@ public class PisUserController {
 							return  Collator.getInstance(java.util.Locale.CHINA).compare(user1.getNick(),user2.getNick());
 						}
 					});
+					//将经纪人整理到相对于的经济公司下
 					boolean flag = false;
 					if(null!=userList_05&&userList_05.size()>0){
 						for (int i = 0; i <userList_05.size(); i++) {
@@ -841,9 +842,22 @@ public class PisUserController {
 					}else{
 						userList_02.addAll(userList_04);
 					}
+					//清重复
 					if(null!=userList_02&&userList_02.size()>0){
 						userList_02.removeAll(userList_06);
 					}
+					//按照用户编码排序
+					Collections.sort(userList_02, new Comparator<PisUser>(){
+						@Override
+						public int compare(PisUser user1, PisUser user2) {
+							if((null!=user1&&!"".equals(user1.getPersonCode()))&&(null!=user2&&!"".equals(user2.getPersonCode()))){
+								int num1 = Integer.parseInt(user1.getPersonCode().substring(1, user1.getPersonCode().length()));
+								int num2 = Integer.parseInt(user2.getPersonCode().substring(1,user2.getPersonCode().length()));
+								return num1-num2;
+							}
+							return 0;
+						}
+					});
 					//按照中文排序非案场电话集合
 					Collections.sort(userList_02, new Comparator<PisUser>(){
 						@Override
