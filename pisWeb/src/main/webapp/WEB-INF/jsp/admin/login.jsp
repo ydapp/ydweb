@@ -60,7 +60,8 @@
 		</div>
 	</div>
 	<div class="login-foot">
-		<span class="coryright">Copyright ${copyright}</span>
+		<span class="coryright">Copyright ${copyright}</span><br>
+		<span class="coryright">版本(0.9.6)</span>
 	</div>
 	<div id="loading-mask" style="display: none;">
 		<div id="loading">
