@@ -181,6 +181,7 @@
 			 $("#groupType").append("<option value='commissioner'onClick='getType(this)'>案场专员</option>");
 			 $("#groupType").append("<option value='brokingFirm'onClick='getType(this)'>经纪公司</option>");
 			 $("#groupType").append("<option value='channelManager'onClick='getType(this)'>渠道经理</option>");
+			 $("#groupType").append("<option value='salesman'onClick='getType(this)'>业务员</option>");
 			 //主动出发一次组选择变化
 			 $("#groupType").change();
 			 getType($("#groupType")[0]);
@@ -419,6 +420,9 @@
 			 $("#brokingFirmDiv").hide();
 			 //加载城市列表
 			 loadCityList("cityList");
+		 }else if("salesman"==$("#groupType").val()){
+		  	  $("#brokingFirmDiv").show();
+			  $("#buildingDiv").hide();
 		 }
 	 });
 	//城市选型发生变化

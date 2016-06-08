@@ -365,7 +365,13 @@ public class PisUserController {
 			this.userExtendService.insert(userExtend);
 		} else if (StringUtils.equals(PisUserGroup.TYPE.salesman.name(), userModel.getGroupType())){
 			log.debug("关联经纪公司");
-			String brokingFirmId = this.brokingFirmService.findByName(userModel.getBrokingFirm()).getBrokingFirmId();
+			PisBrokingFirm pisBrokingFirm=this.brokingFirmService.findByName(userModel.getBrokingFirm());
+			String brokingFirmId="";
+			if(null==pisBrokingFirm){
+				brokingFirmId = this.brokingFirmService.add(userModel.getBrokingFirm());
+			}else{
+				brokingFirmId=pisBrokingFirm.getBrokingFirmId();
+			}
 			PisUserExtend userExtend = new PisUserExtend();
 			userExtend.setBrokingFirmId(brokingFirmId);
 			userExtend.setUserId(pisUser.getUserId());
@@ -827,8 +833,14 @@ public class PisUserController {
 								 if(null!=pisUserExtend){
 									 for (PisUser user : userList_04) {
 											 PisUserExtend pisUserExtend_01 = this.userExtendService.selectByUserId(user.getUserId());
-											 if(pisUserExtend.getBrokingFirmId().equals(pisUserExtend_01.getBrokingFirmId())){
-												 userList_06.add(user);
+											 if(null!=pisUserExtend_01){
+												 if(pisUserExtend.getBrokingFirmId().equals(pisUserExtend_01.getBrokingFirmId())){
+													 userList_06.add(user);
+												 }
+											 }else{
+												 if(!userList_02.contains(user)){
+														userList_02.add(user);
+													}
 											 }
 											 if(!flag){
 												 if(!userList_02.contains(user)){
