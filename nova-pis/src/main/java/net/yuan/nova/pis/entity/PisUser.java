@@ -133,6 +133,9 @@ public class PisUser {
 	 *
 	 * @mbggenerated Wed Mar 23 14:22:23 CST 2016
 	 */
+	
+	private String personCode;
+	
 	public String getUserId() {
 		return userId;
 	}
@@ -485,6 +488,15 @@ public class PisUser {
 	 */
 	public String getPromoCodeP() {
 		return promoCodeP;
+	}
+	
+
+	public String getPersonCode() {
+		return personCode;
+	}
+
+	public void setPersonCode(String personCode) {
+		this.personCode = personCode;
 	}
 
 	/**

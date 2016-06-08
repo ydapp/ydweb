@@ -1,12 +1,12 @@
 package net.yuan.nova.pis.service;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 import net.yuan.nova.core.shiro.PasswordHelper;
 import net.yuan.nova.core.shiro.vo.User;
+import net.yuan.nova.pis.dao.PisPersonCodeMapper;
 import net.yuan.nova.pis.dao.PisUserInfoMapper;
 import net.yuan.nova.pis.dao.PisUserMapper;
 import net.yuan.nova.pis.entity.PisUser;
@@ -36,6 +36,8 @@ public class PisUserService {
 	private UserGroupShipKeyService keyService;
 	@Autowired
 	private UserGroupService groupService;
+	@Autowired
+	private PisPersonCodeMapper pisPersonCodeMapper;
 
 	// ///////////////////////////////
 	// ///// 查詢 ////////
@@ -208,6 +210,9 @@ public class PisUserService {
 	 */
 	@Transactional(rollbackFor = { Exception.class })  
 	public boolean removeUser(String userId){
+		//用户编码
+		PisUser pisUser = this.pisUserMapper.selectByPrimaryKey(userId);
+		String personCode = null!=pisUser?pisUser.getPersonCode():"";
 		 //执行用户信息删除
 		int ret_01= this.pisUserMapper.deleteUserByUserId(userId);
 		if(ret_01<1){
@@ -247,6 +252,12 @@ public class PisUserService {
 		//用户上传附件信息
 		int ret_07 = this.pisUserMapper.deletePicUserAttachment(userId);
 		if(ret_07<0){
+			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+			return false;
+		}
+		//删除用户编码
+		int ret_08=this.pisPersonCodeMapper.deletePersonCode(personCode);
+		if(ret_08<0){
 			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
 			return false;
 		}

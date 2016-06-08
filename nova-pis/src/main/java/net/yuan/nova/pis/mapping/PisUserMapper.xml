@@ -22,6 +22,7 @@
     <result column="CREATE_TIME" property="createTime" jdbcType="TIMESTAMP" />
     <result column="PROMO_CODE" property="promoCode" jdbcType="VARCHAR" />
     <result column="PROMO_CODE_P" property="promoCodeP" jdbcType="VARCHAR" />
+    <result column="PERSON_CODE" property="personCode" jdbcType="VARCHAR"/>
   </resultMap>
   <sql id="Base_Column_List" >
     <!--
@@ -30,7 +31,7 @@
       This element was generated on Wed Mar 23 14:22:23 CST 2016.
     -->
     USER_ID, USER_NAME, NICK, USER_ICON, PASSWORD, SALT, EMAIL, TEL, TYPE, VIP_LEVEL, 
-    STATUS, SORT, CREATE_TIME, PROMO_CODE, PROMO_CODE_P
+    STATUS, SORT, CREATE_TIME, PROMO_CODE, PROMO_CODE_P,PERSON_CODE
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
     <!--
@@ -62,12 +63,12 @@
       USER_ICON, PASSWORD, SALT, 
       EMAIL, TEL, TYPE, VIP_LEVEL, 
       STATUS, SORT, CREATE_TIME, 
-      PROMO_CODE, PROMO_CODE_P)
+      PROMO_CODE, PROMO_CODE_P,PERSON_CODE)
     values (#{userId,jdbcType=VARCHAR}, #{userName,jdbcType=VARCHAR}, #{nick,jdbcType=VARCHAR}, 
       #{userIcon,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, #{salt,jdbcType=VARCHAR}, 
       #{email,jdbcType=VARCHAR}, #{tel,jdbcType=VARCHAR}, #{type,jdbcType=CHAR}, #{vipLevel,jdbcType=CHAR}, 
       #{status,jdbcType=CHAR}, #{sort,jdbcType=DECIMAL}, #{createTime,jdbcType=TIMESTAMP}, 
-      #{promoCode,jdbcType=VARCHAR}, #{promoCodeP,jdbcType=VARCHAR})
+      #{promoCode,jdbcType=VARCHAR}, #{promoCodeP,jdbcType=VARCHAR},#{personCode,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="net.yuan.nova.pis.entity.PisUser" >
     <!--
@@ -122,6 +123,9 @@
       <if test="promoCodeP != null" >
         PROMO_CODE_P,
       </if>
+      <if test="personCode != null">
+      	PERSON_CODE,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="userId != null" >
@@ -168,6 +172,9 @@
       </if>
       <if test="promoCodeP != null" >
         #{promoCodeP,jdbcType=VARCHAR},
+      </if>
+      <if test="personCode != null">
+   	    #{personCode,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -220,6 +227,9 @@
       </if>
       <if test="promoCodeP != null" >
         PROMO_CODE_P = #{promoCodeP,jdbcType=VARCHAR},
+      </if>
+      <if test="personCode != null">
+      	PERSON_CODE=#{personCode,jdbcType=VARCHAR}
       </if>
     </set>
     where USER_ID = #{userId,jdbcType=VARCHAR}

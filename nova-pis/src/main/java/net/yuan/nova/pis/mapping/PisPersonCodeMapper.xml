@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.yuan.nova.pis.dao.PisPersonCodeMapper" >
+	<resultMap id="BaseResultMap" type="net.yuan.nova.pis.entity.PisPersonCode" >
+	    <id column="parent" property="parent" jdbcType="VARCHAR" />
+	    <result column="key" property="key" jdbcType="VARCHAR" />
+	    <result column="value" property="value" jdbcType="VARCHAR" />
+	    <result column="parent_1" property="parent_1" jdbcType="VARCHAR"/>
+  	</resultMap>
+  <sql id="Base_Column_List" >
+  	PARENT, KEY, VALUE
+  </sql>
+  <select id="selectPersonByKey" resultMap="BaseResultMap" parameterType="java.lang.String">
+  	 SELECT  <include refid="Base_Column_List" /> FROM
+  	   (SELECT  <include refid="Base_Column_List" /> FROM PIS_PERSON_CODE A 
+  	    WHERE A.KEY like '%${_parameter}%' ORDER BY A.PARENT DESC)
+  	     WHERE ROWNUM=1
+  </select>
+  <insert id="insertPersonCode" parameterType="net.yuan.nova.pis.entity.PisPersonCode">
+  	   insert into PIS_PERSON_CODE (PARENT, KEY, VALUE)
+    	values (#{parent,jdbcType=VARCHAR}, #{key,jdbcType=VARCHAR}, #{value,jdbcType=VARCHAR})
+  </insert>
+  <update id="updatePersonCode"  parameterType="net.yuan.nova.pis.entity.PisPersonCode">
+  	 UPDATE PIS_PERSON_CODE
+  	 <set>
+  	 	<if test="parent != null">
+  	 		PARENT = #{parent,jdbcType=VARCHAR},
+  		</if>
+  		<if test="key != null">
+  			KEY = #{key,jdbcType=VARCHAR},
+  		</if>
+  		<if test="value != null">
+  			VALUE = #{value,jdbcType=VARCHAR},
+  		</if>
+  	 </set>
+  	  WHERE PARENT = #{parent_1}
+  </update>
+  <delete id="deletePersonCode" parameterType="java.lang.String" >
+  	DELETE PIS_PERSON_CODE WHERE PARENT=#{parent,jdbcType=VARCHAR}
+  </delete>
+</mapper>

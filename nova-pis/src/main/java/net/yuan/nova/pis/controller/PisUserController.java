@@ -20,6 +20,7 @@ import net.yuan.nova.core.vo.JsonVo;
 import net.yuan.nova.pis.business.UserModelBusinessImpl;
 import net.yuan.nova.pis.entity.PisBrokingFirm;
 import net.yuan.nova.pis.entity.PisBuilding;
+import net.yuan.nova.pis.entity.PisPersonCode;
 import net.yuan.nova.pis.entity.PisUser;
 import net.yuan.nova.pis.entity.PisUserExtend;
 import net.yuan.nova.pis.entity.PisUserGroup;
@@ -28,6 +29,7 @@ import net.yuan.nova.pis.entity.PisUserInfo;
 import net.yuan.nova.pis.entity.vo.UserInfoVo;
 import net.yuan.nova.pis.pagination.DataGridHepler;
 import net.yuan.nova.pis.pagination.PageParam;
+import net.yuan.nova.pis.service.PersonCodeService;
 import net.yuan.nova.pis.service.PisBrokingFirmService;
 import net.yuan.nova.pis.service.PisBuildingService;
 import net.yuan.nova.pis.service.PisUserExtendService;
@@ -82,6 +84,8 @@ public class PisUserController {
 	private PisBrokingFirmService brokingFirmService;
 	@Autowired
 	private UserModelBusinessImpl userModelBusiness;
+	@Autowired
+	private PersonCodeService persionCodeService;
 	/**
 	 * 获得当前登录用户信息
 	 * 
@@ -324,13 +328,25 @@ public class PisUserController {
 		}
 		
 		log.debug("添加用户:" + userModel.getNick() + "(" + userModel.getTel() + ")");
+		String personCode=this.persionCodeService.getNextCode(userModel.getType());
 		PisUser pisUser = new PisUser();
 		pisUser.setNick(userModel.getNick());
 		pisUser.setUserName(userModel.getTel());
-		pisUser.setType("F");
+		pisUser.setType(userModel.getType());
 		pisUser.setTel(userModel.getTel());
 		pisUser.setPassword("123456");
+		pisUser.setPersonCode(personCode);
 		this.pisUserService.insertUser(pisUser);
+		PisPersonCode pisPersonCode = new PisPersonCode();
+		pisPersonCode.setParent(personCode);
+		pisPersonCode.setKey(userModel.getType());
+		if(personCode.length()>5){
+			int index = personCode.indexOf(PisPersonCode.Status.P.toString());
+			pisPersonCode.setValue(personCode.substring(index+1, personCode.length()));
+		}else{
+			pisPersonCode.setValue(personCode.substring(1,personCode.length()));
+		}
+	    this.persionCodeService.insertPersonCode(pisPersonCode);
 		log.debug("添加用户和组的关系:" + userModel.getGroupType());
 		String groupType = userModel.getGroupType();
 		PisUserGroup userGroup = this.groupService.getByType(groupType);
@@ -481,6 +497,8 @@ public class PisUserController {
 		userModel = new UserModel();
 		userModel.setTel(null!=pisUser?pisUser.getTel():"");
 		userModel.setNick(null!=pisUser?pisUser.getNick():"");
+		userModel.setType(pisUser.getType());
+		userModel.setPersonCode(pisUser.getPersonCode());
 		userModel.setUserId(userId);
 		userModel.setGroupId(null!=pisUserGroup?pisUserGroup.getGroupId():"");
 		userModel.setGroupType(null!=pisUserGroup?pisUserGroup.getType():"");
@@ -507,13 +525,26 @@ public class PisUserController {
 			json.setMessage("此电话号码已经存在:" + user.getNick() + "(" + user.getTel() + ")");
 			return json;
 		}
+		String personCode="";
+		if(userModel.getPersonCode().indexOf(userModel.getType())==-1){
+			personCode = this.persionCodeService.getNextCode(userModel.getType());
+		}else{
+			personCode = userModel.getPersonCode();
+		}
 		//组装参数
 		pisUser = new PisUser();
 		pisUser.setTel(userModel.getTel());
 		pisUser.setNick(userModel.getNick());
 		pisUser.setUserName(userModel.getTel());
 		pisUser.setUserId(userModel.getUserId());
+		pisUser.setPersonCode(personCode);
 		this.pisUserService.updateUser(pisUser);
+		PisPersonCode pisPersonCode = new PisPersonCode();
+		pisPersonCode.setParent(personCode);
+		pisPersonCode.setKey(userModel.getType());
+		pisPersonCode.setValue(personCode.substring(1,personCode.length()));
+		pisPersonCode.setParent_1(userModel.getPersonCode());
+		this.persionCodeService.updatePersonCode(pisPersonCode);
 		log.debug("修改用户和组的关系:" + userModel.getGroupType());
 		//删除原有用户与组关联关系
 		PisUserGroupShipKey key_01 = new PisUserGroupShipKey();
@@ -737,18 +768,30 @@ public class PisUserController {
 					List<PisUser> userList_01=new ArrayList<>();
 					//创建非案场电话集合
 					List<PisUser> userList_02=new ArrayList<>();
-					//遍历循环判断用户是否案场专员
+					//创建业务员集合
+					List<PisUser> userList_04 = new ArrayList<>();
+					//创建经济公司集合
+					List<PisUser> userList_05 = new ArrayList<>();
+					//创建经纪公司和经纪人集合
+					List<PisUser> userList_06 = new ArrayList<>();
+					//遍历循环判断用户是否案场专员 驻场专员，渠道经理，管理员置顶
 					for (int i = 0; i < userList.size(); i++) {
-						PisUser pisUser = userList.get(i);
+						 PisUser pisUser = userList.get(i);
 						 PisUserGroup group =pisUserService.getPisUserGroup(pisUser.getUserId());
 						 if(null!=group&&!"".equals(group.getType())){
-							 if("commissioner".equals(group.getType())){
+							 if("commissioner".equals(group.getType())||"channelManager".equals(group.getType())||"appAdmin".equals(group.getType())||"A".equals(pisUser.getType())){
 									userList_01.add(pisUser);
-								}else{
+								}else if("brokingFirm".equals(group.getType())){
+									 userList_05.add(pisUser);
+								 }else if("salesman".equals(group.getType())){
+									 userList_04.add(pisUser);
+								 }else{
 									userList_02.add(pisUser);
 								}
+						 }else if("A".equals(pisUser.getType())){
+							 userList_01.add(pisUser);
 						 }else{
-								userList_02.add(pisUser);
+							 userList_02.add(pisUser);
 						 }
 					}
 					//按照中文姓名排序案场电话集合
@@ -759,6 +802,49 @@ public class PisUserController {
 						}
 					});
 					//按照中文排序非案场电话集合
+					Collections.sort(userList_04, new Comparator<PisUser>(){
+						@Override
+						public int compare(PisUser user1, PisUser user2) {
+							return  Collator.getInstance(java.util.Locale.CHINA).compare(user1.getNick(),user2.getNick());
+						}
+					});
+					//按照中文排序经纪公司
+					Collections.sort(userList_05, new Comparator<PisUser>(){
+						@Override
+						public int compare(PisUser user1, PisUser user2) {
+							return  Collator.getInstance(java.util.Locale.CHINA).compare(user1.getNick(),user2.getNick());
+						}
+					});
+					boolean flag = false;
+					if(null!=userList_05&&userList_05.size()>0){
+						for (int i = 0; i <userList_05.size(); i++) {
+							 PisUser pisUser = userList_05.get(i);
+							 PisUserGroup group =pisUserService.getPisUserGroup(pisUser.getUserId());
+							 userList_06.add(pisUser);
+							 if(null!=group){
+								 PisUserExtend pisUserExtend =  this.userExtendService.selectByUserId(pisUser.getUserId());
+								 if(null!=pisUserExtend){
+									 for (PisUser user : userList_04) {
+											 PisUserExtend pisUserExtend_01 = this.userExtendService.selectByUserId(user.getUserId());
+											 if(pisUserExtend.getBrokingFirmId().equals(pisUserExtend_01.getBrokingFirmId())){
+												 userList_06.add(user);
+											 }
+											 if(!flag){
+												 if(!userList_02.contains(user)){
+														userList_02.add(user);
+													}
+											 }
+									 }
+								 }
+							 }
+						}
+					}else{
+						userList_02.addAll(userList_04);
+					}
+					if(null!=userList_02&&userList_02.size()>0){
+						userList_02.removeAll(userList_06);
+					}
+					//按照中文排序非案场电话集合
 					Collections.sort(userList_02, new Comparator<PisUser>(){
 						@Override
 						public int compare(PisUser user1, PisUser user2) {
@@ -768,7 +854,11 @@ public class PisUserController {
 					//按照顺序组装返回值 
 					userList_03.addAll(userList_01);
 					userList_03.addAll(userList_02);
+					userList_03.addAll(userList_06);
 				} 
 				return userList_03;
 	}
+	
+	
+	
 }

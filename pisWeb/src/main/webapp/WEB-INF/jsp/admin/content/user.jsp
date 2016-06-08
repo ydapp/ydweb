@@ -53,8 +53,8 @@
 		<div class="easyui-layout" data-options="fit:true">
 			<div data-options="region:'center',border:false">
 				<form id="add_form">
+				<input id="type" type="hidden">
 					<div class="fitem">
-						
 						<font color="red">*</font><label>电话：</label> <input id="tel" validType="maxLen['#tel',20]"  required="required" class="easyui-textbox" style="width: 452px;"></p>
 							<font color="red">*</font><label>名称：</label><input id="nick" validType="maxLen['#nick',20]" required="required" class="easyui-textbox" style="width: 452px;"></p>
 						<font color="red">*</font><label>类型：</label> 
@@ -87,6 +87,8 @@
 				<form id="update_Form">
 					<input id="groupId_update" type="hidden">
 					<input id="userId_update" type="hidden">
+					<input id="personCode_update" type="hidden">
+					<input id="type_update" type="hidden">
 					<div class="fitem">
 						<font color="red">*</font><label>电话：</label> <input id="tel_update" class="easyui-textbox" validType="maxLen['#tel_update',20]" required="required" style="width: 452px;"></p>
 						<font color="red">*</font><label>名称：</label><input  id="nick_update" class="easyui-textbox" validType="maxLen['#nick_update',20]" required="required" style="width: 452px;"></p>
@@ -167,29 +169,32 @@
 		 */
 		 if (currentUserModel.nick=="admin"){
 			 $("#groupType").empty();
-			 $("#groupType").append("<option value='appAdmin'>APP管理员</option>");
+			 $("#groupType").append("<option value='appAdmin' onClick='getType(this)'>APP管理员</option>");
 			 $("#brokingFirmDiv").hide();
 			 $("#buildingDiv").hide();
+			 getType($("#groupType")[0]);
 			 return;
 		 }
 		 //app管理员，可以添加经纪公司和报备员
 		 if (currentUserModel.groupType=='appAdmin'){
 			 $("#groupType").empty();
-			 $("#groupType").append("<option value='commissioner'>案场专员</option>");
-			 $("#groupType").append("<option value='brokingFirm'>经纪公司</option>");
-			 $("#groupType").append("<option value='channelManager'>渠道经理</option>");
+			 $("#groupType").append("<option value='commissioner'onClick='getType(this)'>案场专员</option>");
+			 $("#groupType").append("<option value='brokingFirm'onClick='getType(this)'>经纪公司</option>");
+			 $("#groupType").append("<option value='channelManager'onClick='getType(this)'>渠道经理</option>");
 			 //主动出发一次组选择变化
 			 $("#groupType").change();
+			 getType($("#groupType")[0]);
 			 return;
 		 }
 		//经纪公司，可以添加业务员
 		 if (currentUserModel.groupType=='brokingFirm'){
 			 $("#groupType").empty();
-			 $("#groupType").append("<option value='salesman'>业务员</option>");
+			 $("#groupType").append("<option value='salesman'onClick='getType(this)'>业务员</option>");
 			 $('#brokingFirmList').val(currentUserModel.brokingFirm);
 			 $('#brokingFirmList').attr("readonly","readonly");
 			 $("#brokingFirmDiv").show();
 			 $("#buildingDiv").hide();
+			 getType($("#groupType")[0]);
 			 return;
 		 }
 		 
@@ -221,27 +226,29 @@
 					  $("#nick_update").textbox('setValue',data.nick);
 					  $("#groupId_update").val(data.groupId);
 					  $("#userId_update").val(data.userId);
+					  $("#personCode_update").val(data.personCode);
+					  $("#type_update").val(data.type);
 					  if(appAdminUserId=="${CURRENT_USER.userId}"){
 						  $("#groupType_update").empty();
 						  if("commissioner"==data.groupType){
-							  $("#groupType_update").append("<option value='commissioner'  selected='selected'>案场专员</option>");
+							  $("#groupType_update").append("<option value='commissioner'  selected='selected' onClick='getType_update(this)'>案场专员</option>");
 						  }else{
-							  $("#groupType_update").append("<option value='commissioner'>案场专员</option>");
+							  $("#groupType_update").append("<option value='commissioner' onClick='getType_update(this)'>案场专员</option>");
 						  }
 						  if("brokingFirm"==data.groupType){
-							  $("#groupType_update").append("<option value='brokingFirm' selected='selected'>经纪公司</option>");
+							  $("#groupType_update").append("<option value='brokingFirm' selected='selected' onClick='getType_update(this)'>经纪公司</option>");
 						  }else{
-							  $("#groupType_update").append("<option value='brokingFirm'>经纪公司</option>");
+							  $("#groupType_update").append("<option value='brokingFirm' onClick='getType_update(this)'>经纪公司</option>");
 						  }
 						  if("channelManager"==data.groupType){
-							  $("#groupType_update").append("<option value='channelManager' selected='selected'>渠道经理</option>");
+							  $("#groupType_update").append("<option value='channelManager' selected='selected' onClick='getType_update(this)'>渠道经理</option>");
 						  }else{
-							  $("#groupType_update").append("<option value='channelManager'>渠道经理</option>");
+							  $("#groupType_update").append("<option value='channelManager' onClick='getType_update(this)'>渠道经理</option>");
 						  }
 						  if("salesman"==data.groupType){
-							  $("#groupType_update").append("<option value='salesman' selected='selected'>业务员</option>");
+							  $("#groupType_update").append("<option value='salesman' selected='selected' onClick='getType_update(this)'>业务员</option>");
 						  }else{
-							  $("#groupType_update").append("<option value='salesman'>业务员</option>");
+							  $("#groupType_update").append("<option value='salesman' onClick='getType_update(this)'>业务员</option>");
 						  }
 						  $("#brokingFirmList_update").val(data.brokingFirm)
 						  //主动出发一次组选择变化
@@ -250,7 +257,7 @@
 						  //app管理员修改
 						  if("appAdmin"==data.groupType){
 							 $("#groupType_update").empty();
-							 $("#groupType_update").append("<option value='appAdmin'>APP管理员</option>");
+							 $("#groupType_update").append("<option value='appAdmin' onClick='getType_update(this)'>APP管理员</option>");
 							 $("#brokingFirmDiv_update").hide();
 							 $("#buildingDiv_update").hide();
 							 return;	
@@ -258,9 +265,9 @@
 						  //经纪公司
 					 	  if("brokingFirm"==data.groupType){
 							  $("#groupType_update").empty();
-							  $("#groupType_update").append("<option value='commissioner'  >案场专员</option>");
-							  $("#groupType_update").append("<option value='brokingFirm' selected='selected'>经纪公司</option>");
-							  $("#groupType_update").append("<option value='channelManager'>渠道经理</option>");
+							  $("#groupType_update").append("<option value='commissioner' onClick='getType_update(this)'  >案场专员</option>");
+							  $("#groupType_update").append("<option value='brokingFirm' selected='selected' onClick='getType_update(this)'>经纪公司</option>");
+							  $("#groupType_update").append("<option value='channelManager' onClick='getType_update(this)'>渠道经理</option>");
 							  $("#brokingFirmList_update").val(data.brokingFirm)
 							  //主动出发一次组选择变化
 							  $("#groupType_update").change();
@@ -269,9 +276,9 @@
 					 		//渠道经理
 					 	 	if("channelManager"==data.groupType){
 							  $("#groupType_update").empty();
-							  $("#groupType_update").append("<option value='commissioner'  >案场专员</option>");
-							  $("#groupType_update").append("<option value='brokingFirm' >经纪公司</option>");
-							  $("#groupType_update").append("<option value='channelManager' selected='selected'>渠道经理</option>");
+							  $("#groupType_update").append("<option value='commissioner' onClick='getType_update(this)'>案场专员</option>");
+							  $("#groupType_update").append("<option value='brokingFirm'onClick='getType_update(this)'>经纪公司</option>");
+							  $("#groupType_update").append("<option value='channelManager' selected='selected'onClick='getType_update(this)'>渠道经理</option>");
 							  $("#brokingFirmList_update").val(data.brokingFirm)
 							  //主动出发一次组选择变化
 							  $("#groupType_update").change();
@@ -280,9 +287,9 @@
 						  //报备人
 						  if("commissioner"==data.groupType){
 							  $("#groupType_update").empty();
-							  $("#groupType_update").append("<option value='commissioner'selected='selected'  >案场专员</option>");
-							  $("#groupType_update").append("<option value='brokingFirm' >经纪公司</option>");
-							  $("#groupType_update").append("<option value='channelManager'>渠道经理</option>");
+							  $("#groupType_update").append("<option value='commissioner'selected='selected'onClick='getType_update(this)'>案场专员</option>");
+							  $("#groupType_update").append("<option value='brokingFirm' onClick='getType_update(this)'>经纪公司</option>");
+							  $("#groupType_update").append("<option value='channelManager' onClick='getType_update(this)'>渠道经理</option>");
 							  //主动出发一次组选择变化
 							  $("#groupType_update").change();
 							  $("#buildingList_update").find("option[value='"+data.building+"']").attr("selected","selected");
@@ -292,13 +299,14 @@
 						  //业务员
 						  if("salesman"==data.groupType){
 							  $("#groupType_update").empty();
-							  $("#groupType_update").append("<option value='salesman'>业务员</option>");
+							  $("#groupType_update").append("<option value='salesman'onClick='getType_update(this)'>业务员</option>");
 							  $('#brokingFirmList_update').val(data.brokingFirm);
 							  $("#brokingFirmDiv_update").show();
 							  $("#buildingDiv_update").hide();
 							  return;
 						  }
 					  }
+					  getType_update($("#groupType_update")[0]);
 				}
 			}
 		});
@@ -321,7 +329,9 @@
 					  brokingFirm:$('#brokingFirmList_update').val(),
 					  building:$('#buildingList_update').val(),
 					  groupId:$("#groupId_update").val(),
-					  userId:$("#userId_update").val()
+					  userId:$("#userId_update").val(),
+					  personCode:$("#personCode_update").val(),
+					  type:$("#type_update").val()
 				  },
 				  success: function(data){
 					  if (data.success){
@@ -466,7 +476,8 @@
 		var tel=$('#tel').textbox("isValid");
 		var nick=$("#nick").textbox("isValid");
 		var groupType = $("#groupType").val();
-		if(tel&&nick&&""!=groupType){
+		var type = $("#type").val();
+		if(tel&&nick&&""!=groupType&&""!=type){
 			console.log("form:", $('#add_form'));
 			$.restPost({
 				  url: '<%=path%>/api/userInfo.json',
@@ -475,7 +486,8 @@
 					  nick:$('#nick').val(),
 					  groupType:$('#groupType').val(),
 					  brokingFirm:$('#brokingFirmList').val(),
-					  building:$('#buildingList').val()
+					  building:$('#buildingList').val(),
+					  type:type
 				  },
 				  success: function(data){
 					  if (data.success){
@@ -508,6 +520,46 @@
 			alert("发生异常");
 		}
 	});
+	/**
+	 *根据不同的用户类型设置不同的标识
+	 */
+	function getType(obj){
+		if("appAdmin"==obj.value){
+			$("#type").val("D");
+		}
+		if("commissioner"==obj.value){
+			$("#type").val("G");
+		}
+		if("brokingFirm"==obj.value){
+			$("#type").val("J");
+		}
+		if("channelManager"==obj.value){
+			$("#type").val("M");
+		}
+		if("salesman"==obj.value){
+			$("#type").val("P");
+		}
+	}
+	/**
+	 *根据不同的用户类型设置不同的标识
+	 */
+	function getType_update(obj){
+		if("appAdmin"==obj.value){
+			$("#type_update").val("D");
+		}
+		if("commissioner"==obj.value){
+			$("#type_update").val("G");
+		}
+		if("brokingFirm"==obj.value){
+			$("#type_update").val("J");
+		}
+		if("channelManager"==obj.value){
+			$("#type_update").val("M");
+		}
+		if("salesman"==obj.value){
+			$("#type_update").val("P");
+		}
+	}
 	$.extend($.fn.validatebox.defaults.rules,{
 		maxLen:{
 			validator:function(value,arrays){

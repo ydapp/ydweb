@@ -43,6 +43,9 @@ public class UserModel implements Serializable {
 	private String userIcon;
 	//用户身份证照片关联附件ID
 	private String frontPhoto;
+	//用户编码
+	private String personCode;
+	
 	
 	
 	
@@ -139,6 +142,10 @@ public class UserModel implements Serializable {
 	public void setGroupTypeTitle(String groupTypeTitle) {
 		this.groupTypeTitle = groupTypeTitle;
 	}
-	
-	
+	public String getPersonCode() {
+		return personCode;
+	}
+	public void setPersonCode(String personCode) {
+		this.personCode = personCode;
+	}
 }
