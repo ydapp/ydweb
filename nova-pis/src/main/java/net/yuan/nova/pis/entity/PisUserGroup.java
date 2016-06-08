@@ -235,7 +235,7 @@ public class PisUserGroup {
     	case salesman:
     		return "业务员";
     	case commissioner:
-    		return "案场专员";
+    		return "驻场专员";
     	case  channelManager:
     		return "渠道经理";
     	default:

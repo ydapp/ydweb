@@ -850,7 +850,7 @@ public class PisUserController {
 					Collections.sort(userList_02, new Comparator<PisUser>(){
 						@Override
 						public int compare(PisUser user1, PisUser user2) {
-							if((null!=user1&&!"".equals(user1.getPersonCode()))&&(null!=user2&&!"".equals(user2.getPersonCode()))){
+							if((null!=user1&&null!=user1.getPersonCode())&&(null!=user2&&null!=user2.getPersonCode())){
 								int num1 = Integer.parseInt(user1.getPersonCode().substring(1, user1.getPersonCode().length()));
 								int num2 = Integer.parseInt(user2.getPersonCode().substring(1,user2.getPersonCode().length()));
 								return num1-num2;
