@@ -53,4 +53,6 @@ public interface PisAttachmentMapper {
      * @mbggenerated Wed Mar 23 14:22:23 CST 2016
      */
     int updateByPrimaryKey(PisAttachment record);
+    
+    int deleteAttchmentByKind(String kindId);
 }

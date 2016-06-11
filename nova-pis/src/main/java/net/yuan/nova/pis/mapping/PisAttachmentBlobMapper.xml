@@ -173,4 +173,7 @@
       PATH = #{path,jdbcType=VARCHAR}
     where ID = #{id,jdbcType=VARCHAR}
   </update>
+  <delete id="deleteAttchmentBlob" parameterType="java.lang.String">
+  	delete PIS_ATTACHMENT_BLOB where ATCH_MD5 in (select md5 from pis_attachment where kind_id =#{id,jdbcType=VARCHAR})
+  </delete>
 </mapper>

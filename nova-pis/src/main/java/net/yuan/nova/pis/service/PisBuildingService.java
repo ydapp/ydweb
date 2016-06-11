@@ -3,8 +3,11 @@ package net.yuan.nova.pis.service;
 import java.util.List;
 import java.util.UUID;
 
+import net.yuan.nova.pis.dao.PisAttachmentBlobMapper;
+import net.yuan.nova.pis.dao.PisAttachmentMapper;
 import net.yuan.nova.pis.dao.PisBuildingMapper;
 import net.yuan.nova.pis.dao.PisPropertyMapper;
+import net.yuan.nova.pis.entity.PisAttachmentBlob;
 import net.yuan.nova.pis.entity.PisBuilding;
 import net.yuan.nova.pis.entity.PisProperty;
 
@@ -13,6 +16,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import com.github.pagehelper.PageHelper;
 
@@ -22,6 +27,10 @@ public class PisBuildingService {
 	private PisBuildingMapper pisBuildingMapper;
 	@Autowired
 	private PisPropertyMapper pisPropertyMapper;
+	@Autowired
+	private PisAttachmentBlobMapper pisAttachmentBlobMapper;
+	@Autowired
+	private PisAttachmentMapper pisAttachmentMapper;
 
 	@CacheEvict(value = "buildingCache", allEntries = true)
 	public int insert(PisBuilding pisBuilding) {
@@ -147,5 +156,32 @@ public class PisBuildingService {
 		}
 		this.update(pisProperty);
 	}
-
+	
+	
+	/**
+	 * 执行删除操作
+	 * @param propertyId
+	 */
+	@Transactional(rollbackFor = { Exception.class }) 
+	public boolean deleteProperty(String propertyId){
+		//根据主键编号删除楼盘信息
+		int ret_1 = this.pisPropertyMapper.deleteByPrimaryKey(propertyId);
+		if(ret_1<1){
+			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+			return false;
+		}
+		//删除楼盘关联图片
+		int ret_02 = this.pisAttachmentBlobMapper.deleteAttchmentBlob(propertyId);
+		if(ret_02<0){
+			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+			return false;
+		}
+		//删除楼盘图片关联信息
+		int ret_03 = this.pisAttachmentMapper.deleteAttchmentByKind(propertyId);
+		if(ret_03<0){
+			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+			return false;
+		}
+		return true;
+	}
 }

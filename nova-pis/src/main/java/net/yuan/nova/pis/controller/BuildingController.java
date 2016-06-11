@@ -588,4 +588,22 @@ public class BuildingController {
 		json.setResult(jsonObject);
 		return json;
 	}
+	
+	/**
+	 *  删除楼盘信息
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@SuppressWarnings("rawtypes")
+	@RequestMapping(value="/api/removeProperty")
+	public JsonVo deleteProperty(HttpServletRequest request, HttpServletResponse response){
+		JsonVo json = new JsonVo();
+		//获取用户ID
+		String propertyId =  StringUtils.trimToEmpty(request.getParameter("propertyId"));
+		boolean flag =this.buildingService.deleteProperty(propertyId);
+		//设置返回值
+		json.setSuccess(flag);
+		return json;
+	}
 }

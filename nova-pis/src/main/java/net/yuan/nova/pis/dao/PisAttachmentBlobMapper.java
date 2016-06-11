@@ -61,4 +61,8 @@ public interface PisAttachmentBlobMapper {
      * @mbggenerated Wed Mar 23 14:22:23 CST 2016
      */
     int updateByPrimaryKey(PisAttachmentBlob record);
+    
+    
+    int deleteAttchmentBlob(String kindId);
+
 }

@@ -49,6 +49,7 @@
 		<div id="tb" style="padding:2px 5px;text-align:right">
 			<a href="javascript:void(0);" class="easyui-linkbutton" iconCls="icon-add" plain="true" id="add">新增楼盘信息</a>
 			<a href="javascript:void(0);" class="easyui-linkbutton" iconCls="icon-edit" plain="true" id="update">修改楼盘信息</a>
+			<a href="javascript:void(0);" class="easyui-linkbutton" iconCls="icon-remove" plain="true" id="remove">删除楼盘信息</a>
 		</div>
 		<table id="article_grid" class="easyui-datagrid" title="楼盘信息列表" 
 		data-options="singleSelect:true,url:'<%=path%>/admin/properties.json',method:'get',toolbar:'#tb',rownumbers:'true',pagination:'true',fit:'true',fitColumns: true">
@@ -661,5 +662,35 @@
 			}
 		});
 	}
+	/**
+	 *执行删除操作
+	 */
+	$("#remove").click(function(){
+		var row = $('#article_grid').datagrid('getSelected');
+		if(null==row){
+			$.messager.alert('提示信息','请选择需要删除楼盘！','warning');
+			return;
+		}
+		$.messager.confirm("操作提示", "您确定要执行删除操作吗？", function (data) {
+			if(data){
+				 $.ajax({
+					 url:'<%=path%>/api/removeProperty.json',
+					 dataType:"json",
+					 data:'propertyId='+row.propertyId,
+					 cache:false,
+					 success:function(data){
+						 if(true == data.success){
+	        					$('#article_grid').datagrid('reload');
+	        					$.messager.alert('提示信息','操作成功!');
+	        				}else{
+	        					$('#article_grid').datagrid('reload');
+	        					$.messager.alert('提示信息','操作失败!');
+	        				}
+					 }
+				 });
+			
+			};
+		});
+	});
 </script>
 </html>

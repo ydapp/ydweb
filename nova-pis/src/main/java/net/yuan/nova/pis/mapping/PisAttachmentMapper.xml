@@ -225,4 +225,7 @@
       CREATE_TIME = #{createTime,jdbcType=TIMESTAMP}
     where ATTACHMENT_ID = #{attachmentId,jdbcType=VARCHAR}
   </update>
+  <delete id="deleteAttchmentByKind" parameterType="net.yuan.nova.pis.entity.PisAttachment">
+  	 delete pis_attachment where kind_id =#{kindid,jdbcType=VARCHAR}
+  </delete>
 </mapper>
