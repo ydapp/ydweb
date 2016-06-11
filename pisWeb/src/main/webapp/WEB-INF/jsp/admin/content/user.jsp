@@ -60,7 +60,7 @@
 						<font color="red">*</font><label>类型：</label> 
 						<select id="groupType">
 							<option value="appAdmin">APP管理员</option>
-							<option value="commissioner">案场专员</option>
+							<option value="commissioner">驻场专员</option>
 							<option value="brokingFirm">经纪公司</option>
 							<option value="salesman">业务员</option>
 						</select></p>
@@ -95,7 +95,7 @@
 						<font color="red">*</font><label>类型：</label> 
 						<select id="groupType_update">
 							<option value="appAdmin" >APP管理员</option>
-							<option value="commissioner">案场专员</option>
+							<option value="commissioner">驻场专员</option>
 							<option value="brokingFirm" >经纪公司</option>
 							<option value="salesman">业务员</option>
 						</select></p>
@@ -184,7 +184,7 @@
 		 //app管理员，可以添加经纪公司和报备员
 		 if (currentUserModel.groupType=='appAdmin'){
 			 $("#groupType").empty();
-			 $("#groupType").append("<option value='commissioner'onClick='getType(this)'>案场专员</option>");
+			 $("#groupType").append("<option value='commissioner'onClick='getType(this)'>驻场专员</option>");
 			 $("#groupType").append("<option value='brokingFirm'onClick='getType(this)'>经纪公司</option>");
 			 $("#groupType").append("<option value='channelManager'onClick='getType(this)'>渠道经理</option>");
 			 $("#groupType").append("<option value='salesman'onClick='getType(this)'>业务员</option>");
@@ -238,9 +238,9 @@
 					  if(appAdminUserId=="${CURRENT_USER.userId}"){
 						  $("#groupType_update").empty();
 						  if("commissioner"==data.groupType){
-							  $("#groupType_update").append("<option value='commissioner'  selected='selected' onClick='getType_update(this)'>案场专员</option>");
+							  $("#groupType_update").append("<option value='commissioner'  selected='selected' onClick='getType_update(this)'>驻场专员</option>");
 						  }else{
-							  $("#groupType_update").append("<option value='commissioner' onClick='getType_update(this)'>案场专员</option>");
+							  $("#groupType_update").append("<option value='commissioner' onClick='getType_update(this)'>驻场专员</option>");
 						  }
 						  if("brokingFirm"==data.groupType){
 							  $("#groupType_update").append("<option value='brokingFirm' selected='selected' onClick='getType_update(this)'>经纪公司</option>");
@@ -272,7 +272,7 @@
 						  //经纪公司
 					 	  if("brokingFirm"==data.groupType){
 							  $("#groupType_update").empty();
-							  $("#groupType_update").append("<option value='commissioner' onClick='getType_update(this)'  >案场专员</option>");
+							  $("#groupType_update").append("<option value='commissioner' onClick='getType_update(this)'  >驻场专员</option>");
 							  $("#groupType_update").append("<option value='brokingFirm' selected='selected' onClick='getType_update(this)'>经纪公司</option>");
 							  $("#groupType_update").append("<option value='channelManager' onClick='getType_update(this)'>渠道经理</option>");
 							  $("#brokingFirmList_update").val(data.brokingFirm)
@@ -283,7 +283,7 @@
 					 		//渠道经理
 					 	 	if("channelManager"==data.groupType){
 							  $("#groupType_update").empty();
-							  $("#groupType_update").append("<option value='commissioner' onClick='getType_update(this)'>案场专员</option>");
+							  $("#groupType_update").append("<option value='commissioner' onClick='getType_update(this)'>驻场专员</option>");
 							  $("#groupType_update").append("<option value='brokingFirm'onClick='getType_update(this)'>经纪公司</option>");
 							  $("#groupType_update").append("<option value='channelManager' selected='selected'onClick='getType_update(this)'>渠道经理</option>");
 							  $("#brokingFirmList_update").val(data.brokingFirm)
@@ -294,7 +294,7 @@
 						  //报备人
 						  if("commissioner"==data.groupType){
 							  $("#groupType_update").empty();
-							  $("#groupType_update").append("<option value='commissioner'selected='selected'onClick='getType_update(this)'>案场专员</option>");
+							  $("#groupType_update").append("<option value='commissioner'selected='selected'onClick='getType_update(this)'>驻场专员</option>");
 							  $("#groupType_update").append("<option value='brokingFirm' onClick='getType_update(this)'>经纪公司</option>");
 							  $("#groupType_update").append("<option value='channelManager' onClick='getType_update(this)'>渠道经理</option>");
 							  //主动出发一次组选择变化
