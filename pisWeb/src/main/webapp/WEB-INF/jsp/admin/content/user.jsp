@@ -220,6 +220,10 @@
 			$.messager.alert('温馨提示',"无法修改内置管理员!");
 			return;
 		}
+		if(appAdminUserId==row.userId){
+			$.messager.alert('温馨提示',"无法修改app管理员!");
+			return;
+		}
 		$.ajax({
 			url:'<%=path%>/api/getUserByUserId.json',
 			dataType: "json",
@@ -239,27 +243,36 @@
 						  $("#groupType_update").empty();
 						  if("commissioner"==data.groupType){
 							  $("#groupType_update").append("<option value='commissioner'  selected='selected' onClick='getType_update(this)'>驻场专员</option>");
+							//主动出发一次组选择变化
+							  $("#groupType_update").change();
+							  setTimeout("$('#buildingList_update').find('option[value="+data.building+"]').attr('selected','selected');",600)
 						  }else{
 							  $("#groupType_update").append("<option value='commissioner' onClick='getType_update(this)'>驻场专员</option>");
 						  }
 						  if("brokingFirm"==data.groupType){
 							  $("#groupType_update").append("<option value='brokingFirm' selected='selected' onClick='getType_update(this)'>经纪公司</option>");
+							  $("#brokingFirmList_update").val(data.brokingFirm)
+							  //主动出发一次组选择变化
+							  $("#groupType_update").change();
 						  }else{
 							  $("#groupType_update").append("<option value='brokingFirm' onClick='getType_update(this)'>经纪公司</option>");
 						  }
 						  if("channelManager"==data.groupType){
 							  $("#groupType_update").append("<option value='channelManager' selected='selected' onClick='getType_update(this)'>渠道经理</option>");
+							  //主动出发一次组选择变化
+							  $("#groupType_update").change();
+							  setTimeout("$('#buildingList_update').find('option[value="+data.building+"]').attr('selected','selected');",600)
 						  }else{
 							  $("#groupType_update").append("<option value='channelManager' onClick='getType_update(this)'>渠道经理</option>");
 						  }
 						  if("salesman"==data.groupType){
 							  $("#groupType_update").append("<option value='salesman' selected='selected' onClick='getType_update(this)'>业务员</option>");
+							  $('#brokingFirmList_update').val(data.brokingFirm);
+							  $("#brokingFirmDiv_update").show();
+							  $("#buildingDiv_update").hide();
 						  }else{
 							  $("#groupType_update").append("<option value='salesman' onClick='getType_update(this)'>业务员</option>");
 						  }
-						  $("#brokingFirmList_update").val(data.brokingFirm)
-						  //主动出发一次组选择变化
-						  $("#groupType_update").change();
 					  }else{
 						  //app管理员修改
 						  if("appAdmin"==data.groupType){
@@ -299,7 +312,6 @@
 							  $("#groupType_update").append("<option value='channelManager' onClick='getType_update(this)'>渠道经理</option>");
 							  //主动出发一次组选择变化
 							  $("#groupType_update").change();
-							  $("#buildingList_update").find("option[value='"+data.building+"']").attr("selected","selected");
 							  setTimeout("$('#buildingList_update').find('option[value="+data.building+"]').attr('selected','selected');",600)
 							  return;
 						  }
@@ -375,7 +387,6 @@
 			 $("#brokingFirmDiv_update").show();
 			  $("#buildingDiv_update").hide();
 		 }
-		 
 	 });
 	/**
 	 *执行删除用户操作
