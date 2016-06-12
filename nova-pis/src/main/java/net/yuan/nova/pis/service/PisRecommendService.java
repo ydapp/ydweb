@@ -85,7 +85,7 @@ public class PisRecommendService {
 		String customerPresentUserId = recommend.getCustomerPresentUserId();
 		if (StringUtils.isNotBlank(customerPresentUserId)) {
 			PisUser presentUser = pisUserService.findUserById(customerPresentUserId);
-			if (refree != null) {
+			if (refree != null && null != presentUser) {
 				pisRecommendVo.setCustomerPresentUserName(presentUser.getUserName());
 				pisRecommendVo.setCustomerPresentUserNick(presentUser.getNick());
 			}
