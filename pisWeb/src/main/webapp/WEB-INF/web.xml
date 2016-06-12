@@ -71,7 +71,7 @@
 		<listener-class>org.springframework.web.util.IntrospectorCleanupListener</listener-class>
 	</listener>
 
-	<!-- 系统监控过滤器 -->
+	<!-- 系统监控过滤器
 	<filter>
 		<filter-name>monitoring</filter-name>
 		<filter-class>net.bull.javamelody.MonitoringFilter</filter-class>
@@ -83,7 +83,7 @@
 	<filter-mapping>
 		<filter-name>monitoring</filter-name>
 		<url-pattern>/*</url-pattern>
-	</filter-mapping>
+	</filter-mapping> -->
 	
 	<!-- 字符编码 -->
 	<filter>
