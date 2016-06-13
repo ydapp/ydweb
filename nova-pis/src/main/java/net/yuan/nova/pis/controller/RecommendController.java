@@ -511,39 +511,41 @@ public class RecommendController {
 			HSSFCell cellHeard = rowHeard.createCell(i);
 			cellHeard.setCellValue(header.get(i));
 		}
-		for (int i = 0; i < list.size(); i++) {
-			HSSFRow rowData = sheet.createRow(i + 1);
-			PisRecommend recommend = list.get(i);
-			List<String> data = new ArrayList<String>();
-			data.add(recommend.getRecommendId());
-			data.add(recommend.getCustomerName());
-			data.add(recommend.getCustomerTel());
-			data.add(this.getCityName(recommend.getCityId()));
-			data.add(this.getBuildingName(recommend.getBuildingId()));
-			//data.add(this.formatDate(recommend.getAppointmentLookHouseDate()));
-			data.add(this.getUserName(recommend.getRefreeId()));
-			data.add(recommend.getRemark());
-			data.add(recommend.getStatusName());
-			data.add(formatDate(recommend.getRecommendDate()));
-			if (recommend.getCustomerPresentDate() != null) {
-				data.add(formatDate(recommend.getCustomerPresentDate()));
-				data.add(this.getUserName(recommend.getCustomerPresentUserId()));
-			} else {
-				data.add("");
-				data.add("");
-			}
-			if (recommend.getRecommendConfirmDate() != null) {
-				data.add(formatDate(recommend.getRecommendConfirmDate()));
-				data.add(this.getUserName(recommend.getRecommendConfirmUserId()));
-				data.add(recommend.getRecommendConfirmAdvice());
-			} else {
-				data.add("");
-				data.add("");
-				data.add("");
-			}
-			for (int j = 0; j < data.size(); j++) {
-				HSSFCell cellData = rowData.createCell(j);
-				cellData.setCellValue(data.get(j));
+		if(null != list&&list.size()>0){
+			for (int i = 0; i < list.size(); i++) {
+				HSSFRow rowData = sheet.createRow(i + 1);
+				PisRecommend recommend = list.get(i);
+				List<String> data = new ArrayList<String>();
+				data.add(recommend.getRecommendId());
+				data.add(recommend.getCustomerName());
+				data.add(recommend.getCustomerTel());
+				data.add(this.getCityName(recommend.getCityId()));
+				data.add(this.getBuildingName(recommend.getBuildingId()));
+				//data.add(this.formatDate(recommend.getAppointmentLookHouseDate()));
+				data.add(this.getUserName(recommend.getRefreeId()));
+				data.add(recommend.getRemark());
+				data.add(recommend.getStatusName());
+				data.add(formatDate(recommend.getRecommendDate()));
+				if (recommend.getCustomerPresentDate() != null) {
+					data.add(formatDate(recommend.getCustomerPresentDate()));
+					data.add(this.getUserName(recommend.getCustomerPresentUserId()));
+				} else {
+					data.add("");
+					data.add("");
+				}
+				if (recommend.getRecommendConfirmDate() != null) {
+					data.add(formatDate(recommend.getRecommendConfirmDate()));
+					data.add(this.getUserName(recommend.getRecommendConfirmUserId()));
+					data.add(recommend.getRecommendConfirmAdvice());
+				} else {
+					data.add("");
+					data.add("");
+					data.add("");
+				}
+				for (int j = 0; j < data.size(); j++) {
+					HSSFCell cellData = rowData.createCell(j);
+					cellData.setCellValue(data.get(j));
+				}
 			}
 		}
 		try {
