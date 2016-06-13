@@ -374,18 +374,10 @@
 				<tr>
 					<td align="right"><font color="red">*</font>手机号码：</td>
 					<td><input type="text" name="tel" id="tel" class="easyui-textbox" required="required"></td>
-					<td align="right"><font color="red">*</font>性别：</td>
-					<td>
-						<select id="sex" name="sex">
-							<option id="sex_0" value="0" >男</option>
-							<option id="sex_1" value="1">女</option>
-							<option id="sex_2"value="2">未知</option>
-						</select>
-					</td>
 				</tr>
 				<tr>
 					<td align="right">地址：</td>
-					<td colspan="4"><input type="text" name="address" id="address" class="easyui-textbox" required="required"></td>
+					<td colspan="4"><input type="text" name="address" id="address" class="easyui-textbox" ></td>
 				</tr>
 			</table>
 		</form>
@@ -430,7 +422,6 @@
 		    		 $("#userId").val(data.userId);
 		    		 $("#userIcon").val(data.userIcon);
 		    		 $("#frontPhoto").val(data.frontPhoto);
-		    		 $("#sex_"+data.sex).attr("selected",true);
 		    	 }
 		     }
 		});

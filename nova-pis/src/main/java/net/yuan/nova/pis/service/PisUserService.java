@@ -197,6 +197,14 @@ public class PisUserService {
 		}
 		//执行用户信息表修改
 		int ret_02 = this.pisUserInfoMapper.updateByPrimaryKeySelective(pisUserInfo);
+		//如果在用户信息表中修改信息不存在，则执行新增操作
+		if(ret_02==0){
+				int ret_03 = this.pisUserInfoMapper.insertSelective(pisUserInfo);
+				if(ret_03<1){
+					TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+					return false;
+				}
+		}
 		if(ret_02<0){
 			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
 			return false;

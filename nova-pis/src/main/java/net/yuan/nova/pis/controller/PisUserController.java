@@ -652,8 +652,7 @@ public class PisUserController {
 		//根据用户ID获取用户信息
 		PisUser pisUser = this.pisUserService.findUserById(userId);
 		//根据用户ID获取用户基本信息
-		PisUserInfo pisUserInfo = null;
-		this.pisUserInfoService.findUserInfoById(userId);
+    	PisUserInfo pisUserInfo = this.pisUserInfoService.findUserInfoById(userId);
 		UserModel  vo = new UserModel();
 		vo.setTel(null!=pisUser?pisUser.getTel():"");
 		vo.setUserIcon(null!=pisUser?pisUser.getUserIcon():"");
@@ -695,10 +694,33 @@ public class PisUserController {
 		pisUser.setTel(multipartRequest.getParameter("tel"));
 		pisUser.setUserIcon(userIcon);
 		PisUserInfo pisUserInfo  = new PisUserInfo();
+		String cardId = multipartRequest.getParameter("cardId");
+		//男：0，女：1，未知：2
+		if("" != cardId){
+			log.debug("判断身份证是否为15位");
+			if(cardId.length() == 15){
+				log.debug("15位：获取最后一位数字判断性别");
+				int lastNum  = Integer.parseInt(cardId.substring(cardId.length()-1,cardId.length()));
+				if(lastNum%2==0){
+					pisUserInfo.setSex("1");
+				}else{
+					pisUserInfo.setSex("0");
+				}
+			}
+			log.debug("判断身份证是否为18位");
+			if(cardId.length() == 18){
+				log.debug("18位：获取最后倒数第二位判断性别");
+				int lastTwoNum = Integer.parseInt(cardId.substring(cardId.length()-2,cardId.length()-1));
+				if(lastTwoNum%2 == 0){
+					pisUserInfo.setSex("1");
+				}else{
+					pisUserInfo.setSex("0");
+				}
+			}
+		}
 		pisUserInfo.setFrontPhoto(frontPhoto);
 		pisUserInfo.setName(multipartRequest.getParameter("name"));
 		pisUserInfo.setIdNumber(multipartRequest.getParameter("cardId"));
-		pisUserInfo.setSex(multipartRequest.getParameter("sex"));
 		pisUserInfo.setAddress(multipartRequest.getParameter("address"));
 		pisUserInfo.setUserId(multipartRequest.getParameter("userId"));
 		boolean flag = this.pisUserService.updateUserAndUserInfo(pisUserInfo, pisUser);
