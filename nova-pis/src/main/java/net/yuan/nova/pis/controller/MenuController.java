@@ -5,13 +5,20 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.yuan.nova.commons.SystemConstant;
+import net.yuan.nova.core.shiro.vo.User;
 import net.yuan.nova.core.vo.JsonVo;
 import net.yuan.nova.core.vo.TreeNode;
 import net.yuan.nova.pis.entity.PisMenuItem;
+import net.yuan.nova.pis.entity.PisUserGroup;
 import net.yuan.nova.pis.service.MenuItemService;
+import net.yuan.nova.pis.service.PisUserService;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.session.Session;
+import org.apache.shiro.subject.Subject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +41,8 @@ public class MenuController {
 
 	@Autowired
 	private MenuItemService menuItemService;
+	@Autowired
+	private PisUserService pisUserService;
 
 	/**
 	 * 获得相应的菜单列表数据
@@ -51,7 +60,7 @@ public class MenuController {
 		if ("-1".equals(parentId)) {
 			parentId = null;
 		}
-		List<TreeNode<PisMenuItem>> list = menuItemService.findMenuTreeNodes(parentId);
+		List<TreeNode<PisMenuItem>> list = menuItemService.findMenuTreeNodes(parentId,"");
 		return modelMap.addAttribute("menus", list);
 	}
 
@@ -65,9 +74,24 @@ public class MenuController {
 	 */
 	@RequestMapping(value = "/admin/usermenus")
 	public ModelMap menuslevel(HttpServletRequest request, HttpServletResponse response, ModelMap modelMap) {
+		Subject currentUser = SecurityUtils.getSubject();
+		String menu = "";
+		// 判断登录是否成功
+		if (currentUser.isAuthenticated()) {
+			Session session = currentUser.getSession();
+			User user = (User) session.getAttribute(SystemConstant.SESSION_USER);
+			PisUserGroup pisUserGroup = pisUserService.getPisUserGroup(user.getUserId());
+			String type = null!=pisUserGroup?pisUserGroup.getType():" ";
+			String  types=PisUserGroup.TYPE.salesman+","+PisUserGroup.TYPE.commissioner+","+PisUserGroup.TYPE.channelManager;
+			if(types.trim().indexOf(type)!=-1){
+				menu="xztjexcell";
+			}else if(PisUserGroup.TYPE.brokingFirm.toString().indexOf(type)!=-1){
+				menu="xztjexcell,userManager";
+			}
+		}
 		String parentId = StringUtils.trimToEmpty(request.getParameter("id"));
 		List<TreeNode<PisMenuItem>> list = null;
-		list = menuItemService.findMenuTreeNodes(parentId);
+		list = menuItemService.findMenuTreeNodes(parentId,menu);
 		return modelMap.addAttribute("menus", list);
 	}
 

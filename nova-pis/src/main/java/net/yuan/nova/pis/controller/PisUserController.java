@@ -294,7 +294,20 @@ public class PisUserController {
 	@RequestMapping(value = "/api/userInfos", method=RequestMethod.GET)
 	public ModelMap getUserInfos(HttpServletRequest request, ModelMap modelMap, HttpServletResponse response) {
 		PageParam param = DataGridHepler.parseRequest(request);
-		List<PisUser> users = this.pisUserService.getCustomers(param.getPage(), param.getPageSize());
+		User loginUser = this.getLoginUser();
+		String type = "";
+		if(null != loginUser){
+			PisUserGroup pisUserGroup = pisUserService.getPisUserGroup(loginUser.getUserId());
+			type = null!=pisUserGroup?pisUserGroup.getType():" ";
+		}
+		List<PisUser> users = null;
+		if(PisUserGroup.TYPE.brokingFirm.toString().indexOf(type)!=-1){
+			PisUserExtend  pisExtend = 	this.userExtendService.selectByUserId(null != loginUser?loginUser.getUserId():"");
+			users = this.pisUserService.getUserByBroking(param.getPage(), param.getPageSize(),null != pisExtend?pisExtend.getBrokingFirmId():"");
+		}else{
+			users = this.pisUserService.getCustomers(param.getPage(), param.getPageSize());
+		}
+		
 		List<UserModel> userInfoList = new ArrayList<>();
 		List<PisUser> pisUserList = this.sortUserByUserName(users);
 		for (PisUser user : pisUserList) {
@@ -768,21 +781,33 @@ public class PisUserController {
 	@RequestMapping(value = "/api/loginUserType",method=RequestMethod.GET)
 	public JsonVo loginUserType(){
 		JsonVo json = new JsonVo();
-		Subject currentUser = SecurityUtils.getSubject();
 		// 判断登录是否成功
+			User user = this.getLoginUser();
+			if(null != user){
+				PisUserGroup pisUserGroup = pisUserService.getPisUserGroup(user.getUserId());
+				String type = null!=pisUserGroup?pisUserGroup.getType():"";
+				String  types=PisUserGroup.TYPE.salesman+","+PisUserGroup.TYPE.commissioner+","+PisUserGroup.TYPE.channelManager;
+				if(types.indexOf(type)!=-1){
+					json.setSuccess(false);
+				}else{
+					json.setSuccess(true);
+				}
+			}
+		return json;
+	}
+	
+	/**
+	 * 从系统中获取登录用户
+	 * @return
+	 */
+	public User getLoginUser(){
+		Subject currentUser = SecurityUtils.getSubject();
+		User user = null;
 		if (currentUser.isAuthenticated()) {
 			Session session = currentUser.getSession();
-			User user = (User) session.getAttribute(SystemConstant.SESSION_USER);
-			PisUserGroup pisUserGroup = pisUserService.getPisUserGroup(user.getUserId());
-			String type = null!=pisUserGroup?pisUserGroup.getType():"";
-			String  types=PisUserGroup.TYPE.salesman+","+PisUserGroup.TYPE.commissioner+","+PisUserGroup.TYPE.channelManager;
-			if(types.indexOf(type)!=-1){
-				json.setSuccess(false);
-			}else{
-				json.setSuccess(true);
-			}
+			 user = (User) session.getAttribute(SystemConstant.SESSION_USER);
 		}
-		return json;
+		return user;
 	}
 	/**
 	 * 通过用户名进行排序
@@ -906,6 +931,8 @@ public class PisUserController {
 				} 
 				return userList_03;
 	}
+	
+	
 	
 	
 	

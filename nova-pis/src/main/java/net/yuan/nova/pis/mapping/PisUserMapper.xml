@@ -298,6 +298,9 @@
   		FROM  PIS_USER   WHERE TEL = #{tel,jdbcType=VARCHAR} AND
 		USER_ID != #{userId,jdbcType=VARCHAR}
   	</select>
+  	<select id="selectUserByBroking" resultMap="BaseResultMap" parameterType="java.lang.String">
+  		SELECT <include refid="Base_Column_List" /> FROM PIS_USER WHERE USER_ID IN (select user_id from pis_user_extend t where t.brokingfirm_id=#{_parameter})
+  	</select>
 	<!-- ############################## -->
 	<!-- ###### 删除用户 ###### -->
 	<!-- ############################## -->

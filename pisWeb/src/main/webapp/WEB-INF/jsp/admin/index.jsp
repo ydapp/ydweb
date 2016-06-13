@@ -45,9 +45,27 @@
 		</div>
 		<div class="header-navbar">
 			<ul class="nav navbar-nav">
-		      <c:forEach items="${menus_kind}" var="item" varStatus="status">
-			    <li class="menu-${item.id}"><a <c:if test="${status.index==0}">class="selected"</c:if> href="javascript:void(0);" rel="${item.id}">${item.text}</a></li>
-			  </c:forEach>
+			     <!-- 判断登录用户为app管理员或者内置管理员的时候展示所有的菜单 -->
+				<c:if test="${CURRENT_USER.userModel.groupType=='appAdmin' || CURRENT_USER.type=='staff'}">
+				      <c:forEach items="${menus_kind}" var="item" varStatus="status">
+							<li class="menu-${item.id}"><a <c:if test="${status.index==0}">class="selected"</c:if> href="javascript:void(0);" rel="${item.id}">${item.text}</a></li>		      	
+					  </c:forEach>
+			    </c:if>
+			     <!-- 判断登录用户为 业务员 渠道经理 驻场专员 -->
+			    <c:if test="${CURRENT_USER.userModel.groupType=='commissioner' || CURRENT_USER.userModel.groupType=='channelManager' || CURRENT_USER.userModel.groupType == 'salesman'}">
+			    	<c:forEach items="${menus_kind}" var="item" varStatus="status">
+		    			<c:if test="${item.menuCode == 'xtgl'}">
+		    				<li class="menu-${item.id}"><a <c:if test="${status.index==0}">class="selected"</c:if> href="javascript:void(0);" rel="${item.id}">${item.text}</a></li>
+		    			</c:if>
+					 </c:forEach>
+			    </c:if>
+			    <c:if test="${CURRENT_USER.userModel.groupType=='brokingFirm'}">
+			    	<c:forEach items="${menus_kind}" var="item" varStatus="status">
+		    			<c:if test="${item.menuCode == 'xtgl'}">
+		    				<li class="menu-${item.id}"><a <c:if test="${status.index==0}">class="selected"</c:if> href="javascript:void(0);" rel="${item.id}">${item.text}</a></li>
+		    			</c:if>
+					 </c:forEach>
+			    </c:if>
 			</ul>
 			<div class="clear"></div>
 		</div>

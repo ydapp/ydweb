@@ -158,6 +158,11 @@ public class PisUserService {
 		return this.pisUserMapper.selectAll();
 	} 
 	
+	public List<PisUser> getUserByBroking(int page, int pageSize,String userId) {
+		PageHelper.startPage(page, pageSize);
+		return this.pisUserMapper.selectUserByBroking(userId);
+	} 
+	
 	/**
 	 * 验证密码是否正确
 	 * @param pisUser 用户实体类

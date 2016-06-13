@@ -122,4 +122,6 @@ public interface PisUserMapper {
 	 * @return
 	 */
 	public List<PisUser> selectAll();
+	
+	public List<PisUser> selectUserByBroking(String userId);
 }

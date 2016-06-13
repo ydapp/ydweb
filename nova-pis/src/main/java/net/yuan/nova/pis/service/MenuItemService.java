@@ -86,20 +86,36 @@ public class MenuItemService {
 	}
 
 	/** 返回某节点下的所有菜单 */
-	public List<TreeNode<PisMenuItem>> findMenuTreeNodes(String parentId) {
+	public List<TreeNode<PisMenuItem>> findMenuTreeNodes(String parentId,String menuCode) {
 		List<PisMenuItem> menus = pisMenuItemMapper.findChildren(parentId);
 		List<TreeNode<PisMenuItem>> nodes = new ArrayList<TreeNode<PisMenuItem>>();
 		for (PisMenuItem menu : menus) {
-			TreeNode<PisMenuItem> node = new TreeNode<PisMenuItem>();
-			String Id = menu.getId();
-			node.setId(Id);
-			node.setText(menu.getText());
-			// 判断是否是子节点
-			if (!isLeaf(Id)) {
-				node.setState("closed");
+			TreeNode<PisMenuItem> node =null;
+			if("" != menuCode&&menuCode.indexOf(menu.getMenuCode())!=-1){
+				node = new TreeNode<PisMenuItem>();
+				String Id = menu.getId();
+				node.setId(Id);
+				node.setText(menu.getText());
+				node.setState(menu.getMenuCode());
+				// 判断是否是子节点
+				if (!isLeaf(Id)) {
+					node.setState("closed");
+				}
+				node.setAttributes(menu);
+				nodes.add(node);// stc添加，修正之前nodes没有赋值，空值返回的问题
+			}else if("" == menuCode){
+				node = new TreeNode<PisMenuItem>();
+				String Id = menu.getId();
+				node.setId(Id);
+				node.setText(menu.getText());
+				node.setState(menu.getMenuCode());
+				// 判断是否是子节点
+				if (!isLeaf(Id)) {
+					node.setState("closed");
+				}
+				node.setAttributes(menu);
+				nodes.add(node);// stc添加，修正之前nodes没有赋值，空值返回的问题
 			}
-			node.setAttributes(menu);
-			nodes.add(node);// stc添加，修正之前nodes没有赋值，空值返回的问题
 		}
 		return nodes;
 	}

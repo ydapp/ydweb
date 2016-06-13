@@ -214,7 +214,7 @@ public class MenuItemServiceTest extends AbstractJUnit4SpringContextTests {
 
 	@Test
 	public void testFindMenuTreeNodes() {
-		List<TreeNode<PisMenuItem>> findMenuTreeNodes = menuItemService.findMenuTreeNodes(null);
+		List<TreeNode<PisMenuItem>> findMenuTreeNodes = menuItemService.findMenuTreeNodes(null,"");
 		if (findMenuTreeNodes != null) {
 			for (TreeNode<PisMenuItem> treeNode : findMenuTreeNodes) {
 				System.out.println(JSONObject.fromObject(treeNode));
