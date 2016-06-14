@@ -2,9 +2,12 @@ package net.yuan.nova.pis.controller;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.text.Collator;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -32,6 +35,7 @@ import net.yuan.nova.pis.service.PisRecommendService;
 import net.yuan.nova.pis.service.PisUserExtendService;
 import net.yuan.nova.pis.service.PisUserService;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.time.DateUtils;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -512,6 +516,28 @@ public class RecommendController {
 			cellHeard.setCellValue(header.get(i));
 		}
 		if(null != list&&list.size()>0){
+			//按照中文排序业务员集合
+			Collections.sort(list, new Comparator<PisRecommend>(){
+				@Override
+				public int compare(PisRecommend pisRecommend_01, PisRecommend pisRecommend_02) {
+					if(null != pisRecommend_01 && null != pisRecommend_02){
+							String day_01 = String.valueOf(new java.text.SimpleDateFormat("yyyyMMdd").format(pisRecommend_01.getRecommendDate())).trim();
+							String day_02 =String.valueOf(new java.text.SimpleDateFormat("yyyyMMdd").format(pisRecommend_02.getRecommendDate())).trim();
+							String time_01 = String.valueOf(new java.text.SimpleDateFormat("HHmmss").format(pisRecommend_01.getRecommendDate())).trim();
+							String time_02 = String.valueOf(new java.text.SimpleDateFormat("HHmmss").format(pisRecommend_02.getRecommendDate())).trim();
+							int recommendDay_01 = Integer.parseInt(day_01);
+							int recommendDay_02 = Integer.parseInt(day_02);
+							if(recommendDay_01 == recommendDay_02){
+								int recommendTime_01 = Integer.parseInt(time_01);
+								int recommendTime_02 = Integer.parseInt(time_02);
+								 return  recommendTime_01 - recommendTime_02>0?-1:0;
+							}else{
+								return recommendDay_01 - recommendDay_02>0?-1:0;
+							}
+					}
+					return 0;
+				}
+			});
 			for (int i = 0; i < list.size(); i++) {
 				HSSFRow rowData = sheet.createRow(i + 1);
 				PisRecommend recommend = list.get(i);
