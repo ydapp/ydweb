@@ -123,11 +123,8 @@ public class PisRecommendService {
 			PisUser user = this.pisUserService.findUserById(pisUserExtend.getUserId());
 			if(null != user){
 				 //获取用户类型
-				 PisUserGroup group = pisUserService.getPisUserGroup(user.getUserId());
-				 if("" != user.getTel() && tel.indexOf(user.getTel())==-1 && null != group && "commissioner".equals(group.getType())){
-					 log.debug("usertel:" + user.getTel()  + " nick:" + user.getNick());
-					buildingCommissioner.add(user);
-				 }
+				 log.debug("usertel:" + user.getTel()  + " nick:" + user.getNick());
+				buildingCommissioner.add(user);
 			}
 		}
 		pisRecommendVo.setBuildingCommissioners(buildingCommissioner);
