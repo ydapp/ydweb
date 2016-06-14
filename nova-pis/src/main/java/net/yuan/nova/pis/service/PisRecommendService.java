@@ -14,6 +14,7 @@ import net.yuan.nova.pis.entity.PisRecommend;
 import net.yuan.nova.pis.entity.PisRecommend.Status;
 import net.yuan.nova.pis.entity.PisUser;
 import net.yuan.nova.pis.entity.PisUserExtend;
+import net.yuan.nova.pis.entity.PisUserGroup;
 import net.yuan.nova.pis.entity.vo.PisRecommendVo;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
@@ -94,7 +95,7 @@ public class PisRecommendService {
 		String recommendConfirmUserId = recommend.getRecommendConfirmUserId();
 		if (StringUtils.isNotBlank(recommendConfirmUserId)) {
 			PisUser confirmUser = pisUserService.findUserById(recommendConfirmUserId);
-			if (refree != null) {
+			if (refree != null && null != confirmUser) {
 				pisRecommendVo.setRecommendConfirmUserName(confirmUser.getUserName());
 				pisRecommendVo.setRecommendConfirmUserNick(confirmUser.getNick());
 			}
@@ -108,8 +109,10 @@ public class PisRecommendService {
 		if (StringUtils.isNoneEmpty(tel)){
 			String[] tmp  = StringUtils.split(tel, ";");
 			for (String string : tmp) {
-				log.debug("电话:" + string);
-				tels.add(string);
+				if(""!=string){
+					log.debug("电话:" + string);
+					tels.add("楼盘电话:"+string);
+				}
 			}
 		}
 		pisRecommendVo.setBuildingTels(tels);
@@ -118,8 +121,14 @@ public class PisRecommendService {
 		List<PisUser> buildingCommissioner = new ArrayList<PisUser>();
 		for (PisUserExtend pisUserExtend : list) {
 			PisUser user = this.pisUserService.findUserById(pisUserExtend.getUserId());
-			log.debug("usertel:" + user.getTel()  + " nick:" + user.getNick());
-			buildingCommissioner.add(user);
+			if(null != user){
+				 //获取用户类型
+				 PisUserGroup group = pisUserService.getPisUserGroup(user.getUserId());
+				 if("" != user.getTel() && tel.indexOf(user.getTel())==-1 && null != group && "commissioner".equals(group.getType())){
+					 log.debug("usertel:" + user.getTel()  + " nick:" + user.getNick());
+					buildingCommissioner.add(user);
+				 }
+			}
 		}
 		pisRecommendVo.setBuildingCommissioners(buildingCommissioner);
 		return pisRecommendVo;

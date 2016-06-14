@@ -23,6 +23,7 @@ import net.yuan.nova.pis.entity.PisCity;
 import net.yuan.nova.pis.entity.PisProperty;
 import net.yuan.nova.pis.entity.PisUser;
 import net.yuan.nova.pis.entity.PisUserExtend;
+import net.yuan.nova.pis.entity.PisUserGroup;
 import net.yuan.nova.pis.entity.vo.PisPropertyVo;
 import net.yuan.nova.pis.pagination.DataGridHepler;
 import net.yuan.nova.pis.pagination.PageParam;
@@ -453,8 +454,10 @@ public class BuildingController {
 		for (PisUserExtend pisUserExtend : list) {
 			PisUser user = this.pisUserService.findUserById(pisUserExtend.getUserId());
 			if(null!=user){
+				 //获取用户类型
+				 PisUserGroup group = pisUserService.getPisUserGroup(user.getUserId());
 				log.debug("usertel:" + user.getTel()  + " nick:" + user.getNick());
-				if(""!=user.getTel()&&tel.indexOf(user.getTel())==-1){
+				if("" != user.getTel() && tel.indexOf(user.getTel())==-1 && null != group && "commissioner".equals(group.getType())){
 					tels.add(user.getNick() + ":" + user.getTel());
 				}
 			}
