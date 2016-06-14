@@ -815,58 +815,82 @@ public class PisUserController {
 	 */
 	public List<PisUser> sortUserByUserName(List<PisUser> userList){
 		//创建返回值对象
-				List<PisUser> userList_03=new ArrayList<>();
-				if(null!=userList&&userList.size()>0){
-					//创建案场电话集合
-					List<PisUser> userList_01=new ArrayList<>();
-					//创建非案场电话集合
-					List<PisUser> userList_02=new ArrayList<>();
-					//创建业务员集合
-					List<PisUser> userList_04 = new ArrayList<>();
-					//创建经济公司集合
-					List<PisUser> userList_05 = new ArrayList<>();
-					//创建经纪公司和经纪人集合
-					List<PisUser> userList_06 = new ArrayList<>();
+				List<PisUser> allList=new ArrayList<>();
+				if(null != userList && userList.size() > 0){
+					//创建管理员集合
+					List<PisUser> adminList=new ArrayList<>();
+					//创建驻场专员集合
+					List<PisUser> commissionerList=new ArrayList<>();
 					//创建渠道经理集合
-					List<PisUser> userList_07 = new ArrayList<>();
+					List<PisUser> channelManagerList=new ArrayList<>();
+					//创建经济公司集合
+					List<PisUser> brokingFirmList=new ArrayList<>();
+					//创建业务员集合
+					List<PisUser> salesmanList=new ArrayList<>();
+					//创建经济公司与业务员公共集合
+					List<PisUser> brokingAndSalesList=new ArrayList<>();
+					//创建其他类型集合
+					List<PisUser> otherList=new ArrayList<>();
 					//遍历循环判断用户是否案场专员 驻场专员，渠道经理，管理员置顶
 					for (int i = 0; i < userList.size(); i++) {
 						 PisUser pisUser = userList.get(i);
-						 PisUserGroup group =pisUserService.getPisUserGroup(pisUser.getUserId());
-						 if(null!=group&&!"".equals(group.getType())){
-							 if("commissioner".equals(group.getType())||"appAdmin".equals(group.getType())||"A".equals(pisUser.getType())){
-									userList_01.add(pisUser);
+						 //获取用户类型
+						 PisUserGroup group = pisUserService.getPisUserGroup(pisUser.getUserId());
+						 if(null != group && !"".equals(group.getType())){
+							 //判断是否为内置管理员与app管理员
+							 if("appAdmin".equals(group.getType())||"A".equals(pisUser.getType())){
+								 adminList.add(pisUser);
+								 //判断是否为驻场专员
+								}else if("commissioner".equals(group.getType())){
+									commissionerList.add(pisUser);
+									//判断是否为渠道经理
 								}else if("channelManager".equals(group.getType())){
-									userList_07.add(pisUser);
+									channelManagerList.add(pisUser);
+									//判断是否为经济公司
 								}else if("brokingFirm".equals(group.getType())){
-									 userList_05.add(pisUser);
+									brokingFirmList.add(pisUser);
+									//判断是否为业务员
 								 }else if("salesman".equals(group.getType())){
-									 userList_04.add(pisUser);
+									 salesmanList.add(pisUser);
 								 }else{
-									userList_02.add(pisUser);
+									 otherList.add(pisUser);
 								}
 						 }else if("A".equals(pisUser.getType())){
-							 userList_01.add(pisUser);
+							 adminList.add(pisUser);
 						 }else{
-							 userList_02.add(pisUser);
+							 otherList.add(pisUser);
 						 }
 					}
-					//按照中文姓名排序案场电话集合
-					Collections.sort(userList_01, new Comparator<PisUser>(){
+					//按照中文名称排序管理员集合
+					Collections.sort(adminList, new Comparator<PisUser>(){
 						@Override
 						public int compare(PisUser user1, PisUser user2) {
 							return  Collator.getInstance(java.util.Locale.CHINA).compare(user1.getNick(),user2.getNick());
 						}
 					});
-					//按照中文排序非案场电话集合
-					Collections.sort(userList_04, new Comparator<PisUser>(){
+					//按照中文排序驻场专员集合
+					Collections.sort(commissionerList, new Comparator<PisUser>(){
 						@Override
 						public int compare(PisUser user1, PisUser user2) {
 							return  Collator.getInstance(java.util.Locale.CHINA).compare(user1.getNick(),user2.getNick());
 						}
 					});
-					//按照中文排序经纪公司
-					Collections.sort(userList_05, new Comparator<PisUser>(){
+					//按照中文排序渠道经理集合
+					Collections.sort(channelManagerList, new Comparator<PisUser>(){
+						@Override
+						public int compare(PisUser user1, PisUser user2) {
+							return  Collator.getInstance(java.util.Locale.CHINA).compare(user1.getNick(),user2.getNick());
+						}
+					});
+					//按照中文排序经济公司集合
+					Collections.sort(brokingFirmList, new Comparator<PisUser>(){
+						@Override
+						public int compare(PisUser user1, PisUser user2) {
+							return  Collator.getInstance(java.util.Locale.CHINA).compare(user1.getNick(),user2.getNick());
+						}
+					});
+					//按照中文排序业务员集合
+					Collections.sort(salesmanList, new Comparator<PisUser>(){
 						@Override
 						public int compare(PisUser user1, PisUser user2) {
 							return  Collator.getInstance(java.util.Locale.CHINA).compare(user1.getNick(),user2.getNick());
@@ -874,28 +898,35 @@ public class PisUserController {
 					});
 					//将经纪人整理到相对于的经济公司下
 					boolean flag = false;
-					if(null!=userList_05&&userList_05.size()>0){
-						for (int i = 0; i <userList_05.size(); i++) {
-							 PisUser pisUser = userList_05.get(i);
-							 PisUserGroup group =pisUserService.getPisUserGroup(pisUser.getUserId());
-							 userList_06.add(pisUser);
-							 if(null!=group){
-								 PisUserExtend pisUserExtend =  this.userExtendService.selectByUserId(pisUser.getUserId());
-								 if(null!=pisUserExtend){
-									 for (PisUser user : userList_04) {
-											 PisUserExtend pisUserExtend_01 = this.userExtendService.selectByUserId(user.getUserId());
-											 if(null!=pisUserExtend_01){
-												 if(pisUserExtend.getBrokingFirmId().equals(pisUserExtend_01.getBrokingFirmId())){
-													 userList_06.add(user);
+					if(null != brokingFirmList && brokingFirmList.size()>0){
+						for (int i = 0; i <brokingFirmList.size(); i++) {
+							 PisUser brokingFirmUser = brokingFirmList.get(i);
+							 //PisUserGroup group =pisUserService.getPisUserGroup(pisUser.getUserId());
+							 brokingAndSalesList.add(brokingFirmUser);
+							 if(null != brokingFirmUser){
+								 //获取用户扩展信息
+								 PisUserExtend brokingFirmUserExtend =  this.userExtendService.selectByUserId(brokingFirmUser.getUserId());
+								 if(null != brokingFirmUserExtend){
+									 //遍历业务员集合
+									 for (PisUser salesmanUser : salesmanList) {
+										     flag = false;
+										 	//获取业务员用户扩展信息
+											 PisUserExtend salesmanUserUserExtend = this.userExtendService.selectByUserId(salesmanUser.getUserId());
+											 //业务员扩展信息不为空
+											 if(null != salesmanUserUserExtend){
+												 if(brokingFirmUserExtend.getBrokingFirmId().equals(salesmanUserUserExtend.getBrokingFirmId())){
+													 brokingAndSalesList.add(salesmanUser);
+													 flag = true;
 												 }
 											 }else{
-												 if(!userList_02.contains(user)){
-														userList_02.add(user);
+												 //如果业务员用户扩展信息为空，存入其他集合
+												 if(!otherList.contains(salesmanUser)){
+													 otherList.add(salesmanUser);
 													}
 											 }
 											 if(!flag){
-												 if(!userList_02.contains(user)){
-														userList_02.add(user);
+												 if(!otherList.contains(salesmanUser)){
+													 otherList.add(salesmanUser);
 													}
 											 }
 									 }
@@ -903,14 +934,14 @@ public class PisUserController {
 							 }
 						}
 					}else{
-						userList_02.addAll(userList_04);
+						otherList.addAll(salesmanList);
 					}
 					//清重复
-					if(null!=userList_02&&userList_02.size()>0){
-						userList_02.removeAll(userList_06);
+					if(null != otherList && otherList.size()>0){
+						otherList.removeAll(brokingAndSalesList);
 					}
 					//按照用户编码排序
-					Collections.sort(userList_02, new Comparator<PisUser>(){
+					Collections.sort(otherList, new Comparator<PisUser>(){
 						@Override
 						public int compare(PisUser user1, PisUser user2) {
 							if((null!=user1&&null!=user1.getPersonCode())&&(null!=user2&&null!=user2.getPersonCode())){
@@ -921,31 +952,21 @@ public class PisUserController {
 							return 0;
 						}
 					});
-					//按照中文排序非案场电话集合
-					Collections.sort(userList_02, new Comparator<PisUser>(){
+					//按照中文排序其他集合
+					Collections.sort(otherList, new Comparator<PisUser>(){
 						@Override
 						public int compare(PisUser user1, PisUser user2) {
 							return  Collator.getInstance(java.util.Locale.CHINA).compare(user1.getNick(),user2.getNick());
 						}
 					});
-					//按照中文排序渠道经理
-					Collections.sort(userList_07, new Comparator<PisUser>(){
-						@Override
-						public int compare(PisUser user1, PisUser user2) {
-							return  Collator.getInstance(java.util.Locale.CHINA).compare(user1.getNick(),user2.getNick());
-						}
-					});
-					userList_01.addAll(userList_07);
+					//按照顺序将管理员、驻场、渠道经理，排在列表最上面
+					adminList.addAll(commissionerList);
+					adminList.addAll(channelManagerList);
 					//按照顺序组装返回值 
-					userList_03.addAll(userList_01);
-					userList_03.addAll(userList_02);
-					userList_03.addAll(userList_06);
+					allList.addAll(adminList);
+					allList.addAll(otherList);
+					allList.addAll(brokingAndSalesList);
 				} 
-				return userList_03;
+				return allList;
 	}
-	
-	
-	
-	
-	
 }
