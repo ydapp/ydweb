@@ -68,10 +68,10 @@ public class ArticleController {
 			System.out.println("没有附件上传");
 		}
 		if (StringUtils.isBlank(tile)) {
-			json.putError("tile", "咨询标题不能为空");
+			json.putError("tile", "资讯标题不能为空");
 		}
 		if (StringUtils.isBlank(content)) {
-			json.putError("content", "咨询内容不能为空");
+			json.putError("content", "资讯内容不能为空");
 		}
 		if (json.validate()) {
 			pisArticleService.addArticle(tile, content, file);
@@ -102,10 +102,10 @@ public class ArticleController {
 			System.out.println("没有附件上传");
 		}
 		if (StringUtils.isBlank(tile)) {
-			json.putError("tile", "咨询标题不能为空");
+			json.putError("tile", "资讯标题不能为空");
 		}
 		if (StringUtils.isBlank(content)) {
-			json.putError("content", "咨询内容不能为空");
+			json.putError("content", "资讯内容不能为空");
 		}
 		if (json.validate()) {
 			pisArticleService.updateAricle(id,tile, content,cover, file);
@@ -159,7 +159,7 @@ public class ArticleController {
 	}
 
 	/**
-	 * 咨询详情
+	 * 资讯详情
 	 * 
 	 * @param id
 	 * @param request
@@ -203,7 +203,7 @@ public class ArticleController {
 	}
 
 	/**
-	 * 咨询详情
+	 * 资讯详情
 	 * 
 	 * @param id
 	 * @param request

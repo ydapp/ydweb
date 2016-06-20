@@ -31,9 +31,9 @@
 	<div data-options="region:'center',border:false" style="padding:5px 5px 5px 5px;" >
 	    <!-- 表格头部标签 -->
 		<div id="tb" style="padding:2px 5px;text-align:right">
-			<a href="javascript:void(0);" class="easyui-linkbutton" iconCls="icon-add" plain="true" id="add">新增咨询信息</a>
-			<a href="javascript:void(0);" class="easyui-linkbutton" iconCls="icon-edit" plain="true" id="update">修改咨询信息</a>
-			<a href="javascript:void(0);" class="easyui-linkbutton" iconCls="icon-remove" plain="true" id="remove">删除咨询信息</a>
+			<a href="javascript:void(0);" class="easyui-linkbutton" iconCls="icon-add" plain="true" id="add">新增资讯信息</a>
+			<a href="javascript:void(0);" class="easyui-linkbutton" iconCls="icon-edit" plain="true" id="update">修改资讯信息</a>
+			<a href="javascript:void(0);" class="easyui-linkbutton" iconCls="icon-remove" plain="true" id="remove">删除资讯信息</a>
 		</div>
 		<table id="article_grid" class="easyui-datagrid" title="资讯信息列表" 
 		data-options="singleSelect:true,url:'<%=path%>/admin/articles.json',method:'get',toolbar:'#tb',rownumbers:'true',pagination:'true',fit:'true',fitColumns: true">
@@ -131,7 +131,7 @@
 		  //判断是否选中行
 		  var row = $('#article_grid').datagrid('getSelected');
 		  if(null==row){
-			 $.messager.alert('温馨提示',"请选中需要修改的咨询信息!");
+			 $.messager.alert('温馨提示',"请选中需要修改的资讯信息!");
 			 return;
 			}
 		  //根据主键ID从库中提取数据 
@@ -183,7 +183,7 @@
 		//判断是否选中行
 		  var row = $('#article_grid').datagrid('getSelected');
 		  if(null==row){
-			 $.messager.alert('温馨提示',"请选中需要删除的咨询信息!");
+			 $.messager.alert('温馨提示',"请选中需要删除的资讯信息!");
 			 return;
 		  }
 		  $.messager.confirm("操作提示", "您确定要执行删除操作吗？", function (data) { 
