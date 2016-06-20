@@ -171,7 +171,9 @@ public class PisRecommend {
 //		//购买，驻场专员做
 //		buy,
 		// 渠道经理进行最终确认
-		confirm
+		confirm,
+		//失效
+		X
 	}
 	public static String getStatusName(Status status){
 		switch (status) {
@@ -185,6 +187,8 @@ public class PisRecommend {
 			return "定";
 		case confirm:
 			return "结";
+		case X:
+			return "失效";
 		default:
 			throw new RuntimeException("未知状态:" + status.name());
 		}
