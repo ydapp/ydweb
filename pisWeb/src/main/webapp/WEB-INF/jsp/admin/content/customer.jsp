@@ -38,7 +38,7 @@
 <body class="easyui-layout">
 	<div data-options="region:'center',border:false" style="padding:5px 5px 5px 5px;" >
 		<table id="customer_grid" class="easyui-datagrid" title="客户列表" 
-		data-options="singleSelect:true,url:'<%=path%>/api/customers.json',method:'get',toolbar:'#tb',rownumbers:'true',pagination:'true',fit:'true',fitColumns: true">
+		data-options="singleSelect:true,url:'<%=path%>/api/customers.json',method:'get',toolbar:'#tb',rownumbers:'true',pagination:'true',fit:'true',fitColumns: true,pageSize:20,pageList:[20,30,40,50]">
 			<thead>
 				<tr>
 					<th data-options="field:'customerTel',width:180">客户电话</th>
