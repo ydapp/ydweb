@@ -94,6 +94,24 @@ public class BuildingController {
 		modelMap.addAttribute("result", jsonVo);
 		return modelMap;
 	}
+	
+	/**
+	 * 获取所有的楼盘信息
+	 * @param request
+	 * @param modelMap
+	 * @return
+	 */
+	@RequestMapping(value = "/api/getAllBuildings", method = RequestMethod.GET)
+	public ModelMap getAllBuildingList(HttpServletRequest request, ModelMap modelMap){
+		JsonVo<List<PisBuilding>> jsonVo = new JsonVo<List<PisBuilding>>();
+		List<PisBuilding> list = this.buildingService.getAllBuildingList();
+		if(null != list && list.size() > 0){
+			jsonVo.setResult(list);
+			jsonVo.setSuccess(true);
+		}
+		modelMap.addAttribute("result", jsonVo);
+		return modelMap;
+	}
 
 	// ///////////////////////////////////////////////////////////
 	// ////////////主表操作/////////////////////////////

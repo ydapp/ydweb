@@ -60,6 +60,13 @@ public class PisBuildingService {
 	}
 
 	/**
+	 * 获取所有的楼盘信息
+	 * @return
+	 */
+	public List<PisBuilding> getAllBuildingList(){
+		return this.pisBuildingMapper.getAllList();
+	}
+	/**
 	 * 根据ID获得楼盘详情
 	 * 
 	 * @param buildingId

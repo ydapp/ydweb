@@ -491,7 +491,32 @@ public class RecommendController {
 			String buildingId = this.userExtendService.selectByUserId(user.getUserId()).getBuildingId();
 			list = this.recommendService.getByBuildingId(buildingId);
 		}
-		
+		String building = request.getParameter("building");
+		String startDate = request.getParameter("startDate");
+		String endDate = request.getParameter("endDate");
+		int date_01 = 0;
+		int date_02 = 0;
+		SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");//小写的mm表示的是分钟
+		Date date = null;
+		if("" != startDate && startDate.length()>0){
+			try {
+				  date=sdf.parse(startDate);
+			} catch (ParseException e) {
+				log.debug(startDate+"转换Date错误"+e.getMessage());
+			}  
+			String day = String.valueOf(new java.text.SimpleDateFormat("yyyyMMdd").format(date)).trim();
+			date_01 = Integer.parseInt(day);
+		}
+		if("" != endDate && endDate.length()>0){
+			try {
+				  date=sdf.parse(endDate);
+			} catch (ParseException e) {
+				log.debug(endDate+"转换Date错误"+e.getMessage());
+			}  
+			String day = String.valueOf(new java.text.SimpleDateFormat("yyyyMMdd").format(date)).trim();
+			date_02 = Integer.parseInt(day);
+		}
+		list = this.filterList(building, date_01, date_02, list);
 		HSSFWorkbook wb = new HSSFWorkbook();
 		HSSFSheet sheet = wb.createSheet("报备信息");
 		HSSFRow rowHeard = sheet.createRow(0);
@@ -791,5 +816,71 @@ public class RecommendController {
 			 recommends.clear();
 		 }
 		 recommends.removeAll(cleanListMap_);
+	}
+	
+	/**
+	 * 根据传入的参数过滤集合信息
+	 * @param building
+	 * @param startDate
+	 * @param endDate
+	 * @return
+	 */
+	public List<PisRecommend> filterList(String building,int startDate,int endDate,List<PisRecommend> list){
+		List<PisRecommend> pisRecList = new ArrayList<>();
+		//判断集合不为空
+		if(null != list && list.size()>0){
+			for (int i = 0; i < list.size(); i++) {
+				PisRecommend pisRec = list.get(i);
+				//判断楼盘ID不为空
+				int day = Integer.parseInt(String.valueOf(new java.text.SimpleDateFormat("yyyyMMdd").format(pisRec.getRecommendDate())).trim());
+				if("" != building && "null" != building ){
+					//判断楼盘ID
+					if(building.equals( pisRec.getBuildingId())){
+						//判断开始于截止时间是否都为空
+						if(startDate > 0  && endDate > 0){
+							if(day > startDate && day < endDate){
+								pisRecList.add(pisRec);
+							}
+						}
+						//判断开始不为空，截止时间为空
+						if(startDate > 0 && endDate == 0){
+							if(day > startDate){
+								pisRecList.add(pisRec);
+							}
+						}
+						//判断截止时间不为空，开始时间为空
+						if(endDate > 0 && startDate == 0){
+							pisRecList.add(pisRec);
+						}
+						//判断开始、截止时间都为空
+						if(startDate == 0 && endDate == 0){
+							pisRecList.add(pisRec);
+						}
+					}
+				}else{
+					//else如果楼盘信息为空，判断时间
+					if(startDate > 0  && endDate > 0){
+						if(day > startDate && day < endDate){
+							pisRecList.add(pisRec);
+						}
+					}
+					//判断开始不为空，截止时间为空
+					if(startDate > 0 && endDate == 0){
+						if(day > startDate){
+							pisRecList.add(pisRec);
+						}
+					}
+					//判断截止时间不为空，开始时间为空
+					if(endDate > 0 && startDate == 0){
+						pisRecList.add(pisRec);
+					}
+					//判断开始、截止时间都为空
+					if(startDate == 0 && endDate == 0){
+						pisRecList.add(pisRec);
+					}
+				}
+			}
+		}
+		return pisRecList;
 	}
 }

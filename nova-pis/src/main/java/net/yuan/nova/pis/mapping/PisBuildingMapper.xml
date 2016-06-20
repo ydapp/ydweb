@@ -9,6 +9,11 @@
   <sql id="Base_Column_List" >
    CITY_ID,BUILDING_ID,BUILDING_NAME
   </sql>
+  <select id="getAllList" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from PIS_BUILDING 
+  </select>
   <select id="getBuilding" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select 
     <include refid="Base_Column_List" />

@@ -11,6 +11,8 @@ public interface PisBuildingMapper {
 	int insert(PisBuilding pisBuilding);
 
 	List<PisBuilding> getBuilding(String cityId);
+	
+	List<PisBuilding> getAllList();
 
 	PisBuilding getById(String buildingId);
 
