@@ -54,19 +54,34 @@
 <script type="text/javascript"
 	src="<%=path%>/public/script/jquery.easyui.min.js"></script>
 <script type="text/javascript">
+/**
+ *  初始化
+ */
 $(function(){
+	//加载楼盘信息
 	loadBuildingList();
 });
+/**
+ * 重置事件
+ */
 $('#clearbtn').click(function() {
+	loadBuildingList();//刷新楼盘信息
+	//清空
 	$('#startDate').val('');
 	$('#endDate').val('');
 });
+/**
+ * 导出事件 
+ */
 $('#importbtn').click(function() {
 	var building = $("#buildingList").val();
 	var startDate = $("#startDate").val();
 	var endDate = $("#endDate").val();
 	window.location.href='<%=path%>/api/excell.json?building='+building+'&startDate='+startDate+'&endDate='+endDate;
 });
+/**
+ * 加载楼盘信息 
+ */
 var loadBuildingList = function (){
 	$.ajax({
 		url: "<%=path%>/api/getAllBuildings.json",
