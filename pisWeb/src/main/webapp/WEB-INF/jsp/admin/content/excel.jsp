@@ -39,7 +39,7 @@
 					<tr>
 						<td>
 							<div >
-								<a id="importbtn" class="easyui-linkbutton" data-options="iconCls:'icon-search'">导出</a>
+								<a id="importbtn" class="easyui-linkbutton" data-options="iconCls:'icon-print'">导出</a>
 								<a id="clearbtn" class="easyui-linkbutton" data-options="iconCls:'icon-reload'">重置</a>
 							</div>
 						</td>
