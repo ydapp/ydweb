@@ -850,7 +850,9 @@ public class RecommendController {
 						}
 						//判断截止时间不为空，开始时间为空
 						if(endDate > 0 && startDate == 0){
-							pisRecList.add(pisRec);
+							if(day < endDate){
+								pisRecList.add(pisRec);
+							}
 						}
 						//判断开始、截止时间都为空
 						if(startDate == 0 && endDate == 0){
@@ -872,7 +874,9 @@ public class RecommendController {
 					}
 					//判断截止时间不为空，开始时间为空
 					if(endDate > 0 && startDate == 0){
-						pisRecList.add(pisRec);
+						if(day < endDate){
+							pisRecList.add(pisRec);
+						}
 					}
 					//判断开始、截止时间都为空
 					if(startDate == 0 && endDate == 0){
