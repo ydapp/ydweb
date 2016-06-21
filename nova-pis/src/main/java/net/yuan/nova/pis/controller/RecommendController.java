@@ -723,8 +723,8 @@ public class RecommendController {
 						} catch (ParseException e) {
 							 log.debug("计算内存集合中状态为'申请'的推荐信息与当前的时间差异常:"+e.getMessage());
 						}
-						 //判断内存集合中是否存在五天或以上的推荐信息
-						 if(d>=5){
+						 //判断内存集合中是否存在7天或以上的推荐信息
+						 if(d>7){
 							 int ret = this.recommendService.updateRecommendStatusByRecommendId(String.valueOf(key));
 							 if(ret>0){
 								 log.debug("修改推荐信息状态为X成功,ID："+key);
