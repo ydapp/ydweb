@@ -98,7 +98,7 @@ var loadBuildingList = function (){
 					}
 				}
 			}else {
-				alert("获取楼盘列表失败!");
+				$.messager.alert('温馨提示',"获取楼盘列表失败!");
 			}
 		},
 		error: function(){
