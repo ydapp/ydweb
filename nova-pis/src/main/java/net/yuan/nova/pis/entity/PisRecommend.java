@@ -17,12 +17,15 @@ public class PisRecommend {
 	private String customerTel;
 	// 城市id
 	private String cityId;
+	private String cityName;
 	// 楼盘id
 	private String buildingId;
+	private String buildingName;
 	// 预计看房时间
 	private Date appointmentLookHouseDate;
 	// 推荐人
 	private String refreeId;
+	private String refreeName;
 	// 详情
 	private String remark;
 	// 推荐状态三种状态，recommend推荐，present到场，confirm确认
@@ -33,12 +36,50 @@ public class PisRecommend {
 	private Date customerPresentDate;
 	// 客户到场确认人
 	private String customerPresentUserId;
+	private String customerPresentName;
 	// 推荐确认时间
 	private Date recommendConfirmDate;
 	// 推荐确认人
 	private String recommendConfirmUserId;
 	// 推荐确认意见
 	private String recommendConfirmAdvice;
+	
+	
+	
+	
+	
+	public String getCustomerPresentName() {
+		return customerPresentName;
+	}
+
+	public void setCustomerPresentName(String customerPresentName) {
+		this.customerPresentName = customerPresentName;
+	}
+
+	public String getRefreeName() {
+		return refreeName;
+	}
+
+	public void setRefreeName(String refreeName) {
+		this.refreeName = refreeName;
+	}
+
+	public String getCityName() {
+		return cityName;
+	}
+
+	public void setCityName(String cityName) {
+		this.cityName = cityName;
+	}
+
+	public String getBuildingName() {
+		return buildingName;
+	}
+
+	public void setBuildingName(String buildingName) {
+		this.buildingName = buildingName;
+	}
+
 	public String getRecommendId() {
 		return recommendId;
 	}
@@ -204,6 +245,8 @@ public class PisRecommend {
 		case order:
 			return Status.confirm;
 		case confirm:
+			return null;
+		case X:
 			return null;
 		default:
 			throw new RuntimeException("未知状态:" + status.name());

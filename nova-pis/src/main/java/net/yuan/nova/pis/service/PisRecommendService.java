@@ -328,14 +328,25 @@ public class PisRecommendService {
 	 * 得到所有报备信息，一般用于生成excell用的
 	 * @return
 	 */
-	public List<PisRecommend> getAll(){
+	public List<PisRecommend> getAll(int page,int pageSize){
+		if(page >0 && pageSize >0){
+			PageHelper.startPage(page, pageSize);
+		}
 		return this.recommendMapper.getAll();
+	}
+	
+	public List<PisRecommend> getByBuildingIds(String building,int page,int pageSize){
+		PageHelper.startPage(page, pageSize);
+		return this.recommendMapper.getByBuildingId(building);
 	}
 	/**
 	 * 根据经纪公司ID获取所有推荐信息
 	 * @return
 	 */
-	public List<PisRecommend> getByBrokingFirmId(String brokingFirmId){
+	public List<PisRecommend> getByBrokingFirmId(String brokingFirmId,int page,int pageSize){
+		if(page >0 && pageSize >0){
+			PageHelper.startPage(page, pageSize);
+		}
 		return this.recommendMapper.getByBrokingFirmId(brokingFirmId);
 	}
 	/**
@@ -343,7 +354,10 @@ public class PisRecommendService {
 	 * @param userId
 	 * @return
 	 */
-	public List<PisRecommend> getBySaleman(String userId){
+	public List<PisRecommend> getBySaleman(String userId,int page,int pageSize){
+		if(page >0 && pageSize >0){
+			PageHelper.startPage(page, pageSize);
+		}
 		return this.recommendMapper.getBySaleman(userId);
 	}
 	/**
@@ -351,7 +365,10 @@ public class PisRecommendService {
 	 * @param buildingId
 	 * @return
 	 */
-	public List<PisRecommend> getByBuildingId(String buildingId){
+	public List<PisRecommend> getByBuildingId(String buildingId,int page,int pageSize){
+		if(page >0 && pageSize >0){
+			PageHelper.startPage(page, pageSize);
+		}
 		return this.recommendMapper.getByBuildingId(buildingId);
 	}
 	/**
@@ -375,6 +392,7 @@ public class PisRecommendService {
 		PageHelper.startPage(page, pageSize);
 		return this.recommendMapper.getCustomer();
 	}
+	
 	/**
 	 * 根据状态获取推荐信息集合
 	 * @param status

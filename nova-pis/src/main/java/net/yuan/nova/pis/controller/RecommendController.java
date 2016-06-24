@@ -2,7 +2,6 @@ package net.yuan.nova.pis.controller;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.text.Collator;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -35,7 +34,6 @@ import net.yuan.nova.pis.service.PisRecommendService;
 import net.yuan.nova.pis.service.PisUserExtendService;
 import net.yuan.nova.pis.service.PisUserService;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang3.time.DateUtils;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -461,7 +459,6 @@ public class RecommendController {
 		List<PisRecommend> list = null;
 		User user = CurrentUserUtil.getShiroUser();
 		log.debug("根据用户类型确定导出范围");
-		//PisUser pisUser = this.userService.findUserById(user.getUserId());
 		PisUserGroup group = this.userService.getPisUserGroup(user.getUserId());
 		if (group == null){
 			try {
@@ -469,27 +466,22 @@ public class RecommendController {
 			} catch (IOException e) {
 				throw new RuntimeException(e);
 			}
-//			JsonVo<Object> jsonVo = new JsonVo<Object>();
-//			jsonVo.setSuccess(false);
-//			jsonVo.setMessage("该用户不具备导出报备数据权限(非APP管理员/驻场专员/经纪公司/经纪人)");
-//			jsonVo.validate();
-//			modelMap.addAttribute("result", jsonVo);
 			return null;
 		}
 		if (StringUtils.equals(PisUserGroup.TYPE.appAdmin.name(), group.getType())){
 			log.debug("当前用户是app管理员，可以导出所有的推荐信息");
-			list = this.recommendService.getAll();
+			list = this.recommendService.getAll(0,0);
 		} else if (StringUtils.equals(PisUserGroup.TYPE.brokingFirm.name(), group.getType())){
 			log.debug("当前用户是经纪公司，可以导出该经纪公司下面的所有的推荐信息");
 			String brokingFirmId = this.userExtendService.selectByUserId(user.getUserId()).getBrokingFirmId();
-			list = this.recommendService.getByBrokingFirmId(brokingFirmId);
+			list = this.recommendService.getByBrokingFirmId(brokingFirmId,0,0);
 		}else if (StringUtils.equals(PisUserGroup.TYPE.salesman.name(), group.getType())){
 			log.debug("当前用户是经纪人，可以导出该经纪人的所有的推荐信息");
-			list = this.recommendService.getBySaleman(user.getUserId());
+			list = this.recommendService.getBySaleman(user.getUserId(),0,0);
 		}else if (StringUtils.equals(PisUserGroup.TYPE.commissioner.name(), group.getType())){
 			log.debug("当前用户是驻场专员，可以导出该人的楼盘的所有的推荐信息");
 			String buildingId = this.userExtendService.selectByUserId(user.getUserId()).getBuildingId();
-			list = this.recommendService.getByBuildingId(buildingId);
+			list = this.recommendService.getByBuildingId(buildingId,0,0);
 		}
 		String building = request.getParameter("building");
 		String startDate = request.getParameter("startDate");
@@ -541,7 +533,6 @@ public class RecommendController {
 			cellHeard.setCellValue(header.get(i));
 		}
 		if(null != list&&list.size()>0){
-			//按照中文排序业务员集合
 			Collections.sort(list, new Comparator<PisRecommend>(){
 				@Override
 				public int compare(PisRecommend pisRecommend_01, PisRecommend pisRecommend_02) {
@@ -615,6 +606,114 @@ public class RecommendController {
 		// // 设置文件大小
 		// response.setHeader("Content-Length", String.valueOf(fileLength));
 		// IOUtils.copyLarge(bis, bos);
+	}
+	
+	/**
+	 * 推荐信息导出列表
+	 * @param request
+	 * @param modelMap
+	 * @param response
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value="/recommend/getList",method=RequestMethod.GET)
+	public Object getRecommendList(HttpServletRequest request, ModelMap modelMap, HttpServletResponse response){
+		List<PisRecommend> list = null;
+		User user = CurrentUserUtil.getShiroUser();
+		log.debug("根据用户类型确定导出范围");
+		PisUserGroup group = this.userService.getPisUserGroup(user.getUserId());
+		if (group == null){
+			try {
+				response.getWriter().write("该用户不具备导出报备数据权限(非APP管理员/驻场专员/经纪公司/经纪人)");
+			} catch (IOException e) {
+				throw new RuntimeException(e);
+			}
+		}
+		String building = request.getParameter("building");
+		String startDate = request.getParameter("startDate");
+		String endDate = request.getParameter("endDate");
+		if(null == building){building ="";}
+		if(null == startDate){startDate="";}
+		if(null == endDate){endDate ="";}
+		PageParam param = DataGridHepler.parseRequest(request);
+		if (StringUtils.equals(PisUserGroup.TYPE.appAdmin.name(), group.getType())){
+			log.debug("当前用户是app管理员，可以导出所有的推荐信息");
+			if("" != building){
+				list = this.recommendService.getByBuildingIds(building, param.getPage(),param.getPageSize());
+			}else{
+				list = this.recommendService.getAll(param.getPage(),param.getPageSize());
+			}
+		} else if (StringUtils.equals(PisUserGroup.TYPE.brokingFirm.name(), group.getType())){
+			log.debug("当前用户是经纪公司，可以导出该经纪公司下面的所有的推荐信息");
+			String brokingFirmId = this.userExtendService.selectByUserId(user.getUserId()).getBrokingFirmId();
+			list = this.recommendService.getByBrokingFirmId(brokingFirmId,param.getPage(),param.getPageSize());
+		}else if (StringUtils.equals(PisUserGroup.TYPE.salesman.name(), group.getType())){
+			log.debug("当前用户是经纪人，可以导出该经纪人的所有的推荐信息");
+			list = this.recommendService.getBySaleman(user.getUserId(),param.getPage(),param.getPageSize());
+		}else if (StringUtils.equals(PisUserGroup.TYPE.commissioner.name(), group.getType())){
+			log.debug("当前用户是驻场专员，可以导出该人的楼盘的所有的推荐信息");
+			String buildingId = this.userExtendService.selectByUserId(user.getUserId()).getBuildingId();
+			list = this.recommendService.getByBuildingId(buildingId,param.getPage(),param.getPageSize());
+		}
+		int date_01 = 0;
+		int date_02 = 0;
+		SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");//小写的mm表示的是分钟
+		Date date = null;
+		if("" != startDate && startDate.length()>0){
+			try {
+				  date=sdf.parse(startDate);
+			} catch (ParseException e) {
+				log.debug(startDate+"转换Date错误"+e.getMessage());
+			}  
+			String day = String.valueOf(new java.text.SimpleDateFormat("yyyyMMdd").format(date)).trim();
+			date_01 = Integer.parseInt(day);
+		}
+		if("" != endDate && endDate.length()>0){
+			try {
+				  date=sdf.parse(endDate);
+			} catch (ParseException e) {
+				log.debug(endDate+"转换Date错误"+e.getMessage());
+			}  
+			String day = String.valueOf(new java.text.SimpleDateFormat("yyyyMMdd").format(date)).trim();
+			date_02 = Integer.parseInt(day);
+		}
+		if(date_01>0 || date_02 >0){
+			list = this.filterList(date_01, date_02, list);
+		}
+		if(null != list&&list.size()>0){
+			//按照中文排序业务员集合
+			Collections.sort(list, new Comparator<PisRecommend>(){
+				@Override
+				public int compare(PisRecommend pisRecommend_01, PisRecommend pisRecommend_02) {
+					if(null != pisRecommend_01 && null != pisRecommend_02){
+							String day_01 = String.valueOf(new java.text.SimpleDateFormat("yyyyMMdd").format(pisRecommend_01.getRecommendDate())).trim();
+							String day_02 =String.valueOf(new java.text.SimpleDateFormat("yyyyMMdd").format(pisRecommend_02.getRecommendDate())).trim();
+							String time_01 = String.valueOf(new java.text.SimpleDateFormat("HHmmss").format(pisRecommend_01.getRecommendDate())).trim();
+							String time_02 = String.valueOf(new java.text.SimpleDateFormat("HHmmss").format(pisRecommend_02.getRecommendDate())).trim();
+							int recommendDay_01 = Integer.parseInt(day_01);
+							int recommendDay_02 = Integer.parseInt(day_02);
+							if(recommendDay_01 == recommendDay_02){
+								int recommendTime_01 = Integer.parseInt(time_01);
+								int recommendTime_02 = Integer.parseInt(time_02);
+								 return  recommendTime_01 - recommendTime_02>0?-1:0;
+							}else{
+								return recommendDay_01 - recommendDay_02>0?-1:0;
+							}
+					}
+					return 0;
+				}
+			});
+			for (int i = 0; i < list.size(); i++) {
+				PisRecommend pisRec = list.get(i);
+				if(null != pisRec){
+					pisRec.setCityName(this.getCityName(pisRec.getCityId()));
+					pisRec.setBuildingName(this.getBuildingName(pisRec.getBuildingId()));
+					pisRec.setRefreeName(this.getUserName(pisRec.getRefreeId()));
+					pisRec.setCustomerPresentName(this.getUserName(pisRec.getCustomerPresentUserId()));
+				}
+			}
+		}
+		return  DataGridHepler.addDataGrid(list, modelMap); //DataGridHepler.addDataGrid(list_01, new PageInfo(list).getTotal(), modelMap);
 	}
 
 	private String formatDate(Date date) {
@@ -818,6 +917,20 @@ public class RecommendController {
 		 recommends.removeAll(cleanListMap_);
 	}
 	
+	public List<PisRecommend> filterList(int startDate,int endDate,List<PisRecommend> list){
+		List<PisRecommend> pisRecList = new ArrayList<>();
+		for (PisRecommend pisRecommend : list) {
+			int day = Integer.parseInt(String.valueOf(new java.text.SimpleDateFormat("yyyyMMdd").format(pisRecommend.getRecommendDate())).trim());
+			if(0 != startDate && day < startDate){
+				pisRecList .add(pisRecommend);
+			}
+			if(0 != endDate &&  day > endDate){
+				pisRecList .add(pisRecommend);
+			}
+		}
+		 list.removeAll(pisRecList);
+		 return list;
+	}
 	/**
 	 * 根据传入的参数过滤集合信息
 	 * @param building
@@ -829,13 +942,17 @@ public class RecommendController {
 		List<PisRecommend> pisRecList = new ArrayList<>();
 		//判断集合不为空
 		if(null != list && list.size()>0){
+			if("" == building &&  0==startDate &&  0== endDate){
+				 pisRecList = list;
+				 return  pisRecList;
+			}
 			for (int i = 0; i < list.size(); i++) {
 				PisRecommend pisRec = list.get(i);
 				//判断楼盘ID不为空
 				int day = Integer.parseInt(String.valueOf(new java.text.SimpleDateFormat("yyyyMMdd").format(pisRec.getRecommendDate())).trim());
-				if("" != building && "null" != building ){
+				if("" != building && "null" != building){
 					//判断楼盘ID
-					if(building.equals( pisRec.getBuildingId())){
+					if(building.equals(pisRec.getBuildingId())){
 						//判断开始于截止时间是否都为空
 						if(startDate > 0  && endDate > 0){
 							if(day > startDate && day < endDate){
