@@ -370,7 +370,14 @@ public class PisUserController {
 		log.debug("添加用户扩展信息");
 		if (StringUtils.equals(PisUserGroup.TYPE.brokingFirm.name(), userModel.getGroupType())){
 			log.debug("添加经纪公司");
-			String brokingFirmId = this.brokingFirmService.add(userModel.getBrokingFirm());
+			PisBrokingFirm pisBrokingFirm=this.brokingFirmService.findByName(userModel.getBrokingFirm());
+			String brokingFirmId="";
+			if(null == pisBrokingFirm){
+				brokingFirmId = this.brokingFirmService.add(userModel.getBrokingFirm());
+			}else{
+				brokingFirmId=pisBrokingFirm.getBrokingFirmId();
+			}
+			//String brokingFirmId = this.brokingFirmService.add(userModel.getBrokingFirm());
 			log.debug("关联经纪公司");
 			PisUserExtend userExtend = new PisUserExtend();
 			userExtend.setBrokingFirmId(brokingFirmId);
@@ -915,8 +922,10 @@ public class PisUserController {
 											 //业务员扩展信息不为空
 											 if(null != salesmanUserUserExtend){
 												 if(brokingFirmUserExtend.getBrokingFirmId().equals(salesmanUserUserExtend.getBrokingFirmId())){
-													 brokingAndSalesList.add(salesmanUser);
-													 flag = true;
+													 if(!brokingAndSalesList.contains(salesmanUser)){
+														 brokingAndSalesList.add(salesmanUser);
+														 flag = true;
+													 }
 												 }
 											 }else{
 												 //如果业务员用户扩展信息为空，存入其他集合

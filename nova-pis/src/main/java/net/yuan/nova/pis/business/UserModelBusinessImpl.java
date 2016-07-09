@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import net.yuan.nova.core.shiro.service.UserModelBusiness;
 import net.yuan.nova.core.shiro.vo.User;
 import net.yuan.nova.core.shiro.vo.UserModel;
+import net.yuan.nova.pis.entity.PisBrokingFirm;
 import net.yuan.nova.pis.entity.PisBuilding;
 import net.yuan.nova.pis.entity.PisUser;
 import net.yuan.nova.pis.entity.PisUserExtend;
@@ -52,7 +53,10 @@ public class UserModelBusinessImpl implements UserModelBusiness{
 		PisUserExtend userExtend = this.userExtendService.selectByUserId(userId);
 		if (userExtend != null){
 			if (StringUtils.isNoneEmpty(userExtend.getBrokingFirmId())){
-				userModel.setBrokingFirm(this.brokingFirmService.findById(userExtend.getBrokingFirmId()).getBrokingFirmName());
+				PisBrokingFirm pisBrokingFirm = this.brokingFirmService.findById(userExtend.getBrokingFirmId());
+				if(null != pisBrokingFirm){
+					userModel.setBrokingFirm(pisBrokingFirm.getBrokingFirmName());
+				}
 			}
 			if (StringUtils.isNoneEmpty(userExtend.getBuildingId())){
 				log.debug("buildingId:" + userExtend.getBuildingId());
