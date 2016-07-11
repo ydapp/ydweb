@@ -39,7 +39,8 @@ public class PersonCodeService {
 			//判断验证是否为空
 			if(null!=pisPersonCode){
 				//获取最后一位加1
-				int num =Integer.parseInt(pisPersonCode.getValue())+1;
+				String code = pisPersonCode.getValue().length()>4?pisPersonCode.getValue().substring(1,pisPersonCode.getValue().length()):pisPersonCode.getValue();
+				int num =Integer.parseInt(code)+1;
 				personCode =  codeType+"000"+String.valueOf(num);
 			}else{
 				//初始化值
