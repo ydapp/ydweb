@@ -304,7 +304,8 @@ public class AttachmentService {
 		if (!newFile.exists()) {
 			// 缩放并压缩图片
 			log.debug("生成缩略图");
-			Thumbnails.of(file).size(size, size).outputQuality(0.8f).toFile(newFile);
+			//Thumbnails.of(file).size(size, size).outputQuality(0.8f).toFile(newFile);
+			Thumbnails.of(file).scale(0.6f).toFile(newFile);
 		}
 		return newSavePath;
 	}
