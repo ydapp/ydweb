@@ -25,6 +25,12 @@
     from PIS_broking_firm where broking_firm_name = #{brokingFirmName,jdbcType=VARCHAR}
     
   </select>
+  <select id="selectByLikeName" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select   
+    <include refid="Base_Column_List" />
+    from PIS_broking_firm where broking_firm_name like'%${param1}%'
+    
+  </select>
   <insert id="insert" parameterType="net.yuan.nova.pis.entity.PisBrokingFirm" >
     insert into PIS_broking_firm (broking_firm_id,broking_firm_name
       )

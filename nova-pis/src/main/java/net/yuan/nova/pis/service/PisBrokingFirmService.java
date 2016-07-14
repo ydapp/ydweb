@@ -25,6 +25,14 @@ public class PisBrokingFirmService {
 	public PisBrokingFirm findByName(String brokingFirmName){
 		return this.mapper.selectByName(brokingFirmName);
 	}
+	/**
+	 * 通过经济公司名称模糊查询
+	 * @param brokingFirmName
+	 * @return
+	 */
+	public List<PisBrokingFirm> findByLikeName(String brokingFirmName){
+		return this.mapper.selectByLikeName(brokingFirmName);
+	}
 	public List<PisBrokingFirm> findAll(){
 		return this.mapper.selectAll();
 	}

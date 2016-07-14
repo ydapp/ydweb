@@ -78,7 +78,6 @@ public class AdminAuthorizingRealm extends AuthorizingRealm {
 	@Override
 	protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token) throws AuthenticationException {
 		System.out.println("登录:" + getAuthenticationTokenClass().getName());
-
 		// 通过用户名和密码登录
 		UsernamePasswordToken usernamePasswordToken = (UsernamePasswordToken) token;
 		// 获得登录的用户名

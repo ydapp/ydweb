@@ -13,4 +13,5 @@ public interface PisBrokingFirmMapper {
 	public PisBrokingFirm selectById(@Param("brokingFirmId") String brokingFirmId);
 	public PisBrokingFirm selectByName(@Param("brokingFirmName") String brokingFirmName);
 	public List<PisBrokingFirm> selectAll();
+	public List<PisBrokingFirm> selectByLikeName(@Param("brokingFirmName") String brokingFirmNam );
 }

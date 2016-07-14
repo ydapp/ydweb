@@ -1,5 +1,7 @@
 package net.yuan.nova.pis.controller;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -86,6 +88,7 @@ public class PisUserController {
 	private UserModelBusinessImpl userModelBusiness;
 	@Autowired
 	private PersonCodeService persionCodeService;
+	
 	/**
 	 * 获得当前登录用户信息
 	 * 
@@ -803,6 +806,31 @@ public class PisUserController {
 		return json;
 	}
 	
+	/**
+	 * 
+	 * @param cityId
+	 * @param request
+	 * @param modelMap
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/api/getbrokingFirmList", method = RequestMethod.GET)
+	public ModelMap getbrokingFirmList(HttpServletRequest request, HttpServletResponse response, ModelMap modelMap) {
+		JsonVo<List<PisBrokingFirm>> jsonVo = new JsonVo<List<PisBrokingFirm>>();
+		String brokingFirmName="";
+		try {
+			brokingFirmName = URLDecoder.decode(StringUtils.trimToEmpty(request.getParameter("brokingFirmName")) ,"utf-8");
+		} catch (UnsupportedEncodingException e) {
+			log.debug(e.getMessage());
+		}
+		List<PisBrokingFirm> brokingFirmList = brokingFirmService.findByLikeName(brokingFirmName);
+		if(null != brokingFirmList && brokingFirmList .size() > 0){
+			jsonVo.setSuccess(true);
+			jsonVo.setResult(brokingFirmList);
+		}
+		modelMap.addAttribute("result", jsonVo);
+		return modelMap;
+	}
 	/**
 	 * 从系统中获取登录用户
 	 * @return
