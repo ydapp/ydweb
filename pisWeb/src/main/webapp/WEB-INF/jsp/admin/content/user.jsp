@@ -65,7 +65,8 @@
 							<option value="salesman">业务员</option>
 						</select></p>
 						<div id="brokingFirmDiv" style="display: none;">
-							<label>经纪公司:</label><input id="brokingFirmList"></input>
+							<label>经纪公司:</label><input id="brokingFirmList" onkeyup="searchbrokingFirmName()"  onkeydown="searchbrokingFirmName()" onblur="searchbrokingFirmName()" style="width:280px;position:absolute"/>
+							<select  id="projectNameSelect" onchange="" style="width:300px;CLIP: rect(auto auto auto 280px);position:absolute;"></select>
 						</div>
 						<div id="buildingDiv" style="display: none;">
 							<label>城市:</label><select id="cityList"> </select>
@@ -100,7 +101,8 @@
 							<option value="salesman">业务员</option>
 						</select></p>
 						<div id="brokingFirmDiv_update" style="display: none;">
-							<label>经纪公司:</label><input id="brokingFirmList_update"></input>
+							<label>经纪公司:</label><input id="brokingFirmList_update" onkeyup="searchbrokingFirmName_update()" onkeydown="searchbrokingFirmName_update()" onblur="searchbrokingFirmName_update()" style="width:280px;position:absolute"/>
+							<select  id="projectNameSelect_update" onchange="" style="width:300px;CLIP: rect(auto auto auto 280px);position:absolute;"></select>
 						</div>
 						<div id="buildingDiv_update" style="display: none;">
 							<label>城市:</label><select id="cityList_update"> </select>
@@ -521,6 +523,61 @@
 				  }
 				});
 		}
+	}
+	
+	/**
+	 * 选择经济公司展示模糊查询下拉框
+	 */
+	function searchbrokingFirmName(){
+		var firmName = $("#brokingFirmList").val();
+		firmName = encodeURI(firmName);
+		firmName = encodeURI(firmName);
+		if("" != firmName){
+			$.ajax({
+				url: "<%=path%>/api/getbrokingFirmList.json",
+				dataType: "json",
+				data : 'brokingFirmName=' + firmName,
+				cache : false,
+				success: function(data){
+					console.log("brokingFirmdata", data);
+					$("#projectNameSelect").empty();
+					if(data && data.success == true){
+						for (var i = 0; i < data.result.length; i++){
+							$("#projectNameSelect").append("<option onclick='selectFirmName(this)' value='" + data.result[i].brokingFirmId + "'>" + data.result[i].brokingFirmName +"</option>");
+						}
+					}
+				}
+			});
+		}
+	}
+	function selectFirmName(obj){
+		$("#brokingFirmList").val(obj.text);
+	}
+	
+	function searchbrokingFirmName_update(){
+		var firmName = $("#brokingFirmList_update").val();
+		firmName = encodeURI(firmName);
+		firmName = encodeURI(firmName);
+		if("" != firmName){
+			$.ajax({
+				url: "<%=path%>/api/getbrokingFirmList.json",
+				dataType: "json",
+				data : 'brokingFirmName=' + firmName,
+				cache : false,
+				success: function(data){
+					console.log("brokingFirmList_update", data);
+					$("#projectNameSelect_update").empty();
+					if(data && data.success == true){
+						for (var i = 0; i < data.result.length; i++){
+							$("#projectNameSelect_update").append("<option onclick='selectFirmName_update(this)' value='" + data.result[i].brokingFirmId + "'>" + data.result[i].brokingFirmName +"</option>");
+						}
+					}
+				}
+			});
+		}
+	}
+	function selectFirmName_update(obj){
+		$("#brokingFirmList_update").val(obj.text);
 	}
 	var currentUserModel;
 	$.ajax({
