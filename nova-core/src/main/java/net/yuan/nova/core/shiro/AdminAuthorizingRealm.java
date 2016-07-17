@@ -106,7 +106,7 @@ public class AdminAuthorizingRealm extends AuthorizingRealm {
 			throw new UnknownAccountException();
 		}
 	}
-
+	
 	public UserService getUserService() {
 		return userService;
 	}

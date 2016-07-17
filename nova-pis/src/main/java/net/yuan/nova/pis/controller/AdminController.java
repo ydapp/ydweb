@@ -37,7 +37,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
  */
 
 @Controller
-public class AdminController {
+public class AdminController{
 
 	protected final Logger logger = LoggerFactory.getLogger(AdminController.class);
 
@@ -56,8 +56,7 @@ public class AdminController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/login.html")
-	public String login(HttpServletRequest request, HttpServletResponse response, ModelMap modelMap) throws Exception {
-
+	public String login(HttpServletRequest request, HttpServletResponse response, ModelMap modelMap) throws Exception {		
 		Subject currentUser = SecurityUtils.getSubject();
 		if (currentUser.isAuthenticated()) {
 			WebUtils.issueRedirect(request, response, successUrl);

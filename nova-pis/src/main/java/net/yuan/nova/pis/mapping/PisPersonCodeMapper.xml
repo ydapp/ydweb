@@ -13,7 +13,7 @@
   <select id="selectPersonByKey" resultMap="BaseResultMap" parameterType="java.lang.String">
   	 SELECT  <include refid="Base_Column_List" /> FROM
   	   (SELECT  <include refid="Base_Column_List" /> FROM PIS_PERSON_CODE A 
-  	    WHERE A.KEY like '%${_parameter}%' ORDER BY A.PARENT DESC)
+  	    WHERE A.KEY like '%${_parameter}%' ORDER BY TO_NUMBER(SUBSTR(A.PARENT,5,6)) DESC)
   	     WHERE ROWNUM=1
   </select>
   <insert id="insertPersonCode" parameterType="net.yuan.nova.pis.entity.PisPersonCode">

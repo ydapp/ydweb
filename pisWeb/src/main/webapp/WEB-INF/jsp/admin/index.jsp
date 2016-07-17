@@ -282,6 +282,8 @@
           <br/>
 		<form id="checkPwd" method="post">
 		<input name="loginName" type="hidden" value="${CURRENT_USER.loginName}"/>
+		<input name="cacheSource" type="hidden" value="pisp">
+		<input name="cacheName" type="hidden" value="userCache">
         <table>
 	        <tr>
 	        	<td>当前密码：<font style="color:red">*</font></td>

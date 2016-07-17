@@ -1,4 +1,4 @@
-package net.yuan.nova.pis.controller;
+ package net.yuan.nova.pis.controller;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -14,7 +14,9 @@ import net.yuan.nova.commons.SystemConstant;
 import net.yuan.nova.core.entity.Attachment;
 import net.yuan.nova.core.service.AttachmentBlobService;
 import net.yuan.nova.core.service.AttachmentService;
+import net.yuan.nova.core.shiro.AdminAuthorizingRealm;
 import net.yuan.nova.core.shiro.CurrentUserUtil;
+import net.yuan.nova.core.shiro.PasswordHelper;
 import net.yuan.nova.core.shiro.PubUserAuthenticationToken;
 import net.yuan.nova.core.shiro.vo.User;
 import net.yuan.nova.core.shiro.vo.UserModel;
@@ -88,7 +90,10 @@ public class PisUserController {
 	private UserModelBusinessImpl userModelBusiness;
 	@Autowired
 	private PersonCodeService persionCodeService;
-	
+	@Autowired
+	private CacheManagerController cacheManagerController;
+	@Autowired
+	private PasswordHelper passwordHelper;
 	/**
 	 * 获得当前登录用户信息
 	 * 
@@ -234,9 +239,12 @@ public class PisUserController {
 			modelMap.addAttribute("json", json);
 			return modelMap;
 		}
-
 		if (StringUtils.isBlank(userName) || StringUtils.isBlank(password)) {
 			json.putError("loginName", "用户名密码不能为空");
+		}
+		String pwd = 	this.passwordHelper.encryptPassword(password,pisUser.getSalt());
+		if(!pwd.equals(pisUser.getPassword())){
+			json.putError("password", "用户与密码不匹配");
 		}
 		if (StringUtils.isBlank(deviceId)) {
 			json.putError("deviceId", "设备标识不能为空");
@@ -458,8 +466,11 @@ public class PisUserController {
 		String oldPwd = StringUtils.trimToEmpty(request.getParameter("oldPwd"));
 		//获取登录账号
 		String loginName = StringUtils.trimToEmpty(request.getParameter("loginName"));
-		//执行密码修改
-		boolean flag = this.pisUserService.checkPassword(oldPwd,loginName);
+		boolean flag = false;
+		if("" != oldPwd && "" != loginName){
+			//执行密码修改
+			flag = this.pisUserService.checkPassword(oldPwd,loginName);
+		}
 		json.setSuccess(flag);
 		return json;
 	}
@@ -469,7 +480,7 @@ public class PisUserController {
 	 */
 	@SuppressWarnings("rawtypes")
 	@RequestMapping(value="/api/staff/changePassword")
-	public JsonVo changePassword(HttpServletRequest request, HttpServletResponse response){
+	public JsonVo changePassword(HttpServletRequest request, HttpServletResponse response,ModelMap modelMap){
 		JsonVo json = new JsonVo();
 		//获取新密码
 		String newPwd = StringUtils.trimToEmpty(request.getParameter("pwd1"));
@@ -481,6 +492,11 @@ public class PisUserController {
 		pisUser.setPassword(newPwd);
 		//执行密码修改操作
 		boolean flag = this.pisUserService.changePassword(pisUser);
+		if(flag){
+			cacheManagerController.getCacheNames(request, modelMap);
+			//清除缓存
+			cacheManagerController.clearByCacheName(request, modelMap);
+		}
 		//设置返回值
 		json.setSuccess(flag);
 		return json;
@@ -844,6 +860,7 @@ public class PisUserController {
 		}
 		return user;
 	}
+	
 	/**
 	 * 通过用户名进行排序
 	 * @return
