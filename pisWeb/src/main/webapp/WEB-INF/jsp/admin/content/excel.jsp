@@ -49,7 +49,8 @@
 	</div>
 	<div data-options="region:'center',border:false" style="padding:5px 5px 5px 5px;" >
 		<table id="excel_grid" class="easyui-datagrid" title="推荐信息列表" 
-		data-options="singleSelect:true,url:'<%=path%>/recommend/getList.json',method:'get',toolbar:'#tb',rownumbers:'true',pagination:'true',fit:'true',fitColumns: true">
+		data-options="singleSelect:true,url:'<%=path%>/recommend/getList.json',method:'get',toolbar:'#tb',rownumbers:'true',pagination:'true',fit:'true',fitColumns: true,
+		onLoadSuccess:function(){createtooltip_A()}">
 			<thead>
 				<tr>
 					<th data-options="field:'customerName',width:130">客户名称</th>
@@ -61,6 +62,9 @@
 					<th data-options="field:'customerPresentDate',width:130">客户到场时间</th>
 					<th data-options="field:'customerPresentName',width:130">到场确认人</th>
 					<th data-options="field:'remark',width:130">详情</th>
+					<th data-options="field:'recommendConfirmName',width:130">确认推荐人</th>
+					<th data-options="field:'recommendConfirmDate',width:130">确认推荐时间</th>
+					<th data-options="field:'recommendConfirmAdvice',width:130,formatter:formatA" >推荐人确认意见</th>
 				</tr>
 			</thead>
 		</table>
@@ -134,6 +138,31 @@ var loadBuildingList = function (){
 			alert("发生异常");
 		}
 	});
+}
+
+ 
+function formatA(value,row,index){
+	return '<span data-p1='+index+' class="easyui-tooltip">' + value + '</span>';
+}
+ 
+function createtooltip_A(){
+	 $('#excel_grid').datagrid('getPanel').find('.easyui-tooltip').each(function(){
+		 var index = parseInt($(this).attr('data-p1'));
+		 $(this).tooltip({
+			 content: $('<div></div>'), 
+			  onUpdate: function(cc){ 
+				  var row = $('#excel_grid').datagrid('getRows')[index];  
+				   var content = '<ul>';
+				   content += '<li>'+row.recommendConfirmAdvice+'</li>';  
+				   content += '</ul>'; 
+				   cc.panel({  
+                       width:200,  
+                       content:content  
+                   });
+			  },  
+              position:'right' 
+		 }); 
+	 });  
 }
  
 </script>

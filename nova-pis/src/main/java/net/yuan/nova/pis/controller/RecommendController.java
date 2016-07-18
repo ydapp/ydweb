@@ -710,6 +710,7 @@ public class RecommendController {
 					pisRec.setBuildingName(this.getBuildingName(pisRec.getBuildingId()));
 					pisRec.setRefreeName(this.getUserName(pisRec.getRefreeId()));
 					pisRec.setCustomerPresentName(this.getUserName(pisRec.getCustomerPresentUserId()));
+					pisRec.setRecommendConfirmName(this.getUserName(pisRec.getRecommendConfirmUserId()));
 				}
 			}
 		}

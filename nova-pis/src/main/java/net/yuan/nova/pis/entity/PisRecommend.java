@@ -41,6 +41,7 @@ public class PisRecommend {
 	private Date recommendConfirmDate;
 	// 推荐确认人
 	private String recommendConfirmUserId;
+	private String recommendConfirmName;
 	// 推荐确认意见
 	private String recommendConfirmAdvice;
 	
@@ -48,6 +49,14 @@ public class PisRecommend {
 	
 	
 	
+	public String getRecommendConfirmName() {
+		return recommendConfirmName;
+	}
+
+	public void setRecommendConfirmName(String recommendConfirmName) {
+		this.recommendConfirmName = recommendConfirmName;
+	}
+
 	public String getCustomerPresentName() {
 		return customerPresentName;
 	}
