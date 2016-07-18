@@ -54,8 +54,8 @@
 						<font color="red">*</font><label>文章标题：</label> <input id="tile" name="tile" validType="maxLen['#tile',200]"  required="required" class="easyui-textbox" style="width: 452px;">
 					</div>
 					<div class="fitem">
-						<font color="red">*</font><label>封面图片：</label> <input id="cover"
-							name="cover"  required="required" class="easyui-filebox" style="width: 452px;" data-options="prompt:'选择一张图片'">
+						<label>封面图片：</label> <input id="cover"
+							name="cover"   class="easyui-filebox" style="width: 452px;" data-options="prompt:'选择一张图片'">
 					</div>
 					<script id="editor" type="text/plain" style="width:900px;height:200px;z-index:999"></script>
 				</form>

@@ -58,9 +58,10 @@ public class PisArticleService {
 		article.setTile(tile);
 		article.setContent(content);
 		article.setPubTime(new Date());
-		Attachment attachment = attachmentService
-				.addUploadFile(file, article.getId(), Attachment.TableName.PIS_ARTICLE);
-		article.setCover(attachment.getAppAtchId());
+		if(null != file && file.getSize() >0){
+			Attachment attachment = attachmentService.addUploadFile(file, article.getId(), Attachment.TableName.PIS_ARTICLE);
+			article.setCover(attachment.getAppAtchId());
+		}
 		return this.insertSelective(article);
 	}
 	

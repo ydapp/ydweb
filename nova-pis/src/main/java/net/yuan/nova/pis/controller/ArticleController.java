@@ -183,19 +183,21 @@ public class ArticleController {
 		int width = NumberUtils.toInt(viewWidthStr, 0);
 		// 对图片进行相应的压缩
 		String cover = pisArticle.getCover();
-		Attachment attachment = attachmentService.getAttachmentById(cover);
-		if (attachment != null) {
-			String filePath = attachment.getSavePath();
-			if (width > 10) {
-				try {
-					filePath = attachmentService.thumbnailator(attachment, width - 10);
-				} catch (IOException e) {
-					log.error("生成缩略图失败", e);
+		if(null != cover){
+			Attachment attachment = attachmentService.getAttachmentById(cover);
+			if (attachment != null) {
+				String filePath = attachment.getSavePath();
+				if (width > 10) {
+					try {
+						filePath = attachmentService.thumbnailator(attachment, width - 10);
+					} catch (IOException e) {
+						log.error("生成缩略图失败", e);
+					}
 				}
+				// 获得请求图片的完整地址
+				String basePath = HttpUtils.getBasePath(request);
+				pisArticleVo.setFilePath(basePath + "/" + filePath);
 			}
-			// 获得请求图片的完整地址
-			String basePath = HttpUtils.getBasePath(request);
-			pisArticleVo.setFilePath(basePath + "/" + filePath);
 		}
 		modelAndView.addObject("pisArticleVo", pisArticleVo);
 		modelAndView.setViewName("ydapp/infoDetail");
