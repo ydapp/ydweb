@@ -34,6 +34,7 @@
 			<a href="javascript:void(0);" class="easyui-linkbutton" iconCls="icon-add" plain="true" id="add">新增资讯信息</a>
 			<a href="javascript:void(0);" class="easyui-linkbutton" iconCls="icon-edit" plain="true" id="update">修改资讯信息</a>
 			<a href="javascript:void(0);" class="easyui-linkbutton" iconCls="icon-remove" plain="true" id="remove">删除资讯信息</a>
+			<a href="javascript:void(0);" class="easyui-linkbutton" iconCls="icon-large-picture" plain="true" id="updateBanner">资讯横幅修改</a>
 		</div>
 		<table id="article_grid" class="easyui-datagrid" title="资讯信息列表" 
 		data-options="singleSelect:true,url:'<%=path%>/admin/articles.json',method:'get',toolbar:'#tb',rownumbers:'true',pagination:'true',fit:'true',fitColumns: true">
@@ -85,6 +86,21 @@
 			<div data-options="region:'south',border:true" style="text-align:right;padding:5px;">
 				<a class="easyui-linkbutton" data-options="iconCls:'icon-ok'" href="javascript:void(0)" onclick="saveArticle_update();" style="width:80px;">提交</a>
 				<a class="easyui-linkbutton" data-options="iconCls:'icon-cancel'" href="javascript:void(0)" onclick="javascript:$('#mydialogUpdate').dialog('close');" style="width:80px">关闭</a>
+			</div>
+		</div>
+	</div>
+	<!-- 资讯横幅修改 -->
+		<div id="mydialogUpdateBanner" title="修改资讯横幅" class="easyui-dialog" data-options="maximized:true,modal:true,closed:true">
+		<div class="easyui-layout" data-options="fit:true">
+			<div data-options="region:'center',border:false">
+				<form id="updatebanner_form" action="<%=path%>/admin/article/updateBanner.json" method="post" enctype="multipart/form-data">
+					<div class="fitem">
+						<label>横幅图片：</label><input id="banner" name="banner" required="required" class="easyui-filebox" style="width: 452px;" data-options="prompt:'选择一张图片'">
+					</div>
+				</form>
+			</div>
+			<div data-options="region:'south',border:true" style="text-align:right;padding:5px;">
+				<a class="easyui-linkbutton" data-options="iconCls:'icon-ok'" href="javascript:void(0)" onclick="updateBanner();" style="width:80px;">提交</a>
 			</div>
 		</div>
 	</div>
@@ -208,6 +224,29 @@
 			  }
 		  });
 	});
+	/**
+	 * 资讯横幅图片
+	 */
+	$("#updateBanner").click(function(){
+		 //打开修改页面
+		 $('#mydialogUpdateBanner').dialog('open');
+	});
+	 var updateBanner = function(){
+		 var banner=$('#banner').filebox("isValid");
+		 if(banner){
+			 $("#updatebanner_form").form('submit',{
+				 success:function(data){
+					 var data = eval('(' + data + ')');
+				    	if(data.success){
+				        	$.messager.alert('温馨提示',data.message);
+				        	$('#mydialogUpdateBanner').dialog('close');
+				        }else{
+				        	$.messager.alert('温馨提示',data.message);
+				        }
+				 }
+			});
+		 }
+	 }
 	$.extend($.fn.validatebox.defaults.rules,{
 		maxLen:{
 			validator:function(value,arrays){

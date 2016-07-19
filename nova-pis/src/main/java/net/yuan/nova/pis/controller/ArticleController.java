@@ -1,11 +1,13 @@
 package net.yuan.nova.pis.controller;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.yuan.nova.commons.HttpUtils;
+import net.yuan.nova.commons.SystemConstant;
 import net.yuan.nova.core.entity.Attachment;
 import net.yuan.nova.core.service.AttachmentService;
 import net.yuan.nova.core.vo.DataGridData;
@@ -17,6 +19,7 @@ import net.yuan.nova.pis.pagination.PageParam;
 import net.yuan.nova.pis.service.PisArticleService;
 import net.yuan.nova.pis.service.TemplateService;
 import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -43,6 +46,10 @@ public class ArticleController {
 	private AttachmentService attachmentService;
 	@Autowired
 	private TemplateService templateService;
+	
+	
+	
+	
 
 	/**
 	 * 插入数据
@@ -257,6 +264,57 @@ public class ArticleController {
 		boolean flag = this.pisArticleService.deleteByPrimaryKey(id,cover);
 		//设置返回值
 		json.setSuccess(flag);
+		return json;
+	}
+	
+	/**
+	 * 获取资讯横幅
+	 * @param request
+	 * @param modelAndView
+	 * @return
+	 */
+	@RequestMapping("/admin/article/getInfoBanner")
+	public JsonVo getInfoBanner(HttpServletRequest request, HttpServletResponse response){
+		List<Attachment> list = attachmentService.getAttachmentsByKindId("articleBanner", Attachment.TableName.PIS_ARTICLE, Attachment.State.A);
+		Attachment attachment = null;
+		JsonVo json = new JsonVo();
+		if(null != list && list.size()>0){
+			attachment = list.get(0);
+		}
+		json.setResult(attachment);;
+		return json;
+	} 
+	/**
+	 * 修改资讯横幅（app）
+	 * @param request
+	 * @param modelMap
+	 * @return
+	 */
+	@RequestMapping("/admin/article/updateBanner")
+	public Object updateBanner(HttpServletRequest request, ModelMap modelMap){
+		MultipartFile file = null;
+		MultipartHttpServletRequest multipartRequest = null;
+		JsonVo<Object> json = new JsonVo<Object>();
+		try {
+			multipartRequest = (MultipartHttpServletRequest) request;
+			file = multipartRequest.getFile("banner");
+		} catch (ClassCastException cce) {
+			log.error("没有上传图片", cce);
+		}
+		if (null == file) {
+			json.putError("photo","没有图片上传");
+		}
+		List<Attachment> list = attachmentService.getAttachmentsByKindId("articleBanner", Attachment.TableName.PIS_ARTICLE, Attachment.State.A);
+		if(null != list && list.size()>0){
+			for(Attachment attachment:list){
+				 attachmentService.deleteAttachment(attachment.getAppAtchId());
+			}
+		}
+		Attachment attachment = attachmentService.addUploadFile(file,file.getOriginalFilename(),"articleBanner", Attachment.TableName.PIS_ARTICLE,Attachment.State.A);
+		if(null !=attachment ){
+			json.setSuccess(true);
+			json.setMessage("修改成功");
+		}
 		return json;
 	}
 

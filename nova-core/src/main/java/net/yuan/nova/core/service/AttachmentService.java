@@ -333,7 +333,7 @@ public class AttachmentService {
 	 *            文件名
 	 * @return
 	 */
-	private String getUploadPath(String fileName) {
+	public String getUploadPath(String fileName) {
 		String uploadPath = new StringBuffer(SystemConstant.UPLOAD_FOLDER).append("/")
 				.append(formater.format(new Date())).append("/").append(System.currentTimeMillis())
 				.append(getFileExt(fileName)).toString();
