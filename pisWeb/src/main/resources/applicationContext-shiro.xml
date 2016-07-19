@@ -88,8 +88,8 @@
 	
 	<!-- 使用Shiro原生的，本地Web会话管理器 -->
 	<bean id="sessionManager" class="org.apache.shiro.web.session.mgt.DefaultWebSessionManager">
-		<!-- 3,600,000 milliseconds = 1 hour -->
-		<property name="globalSessionTimeout" value="1200000"/>
+		<!-- 3,600,000 milliseconds = 1 hour 1200000-->
+		<property name="globalSessionTimeout" value="3600000"/>
         <property name="deleteInvalidSessions" value="true"/>
         <property name="sessionValidationSchedulerEnabled" value="true"/>
         <property name="sessionValidationScheduler" ref="sessionValidationScheduler"/>
