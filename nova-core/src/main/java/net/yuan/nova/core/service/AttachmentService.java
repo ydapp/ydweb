@@ -4,6 +4,8 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -113,7 +115,9 @@ public class AttachmentService {
 			fileBytes = FileUtils.readFileToByteArray(file);
 			// 将文件保存到文件系统
 			String filePath = System.getProperty(SystemConstant.WEBAPP_ROOT) + uploadPath;
-			FileUtils.moveFile(file, new File(filePath));
+			//FileUtils.copyFileToDirectory(file,new File(filePath));
+			//FileUtils.moveFile(file, new File(filePath));
+			FileUtils.copyFile(file, new File(filePath));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -123,6 +127,16 @@ public class AttachmentService {
 		// 保存文件到数据库和磁盘目录
 		this.saveBlob(attachment, fileBytes);
 		return attachment;
+	}
+	 
+	/**
+	 * 替换文件名
+	 */
+	public String doChangeFileName(MultipartFile file, String name) {
+		String  fileName = file.getOriginalFilename();//��ȡ�ļ�����
+		int fileNameLen = fileName.lastIndexOf(".");//��ȡ��׺��.��λ��
+		String fileExtension=fileName.substring(fileNameLen, fileName.length());//��ȡ��׺��
+		return name+""+fileExtension;//����������
 	}
 
 	private Attachment.Type getFileType(String fileName) {

@@ -45,6 +45,10 @@ public class UserModel implements Serializable {
 	private String frontPhoto;
 	//用户编码
 	private String personCode;
+	//城市名称
+	private String cityName;
+	//楼盘名称
+	private String propertyName;
 	
 	
 	
@@ -52,6 +56,18 @@ public class UserModel implements Serializable {
 	
 	
 	
+	public String getCityName() {
+		return cityName;
+	}
+	public void setCityName(String cityName) {
+		this.cityName = cityName;
+	}
+	public String getPropertyName() {
+		return propertyName;
+	}
+	public void setPropertyName(String propertyName) {
+		this.propertyName = propertyName;
+	}
 	public String getUserIcon() {
 		return userIcon;
 	}

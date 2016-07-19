@@ -88,6 +88,10 @@ public class ArticleController {
 		String tile = request.getParameter("tile");
 		String  cover = request.getParameter("cover");
 		String content = request.getParameter("editorValue");
+		String path = "http://"+request.getLocalAddr()+":"+request.getLocalPort();
+		if(!"".equals(content)){
+			content = content.replaceAll(path, "");
+		}
 		JsonVo<Object> json = new JsonVo<Object>();
 		MultipartFile file = null;
 		MultipartHttpServletRequest multipartRequest = null;
@@ -173,6 +177,26 @@ public class ArticleController {
 			modelAndView.setViewName(templateService.getErrorTemplate(404));
 			return modelAndView;
 		}
+		String [] array = pisArticle.getContent().split("</p>");
+		int start = 0;
+		int end =0;
+		String src="";
+		String src_1="";
+		String content="";
+		StringBuffer sb = new StringBuffer();
+		for(int i =0;i<array.length;i++){
+			if(array[i].indexOf("src")!=-1){
+				 start =array[i].indexOf("src");
+				 end = array[i].lastIndexOf("/");
+				 src = array[i].substring(start, end);
+				 src_1 =src.replace("src=","").replaceAll("\"","");
+				 content = "src="+"\""+"http://"+request.getLocalAddr()+":"+request.getLocalPort()+src_1+"\"";
+				 array[i] = array[i].replaceAll(src, content);
+				 array[i] = array[i]+"</p>";
+			}
+			 sb.append(array[i]);
+		}
+		pisArticle.setContent(sb.toString());
 		PisArticleVo pisArticleVo = new PisArticleVo();
 		try {
 			BeanUtils.copyProperties(pisArticleVo, pisArticle);

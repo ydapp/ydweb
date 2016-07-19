@@ -11,11 +11,14 @@ import net.yuan.nova.core.shiro.vo.User;
 import net.yuan.nova.core.shiro.vo.UserModel;
 import net.yuan.nova.pis.entity.PisBrokingFirm;
 import net.yuan.nova.pis.entity.PisBuilding;
+import net.yuan.nova.pis.entity.PisCity;
+import net.yuan.nova.pis.entity.PisProperty;
 import net.yuan.nova.pis.entity.PisUser;
 import net.yuan.nova.pis.entity.PisUserExtend;
 import net.yuan.nova.pis.entity.PisUserGroup;
 import net.yuan.nova.pis.service.PisBrokingFirmService;
 import net.yuan.nova.pis.service.PisBuildingService;
+import net.yuan.nova.pis.service.PisCityService;
 import net.yuan.nova.pis.service.PisUserExtendService;
 import net.yuan.nova.pis.service.PisUserService;
 import net.yuan.nova.pis.service.UserGroupService;
@@ -36,6 +39,9 @@ public class UserModelBusinessImpl implements UserModelBusiness{
 	private PisBuildingService buildingService;
 	@Autowired
 	private PisBrokingFirmService brokingFirmService;
+	@Autowired
+	private PisCityService pisCityService;
+	
 	public UserModel getUserModel(String userId) {
 		UserModel userModel = new UserModel();
 		
@@ -56,6 +62,14 @@ public class UserModelBusinessImpl implements UserModelBusiness{
 				PisBrokingFirm pisBrokingFirm = this.brokingFirmService.findById(userExtend.getBrokingFirmId());
 				if(null != pisBrokingFirm){
 					userModel.setBrokingFirm(pisBrokingFirm.getBrokingFirmName());
+				}
+			}
+			PisProperty pisProperty = this.buildingService.selectByPrimaryKey(userExtend.getBuildingId());
+			if(null != pisProperty){
+				userModel.setPropertyName(pisProperty.getPropertyName());
+				PisCity pisCity = this.pisCityService.getCityById(pisProperty.getCity());
+				if(null != pisCity){
+					userModel.setCityName(pisCity.getCityName());
 				}
 			}
 			if (StringUtils.isNoneEmpty(userExtend.getBuildingId())){
