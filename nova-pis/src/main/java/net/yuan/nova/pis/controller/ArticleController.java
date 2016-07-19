@@ -6,9 +6,13 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import net.coobird.thumbnailator.Thumbnails;
 import net.yuan.nova.commons.HttpUtils;
 import net.yuan.nova.commons.SystemConstant;
 import net.yuan.nova.core.entity.Attachment;
+import net.yuan.nova.core.entity.AttachmentBlob;
+import net.yuan.nova.core.service.AttachmentBlobService;
 import net.yuan.nova.core.service.AttachmentService;
 import net.yuan.nova.core.vo.DataGridData;
 import net.yuan.nova.core.vo.JsonVo;
@@ -19,7 +23,6 @@ import net.yuan.nova.pis.pagination.PageParam;
 import net.yuan.nova.pis.service.PisArticleService;
 import net.yuan.nova.pis.service.TemplateService;
 import org.apache.commons.beanutils.BeanUtils;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -46,6 +49,9 @@ public class ArticleController {
 	private AttachmentService attachmentService;
 	@Autowired
 	private TemplateService templateService;
+	@Autowired
+	private AttachmentBlobService attachmentBlobService;
+	
 	
 	
 	
@@ -273,6 +279,7 @@ public class ArticleController {
 	 * @param modelAndView
 	 * @return
 	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@RequestMapping("/admin/article/getInfoBanner")
 	public JsonVo getInfoBanner(HttpServletRequest request, HttpServletResponse response){
 		List<Attachment> list = attachmentService.getAttachmentsByKindId("articleBanner", Attachment.TableName.PIS_ARTICLE, Attachment.State.A);
@@ -280,6 +287,24 @@ public class ArticleController {
 		JsonVo json = new JsonVo();
 		if(null != list && list.size()>0){
 			attachment = list.get(0);
+			File newFile = new File(System.getProperty(SystemConstant.WEBAPP_ROOT) + attachment.getSavePath());
+			if (!newFile.exists()) {
+				String savePath = attachment.getSavePath();
+				String path = System.getProperty(SystemConstant.WEBAPP_ROOT) + savePath;
+				File file = new File(path);
+				if (!file.exists()) {
+					file.getParentFile().mkdirs();
+					file = attachmentService.transferToFile(attachment);
+				}
+				if(null != file){
+					String filePath = System.getProperty(SystemConstant.WEBAPP_ROOT) + attachment.getSavePath();
+					try {
+						Thumbnails.of(file).scale(0.6f).toFile(new File(filePath));
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+			}
 		}
 		json.setResult(attachment);;
 		return json;
@@ -310,7 +335,7 @@ public class ArticleController {
 				 attachmentService.deleteAttachment(attachment.getAppAtchId());
 			}
 		}
-		Attachment attachment = attachmentService.addUploadFile(file,file.getOriginalFilename(),"articleBanner", Attachment.TableName.PIS_ARTICLE,Attachment.State.A);
+		Attachment attachment = attachmentService.addUploadFile(file,file.getOriginalFilename(),"articleBanner", Attachment.TableName.PIS_ARTICLE);
 		if(null !=attachment ){
 			json.setSuccess(true);
 			json.setMessage("修改成功");

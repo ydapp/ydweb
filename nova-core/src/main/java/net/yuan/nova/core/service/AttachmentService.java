@@ -18,6 +18,7 @@ import net.yuan.nova.core.entity.Attachment;
 import net.yuan.nova.core.entity.AttachmentBlob;
 
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.fileupload.disk.DiskFileItem;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
@@ -27,6 +28,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 @Service
 public class AttachmentService {
@@ -91,6 +93,56 @@ public class AttachmentService {
 		}
 		attachment.setMd5(DigestUtils.md5Hex(fileBytes));
 		attachment.setState(state);
+		attachmentDao.addAttachment(attachment);
+		// 保存文件到数据库和磁盘目录
+		this.saveBlob(attachment, fileBytes);
+		return attachment;
+	}
+	
+	
+	/**
+	 * 上传附件
+	 * 
+	 * @param multipartFile
+	 *            附件文件
+	 * @param fileName
+	 *            附件的文件名称
+	 * @param kindId
+	 *            业务主键
+	 * @param tableName
+	 *            对应的业务表名
+	 * @param state
+	 *            附件的状态
+	 * @return
+	 */
+	public Attachment addUploadFile(MultipartFile multipartFile, String fileName, String kindId,
+			Attachment.TableName tableName) {
+		Attachment.Type type = getFileType(fileName);
+		String uploadPath = getUploadPath(fileName);
+		Attachment attachment = new Attachment();
+		attachment.setAppAtchId(UUID.randomUUID().toString());
+		attachment.setKindId(kindId);
+		attachment.setTableName(tableName);
+		attachment.setComments("");
+		attachment.setAtchName(fileName);
+		attachment.setSavePath(uploadPath);
+		attachment.setActhType(type);
+		attachment.setActhSize(multipartFile.getSize());
+		byte[] fileBytes = null;
+		try {
+			fileBytes = multipartFile.getBytes();
+			// 将文件保存到文件系统
+			String filePath = System.getProperty(SystemConstant.WEBAPP_ROOT) + uploadPath;
+			//multipartFile.transferTo(new File(filePath));
+	        CommonsMultipartFile cf= (CommonsMultipartFile)multipartFile; 
+	        DiskFileItem fi = (DiskFileItem)cf.getFileItem(); 
+	        File file = fi.getStoreLocation(); 
+			Thumbnails.of(file).scale(0.1f).toFile(new File(filePath));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		attachment.setMd5(DigestUtils.md5Hex(fileBytes));
+		attachment.setState(Attachment.State.A);
 		attachmentDao.addAttachment(attachment);
 		// 保存文件到数据库和磁盘目录
 		this.saveBlob(attachment, fileBytes);
