@@ -96,6 +96,7 @@
 				<form id="updatebanner_form" action="<%=path%>/admin/article/updateBanner.json" method="post" enctype="multipart/form-data">
 					<div class="fitem">
 						<label>横幅图片：</label><input id="banner" name="banner" required="required" class="easyui-filebox" style="width: 452px;" data-options="prompt:'选择一张图片'">
+						<p style="color:red;">注：推荐上传386*161大小的png格式图片</p>
 					</div>
 				</form>
 			</div>
