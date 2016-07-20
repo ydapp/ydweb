@@ -66,7 +66,7 @@
 						</select></p>
 						<div id="brokingFirmDiv" style="display: none;">
 							<label>经纪公司:</label><input id="brokingFirmList" onkeyup="searchbrokingFirmName()"  onkeydown="searchbrokingFirmName()" onblur="searchbrokingFirmName()" style="width:280px;position:absolute"/>
-							<select  id="projectNameSelect" onchange="" style="width:300px;CLIP: rect(auto auto auto 280px);position:absolute;"></select>
+							<select  id="projectNameSelect"  style="width:300px;CLIP: rect(auto auto auto 280px);position:absolute;"></select>
 						</div>
 						<div id="buildingDiv" style="display: none;">
 							<label>城市:</label><select id="cityList"> </select>
@@ -97,12 +97,12 @@
 						<select id="groupType_update">
 							<option value="appAdmin" >APP管理员</option>
 							<option value="commissioner">驻场专员</option>
-							<option value="brokingFirm" >经纪公司</option>
+							<option value="brokingFirm"  >经纪公司</option>
 							<option value="salesman">业务员</option>
 						</select></p>
 						<div id="brokingFirmDiv_update" style="display: none;">
 							<label>经纪公司:</label><input id="brokingFirmList_update" onkeyup="searchbrokingFirmName_update()" onkeydown="searchbrokingFirmName_update()" onblur="searchbrokingFirmName_update()" style="width:280px;position:absolute"/>
-							<select  id="projectNameSelect_update" onchange="" style="width:300px;CLIP: rect(auto auto auto 280px);position:absolute;"></select>
+							<select  id="projectNameSelect_update"  style="width:300px;CLIP: rect(auto auto auto 280px);position:absolute;"></select>
 						</div>
 						<div id="buildingDiv_update" style="display: none;">
 							<label>城市:</label><select id="cityList_update"> </select>
@@ -542,18 +542,22 @@
 					console.log("brokingFirmdata", data);
 					$("#projectNameSelect").empty();
 					if(data && data.success == true){
+						$("#projectNameSelect").append("<option> --请选择-- </option>");
 						for (var i = 0; i < data.result.length; i++){
-							$("#projectNameSelect").append("<option onclick='selectFirmName(this)' value='" + data.result[i].brokingFirmId + "'>" + data.result[i].brokingFirmName +"</option>");
+							$("#projectNameSelect").append("<option id='"+data.result[i].brokingFirmId+"'   value='" + data.result[i].brokingFirmId + "'>" + data.result[i].brokingFirmName +"</option>");
 						}
 					}
 				}
 			});
 		}
 	}
-	function selectFirmName(obj){
-		$("#brokingFirmList").val(obj.text);
-	}
-	
+	/**
+	 * 从下拉框中获取经纪公司
+	 */
+	$("#projectNameSelect").change(function(){
+		var value = $(this).find("option:selected").text();
+		$("#brokingFirmList").val(value);
+	});
 	function searchbrokingFirmName_update(){
 		var firmName = $("#brokingFirmList_update").val();
 		firmName = encodeURI(firmName);
@@ -568,17 +572,22 @@
 					console.log("brokingFirmList_update", data);
 					$("#projectNameSelect_update").empty();
 					if(data && data.success == true){
+						$("#projectNameSelect_update").append("<option> --请选择-- </option>");
 						for (var i = 0; i < data.result.length; i++){
-							$("#projectNameSelect_update").append("<option onclick='selectFirmName_update(this)' value='" + data.result[i].brokingFirmId + "'>" + data.result[i].brokingFirmName +"</option>");
+							$("#projectNameSelect_update").append("<option  value='" + data.result[i].brokingFirmId + "'>" + data.result[i].brokingFirmName +"</option>");
 						}
 					}
 				}
 			});
 		}
 	}
-	function selectFirmName_update(obj){
-		$("#brokingFirmList_update").val(obj.text);
-	}
+	/**
+	 * 从下拉框中获取经纪公司
+	 */
+	$("#projectNameSelec_update").change(function(){
+		var value = $(this).find("option:selected").text();
+		$("#brokingFirmList_update").val(value);
+	});
 	var currentUserModel;
 	$.ajax({
 		url: "<%=path%>/api/currentUserModel.json",
