@@ -137,7 +137,7 @@ public class AttachmentService {
 	        CommonsMultipartFile cf= (CommonsMultipartFile)multipartFile; 
 	        DiskFileItem fi = (DiskFileItem)cf.getFileItem(); 
 	        File file = fi.getStoreLocation(); 
-			Thumbnails.of(file).scale(0.1f).toFile(new File(filePath));
+			Thumbnails.of(file).scale(0.6f).toFile(new File(filePath));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
