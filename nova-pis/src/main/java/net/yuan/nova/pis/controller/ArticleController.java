@@ -299,7 +299,8 @@ public class ArticleController {
 				if(null != file){
 					String filePath = System.getProperty(SystemConstant.WEBAPP_ROOT) + attachment.getSavePath();
 					try {
-						Thumbnails.of(file).scale(0.6f).toFile(new File(filePath));
+						//Thumbnails.of(file).scale(0.9f).toFile(new File(filePath));
+						Thumbnails.of(file).size(386, 161).outputQuality(0.8f).toFile(new File(filePath));
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
