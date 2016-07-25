@@ -1,5 +1,6 @@
 package net.yuan.nova.pis.controller;
 
+import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.DateFormat;
@@ -14,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.sf.json.JSONObject;
 import net.yuan.nova.commons.HttpUtils;
+import net.yuan.nova.commons.SystemConstant;
 import net.yuan.nova.core.entity.Attachment;
 import net.yuan.nova.core.entity.Attachment.TableName;
 import net.yuan.nova.core.service.AttachmentService;
@@ -381,8 +383,10 @@ public class BuildingController {
 			sb.append(" src=\"" + serverURL + "/" + pisPropertyVo.getFilePath() + "\">");
 			sb.append("	<div class=\"mui-media-body\">");
 			sb.append("		<h4 class=\"mui-ellipsis\">" + pisPropertyVo.getPropertyName() + "</h4>");
+			sb.append("		<p><font style=\"background-color:darkgray;color:white;\">"+pisPropertyVo.getDecoration()+"</font>");
+			sb.append("     <font style=\"background-color:darkgray;color:white;\">"+pisPropertyVo.getPropertyType()+"</font></p>");
 			sb.append("		<p class=\"mui-ellipsis\">特点：" + StringUtils.trimToEmpty(pisPropertyVo.getCharacteristic()) + "</p>");
-			sb.append("		<p class=\"mui-ellipsis\">均价：" + pisPropertyVo.getAvgPrice() + "</p>");
+			sb.append("		<p class=\"mui-ellipsis\" style=\"color:#E58E26\">均价：" + pisPropertyVo.getAvgPrice() + "元/㎡</p>");
 			sb.append("	</div>");
 			sb.append("</a>");
 			sb.append("</li>");
