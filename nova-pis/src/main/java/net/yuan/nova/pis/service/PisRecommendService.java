@@ -46,6 +46,8 @@ public class PisRecommendService {
 	@Autowired
 	private PisBrokingFirmService brokingFirmService;
 	private static Log log = LogFactory.getLog(PisRecommendService.class);
+	
+	 
 	/**
 	 * 根据推荐id得到推荐对象
 	 * 
@@ -89,6 +91,7 @@ public class PisRecommendService {
 			if (refree != null && null != presentUser) {
 				pisRecommendVo.setCustomerPresentUserName(presentUser.getUserName());
 				pisRecommendVo.setCustomerPresentUserNick(presentUser.getNick());
+				pisRecommendVo.setCustomerPersentUserDate(recommend.getCustomerPresentDate());
 			}
 		}
 		// 推荐确认人
@@ -101,33 +104,36 @@ public class PisRecommendService {
 			}
 		}
 		pisRecommendVo.setStatusTitle(recommend.getStatusName());
-		//得到案场电话列表
-		PisProperty property = pisBuildingService.selectByPrimaryKey(building.getBuildingId());
-		String tel = property.getPropertyTel();
-		log.debug("楼盘电话:" + tel);
-		List<String> tels = new ArrayList<>();
-		if (StringUtils.isNoneEmpty(tel)){
-			String[] tmp  = StringUtils.split(tel, ";");
-			for (String string : tmp) {
-				if(""!=string){
-					log.debug("电话:" + string);
-					tels.add("楼盘电话:"+string);
+		List<String> tels = null;
+		if (building!=null) {
+			//得到案场电话列表
+			PisProperty property = pisBuildingService.selectByPrimaryKey(building.getBuildingId());
+			String tel = property.getPropertyTel();
+			log.debug("楼盘电话:" + tel);
+			tels = new ArrayList<>();
+			if (StringUtils.isNoneEmpty(tel)){
+				String[] tmp  = StringUtils.split(tel, ";");
+				for (String string : tmp) {
+					if(""!=string){
+						log.debug("电话:" + string);
+						tels.add("楼盘电话:"+string);
+					}
 				}
 			}
-		}
-		pisRecommendVo.setBuildingTels(tels);
-		//得到案场专员列表
-		List<PisUserExtend> list = this.userExtendService.selectByBuildingId(1, 30, building.getBuildingId());
-		List<PisUser> buildingCommissioner = new ArrayList<PisUser>();
-		for (PisUserExtend pisUserExtend : list) {
-			PisUser user = this.pisUserService.findUserById(pisUserExtend.getUserId());
-			if(null != user){
-				 //获取用户类型
-				 log.debug("usertel:" + user.getTel()  + " nick:" + user.getNick());
-				buildingCommissioner.add(user);
+			pisRecommendVo.setBuildingTels(tels);
+			//得到案场专员列表
+			List<PisUserExtend> list = this.userExtendService.selectByBuildingId(1, 30, building.getBuildingId());
+			List<PisUser> buildingCommissioner = new ArrayList<PisUser>();
+			for (PisUserExtend pisUserExtend : list) {
+				PisUser user = this.pisUserService.findUserById(pisUserExtend.getUserId());
+				if(null != user){
+					 //获取用户类型
+					 log.debug("usertel:" + user.getTel()  + " nick:" + user.getNick());
+					buildingCommissioner.add(user);
+				}
 			}
+			pisRecommendVo.setBuildingCommissioners(buildingCommissioner);
 		}
-		pisRecommendVo.setBuildingCommissioners(buildingCommissioner);
 		return pisRecommendVo;
 	}
 
@@ -160,6 +166,17 @@ public class PisRecommendService {
 		recommend.setStatus(PisRecommend.Status.appointment);
 		return this.recommendMapper.getWaitingPresent(recommend);
 	}
+	
+	/**
+	 * 查询某个经纪人在所有楼盘，等待客户到场的报备，经纪人用
+	 */
+	public List<PisRecommend>getWaitingPresentByKey(String keyWord,String refreeId){
+		PisRecommend recommend = new PisRecommend();
+		recommend.setRefreeId(refreeId);
+		recommend.setStatus(PisRecommend.Status.appointment);
+		recommend.setCustomerTel(keyWord);
+		return this.recommendMapper.getWaitingPresentByKey(recommend);
+	}
 
 	/**
 	 * 某个楼盘中等待确认的推荐（客户已经到场的）,驻场专员用
@@ -178,6 +195,21 @@ public class PisRecommendService {
 	}
 	
 	/**
+	 * 根据关键字过滤信息
+	 */
+	public List<PisRecommend> getWaitingConfirmByKey(String keyWord,String userId){
+		// 先根据报备人员id查找楼盘id，然后根据楼盘id查找报备带确认信息
+		PisUserExtend userExtend = this.userExtendService.selectByUserId(userId);
+		if (userExtend == null){
+			return new ArrayList<PisRecommend>();
+		}
+		PisRecommend recommend = new PisRecommend();
+		recommend.setBuildingId(userExtend.getBuildingId());
+		recommend.setCustomerTel(keyWord);
+		return this.recommendMapper.getWaitingConfirmByKey(recommend);
+	}
+	
+	/**
 	 * 某一个楼盘中等待确认“来”的推荐信息（客户到场），驻场专用
 	 * @param userId
 	 * @return
@@ -189,6 +221,23 @@ public class PisRecommendService {
 			return new ArrayList<PisRecommend>();
 		}
 		return this.recommendMapper.getWaitingCome(userExtend.getBuildingId());
+	}
+	/**
+	 * 打开
+	 * @param keyWord
+	 * @param userId
+	 * @return
+	 */
+	public List<PisRecommend> getWaitingComeKey(String keyWord,String userId){
+		// 先根据报备人员id查找楼盘id，然后根据楼盘id查找报备带确认信息
+			PisUserExtend userExtend = this.userExtendService.selectByUserId(userId);
+			if (userExtend == null){
+				return new ArrayList<PisRecommend>();
+			}
+			PisRecommend recommend = new PisRecommend();
+			recommend.setBuildingId(userExtend.getBuildingId());
+			recommend.setCustomerTel(keyWord);
+			return this.recommendMapper.getWaitingComeKey(recommend);
 	}
 
 	/**
@@ -315,6 +364,10 @@ public class PisRecommendService {
 		return this.recommendMapper.getMyWaitingComeByStatus(confirmUserId, status);
 	}
 	
+	public List<PisRecommend> getMyWaitingComeByStatusKey(PisRecommend pisRecommend){
+		return this.recommendMapper.getMyWaitingComeByStatusKey(pisRecommend);
+	}
+	
 	/**
 	 * 根据确认用户ID获取推荐信息
 	 * @param confirmUserId
@@ -323,6 +376,9 @@ public class PisRecommendService {
 	 */
 	public List<PisRecommend> getMyConfirmByStatus(String confirmUserId,String status){
 		return this.recommendMapper.getMyConfirmByStatus(confirmUserId, status);
+	}
+	public List<PisRecommend> getMyConfirmByStatusKey(PisRecommend pisRecommen){
+		return this.recommendMapper.getMyConfirmByStatusKey(pisRecommen);
 	}
 	/**
 	 * 得到所有报备信息，一般用于生成excell用的
@@ -400,6 +456,30 @@ public class PisRecommendService {
 	 */
 	public List<PisRecommend>getRecommendByStatus(String status){
 		return this.recommendMapper.getRecommendByStatus(status);
+	}
+	
+	public List<PisRecommendVo> getMyPresentByStatusKey(PisRecommend recommend){
+		//通过客户ID与状态获取在办报备信息
+		List<PisRecommend> myPresent = this.recommendMapper.getMyPresentByStatusKey(recommend);
+		 if((null==myPresent)||(null!=myPresent&&myPresent.size()==0)){
+		    	return null;
+		    }
+			List<PisRecommendVo> list = new ArrayList<PisRecommendVo>();
+			for (PisRecommend pisRecommend : myPresent) {
+				PisRecommendVo pisRecommendVo = new PisRecommendVo(pisRecommend);
+				// 获得城市数据
+				PisCity city = pisCityService.getCityById(pisRecommend.getCityId());
+				if (city != null) {
+					pisRecommendVo.setCityName(city.getCityName());
+				}
+				// 楼盘名称
+				PisBuilding building = pisBuildingService.getById(pisRecommend.getBuildingId());
+				if (building != null) {
+					pisRecommendVo.setBuildingName(building.getBuildingName());
+				}
+				list.add(pisRecommendVo);
+			}
+			return list;
 	}
 	/**
 	 * 根据报备状态和客户用户ID获取报备数据

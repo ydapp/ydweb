@@ -21,13 +21,10 @@
 		<context:include-filter type="annotation"
 			expression="org.springframework.web.bind.annotation.ControllerAdvice" />
 	</context:component-scan>
-	
 	<!-- 注解映射 -->
 	<mvc:annotation-driven />
-
 	<!-- 静态资源映射 -->
 	<mvc:default-servlet-handler />
-
 	<!-- 资源文件绑定器 -->
 	<bean id="messageSource"
 		class="org.springframework.context.support.ResourceBundleMessageSource">
@@ -103,9 +100,6 @@
 			</list>
 		</property>
 	</bean>
-
 	<bean id="exceptionHandler" class="net.yuan.nova.core.exception.CustomHandlerExceptionResolver" />
-		
 	<import resource="spring-servlet-shiro.xml"/>
-
 </beans>

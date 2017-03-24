@@ -12,20 +12,27 @@ import net.yuan.nova.pis.entity.PisRecommend;
 
 @Repository
 public interface PisRecommendMapper {
+	
+	List<PisRecommend> getWaitingConfirmByKey(PisRecommend recommend);
 	PisRecommend getById(String recommendId);
 	List<PisRecommend> getWaitingPresent(PisRecommend recommend);
+	List<PisRecommend> getWaitingPresentByKey(PisRecommend recommend);
 	List<PisRecommend> getWaitingConfirm(@Param("buildingId") String buildingId);
 	List<PisRecommend> getWaitingCome(@Param("buildingId") String buildingId);
+	List<PisRecommend> getWaitingComeKey(PisRecommend recommend);
 	int insert(PisRecommend recommend);
 	int customerPresent(PisRecommend recommend);
 	int recommendConfirm(PisRecommend recommend);
 	int getCustomerByTodayAndTel(@Param("customerTel") String customerTel,@Param("refreeId") String refreeId);
 	int updateRecommendStatusByRecommendId(String recommendId);
 	List<PisRecommend> getMyPresent(@Param("presentUserId") String presentUserId);
+	List<PisRecommend> getMyPresentByStatusKey(PisRecommend recommen);
 	List<PisRecommend> getMyPresentByStatus(@Param("presentUserId") String presentUserId,@Param("status") String status);
 	List<PisRecommend> getMyConfirm(@Param("confirmUserId") String confirmUserId);
+	List<PisRecommend> getMyWaitingComeByStatusKey(PisRecommend recommen);
 	List<PisRecommend> getMyWaitingComeByStatus(@Param("confirmUserId") String confirmUserId,@Param("status") String status);
 	List<PisRecommend> getMyConfirmByStatus(@Param("confirmUserId") String confirmUserId,@Param("status") String status);
+	List<PisRecommend> getMyConfirmByStatusKey(PisRecommend recommen);
 	List<PisRecommend>getRecommendByStatus(@Param("status") String status);
 	List<PisRecommend> getAll();
 	List<PisRecommend> getByBrokingFirmId(@Param("brokingFirmId") String brokingFirmId);

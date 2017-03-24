@@ -1,6 +1,7 @@
 package net.yuan.nova.pis.entity.vo;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.Date;
 import java.util.List;
 
 import net.yuan.nova.pis.entity.PisRecommend;
@@ -20,9 +21,10 @@ public class PisRecommendVo extends PisRecommend {
 	private String refreeName;
 	private String refreeNick;
 	private String refreeExtend;
-	// 客户到场确认人
+	// 客户到场确认人及时间
 	private String customerPresentUserName;
 	private String customerPresentUserNick;
+	private Date customerPersentUserDate;
 	// 推荐确认人
 	private String recommendConfirmUserName;
 	private String recommendConfirmUserNick;
@@ -51,6 +53,14 @@ public class PisRecommendVo extends PisRecommend {
 
 	public void setCityName(String cityName) {
 		this.cityName = cityName;
+	}
+
+	public Date getCustomerPersentUserDate() {
+		return customerPersentUserDate;
+	}
+
+	public void setCustomerPersentUserDate(Date customerPersentUserDate) {
+		this.customerPersentUserDate = customerPersentUserDate;
 	}
 
 	public String getBuildingName() {

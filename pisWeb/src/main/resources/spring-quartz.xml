@@ -12,7 +12,7 @@
     <property name="targetMethod" value="validateRecommend" />
     <property name="concurrent" value="false" />
   </bean>
-  <!--配置调度执行的触发的时间-->
+  <!--配置调度执行的触发的时间 -->
   <bean id="myTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
     <property name="jobDetail" ref="myDetail" />
     <property name="cronExpression" value="0 0 0 * * ?"/>

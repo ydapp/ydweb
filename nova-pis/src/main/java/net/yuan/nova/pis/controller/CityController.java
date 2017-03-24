@@ -76,6 +76,7 @@ public class CityController {
 		}
 		PageParam param = DataGridHepler.parseRequest(request);
 		List<PisCity> list = this.pisCityService.getCustomers(param.getPage(), param.getPageSize(),parentCityId);
+		System.out.println("---------------------------------------------------------------------------------------------------------------------城市数据列表");
 		return DataGridHepler.addDataGrid(list, modelMap); 
 	}
 	@RequestMapping(value = "/api/getCitys")

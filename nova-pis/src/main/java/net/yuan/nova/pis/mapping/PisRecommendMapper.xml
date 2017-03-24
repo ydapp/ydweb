@@ -69,7 +69,7 @@
       select 
       <include refid="Base_Column_List" />
     from PIS_RECOMMEND
-    where RECOMMEND_ID = #{recommendId,jdbcType=VARCHAR}
+    where RECOMMEND_ID = #{recommendId,jdbcType=VARCHAR} 
   </select>
   <select id="getWaitingPresent"  resultMap="BaseResultMap" parameterType="net.yuan.nova.pis.entity.PisRecommend" >
       select 
@@ -80,6 +80,20 @@
     
     <if test="buildingId != null" >
        and BUILDING_ID = #{buildingId,jdbcType=VARCHAR}
+    </if>
+  </select>
+  <select id="getWaitingPresentByKey"  resultMap="BaseResultMap" parameterType="net.yuan.nova.pis.entity.PisRecommend" >
+      select 
+      <include refid="Base_Column_List" />
+    from PIS_RECOMMEND
+    where STATUS = #{status, jdbcType=VARCHAR}
+    and REFREE_ID = #{refreeId,jdbcType=VARCHAR}
+    
+    <if test="buildingId != null" >
+       AND BUILDING_ID = #{buildingId,jdbcType=VARCHAR}
+    </if>
+    <if test="customerTel !=null">
+    		AND   CUSTOMER_TEL like '%${customerTel}%' 
     </if>
   </select>
   <update id="customerPresent" parameterType="net.yuan.nova.pis.entity.PisRecommend">
@@ -102,6 +116,26 @@
     from PIS_RECOMMEND
     where BUILDING_ID = #{buildingId,jdbcType=VARCHAR}
     and (STATUS = 'present' or STATUS = 'pledges' or STATUS = 'order') 
+  </select>
+  <select id="getWaitingConfirmByKey"  resultMap="BaseResultMap" parameterType="net.yuan.nova.pis.entity.PisRecommend" >
+      select 
+      <include refid="Base_Column_List" />
+    from PIS_RECOMMEND
+    where BUILDING_ID = #{buildingId,jdbcType=VARCHAR} 
+    <if test="customerTel !=null and customerTel !='' ">
+    		AND CUSTOMER_TEL like '%${customerTel}%' 
+    </if>
+    AND (STATUS = 'present' or STATUS = 'pledges' or STATUS = 'order')
+  </select>
+  <select id="getWaitingComeKey"  resultMap="BaseResultMap" parameterType="java.lang.String" >
+      select 
+      <include refid="Base_Column_List" />
+    from PIS_RECOMMEND
+    where BUILDING_ID = #{buildingId,jdbcType=VARCHAR}
+    AND (STATUS='appointment')
+    <if test="customerTel !=null and customerTel !='' ">
+    		AND CUSTOMER_TEL like '%${customerTel}%' 
+    </if>
   </select>
   <select id="getWaitingCome"  resultMap="BaseResultMap" parameterType="java.lang.String" >
       select 
@@ -152,7 +186,7 @@
   <select id="getBySaleman"  resultMap="BaseResultMap"  parameterType="java.lang.String" >
       select 
       <include refid="Base_Column_List" />
-    from PIS_RECOMMEND where REFREE_ID=#{userId}
+    from PIS_RECOMMEND WHERE REFREE_ID=#{userId}
   </select>
   <select id="getByBuildingId"  resultMap="BaseResultMap"  parameterType="java.lang.String" >
       select 
@@ -162,6 +196,16 @@
   <select id="getCustomerByTodayAndTel"  resultType="java.lang.Integer" parameterType="java.lang.String" >
   	SELECT COUNT(1) NUM FROM PIS_RECOMMEND T WHERE TO_CHAR(T.RECOMMEND_DATE,'YYYYMMDD')=TO_CHAR(SYSDATE,'YYYYMMDD')  AND T.CUSTOMER_TEL=#{customerTel,jdbcType=VARCHAR} AND T.RECOMMEND_ID=#{refreeId,jdbcType=VARCHAR}
   </select> 
+  <select id="getMyPresentByStatusKey"  resultMap="BaseResultMap" parameterType="net.yuan.nova.pis.entity.PisRecommend" >
+      SELECT 
+      <include refid="Base_Column_List" />
+    FROM PIS_RECOMMEND
+    WHERE REFREE_ID = #{refreeId, jdbcType=VARCHAR} 
+     AND STATUS in ('present','pledges','order')
+    <if test="customerTel !=null">
+    		AND   CUSTOMER_TEL like '%${customerTel}%' 
+    </if>
+  </select>
   <select id="getMyPresentByStatus"  resultMap="BaseResultMap" parameterType="java.lang.String" >
       SELECT 
       <include refid="Base_Column_List" />
@@ -171,6 +215,16 @@
      	AND STATUS in (${status})
     </if>
   </select>
+     <select id="getMyWaitingComeByStatusKey"  resultMap="BaseResultMap" parameterType="net.yuan.nova.pis.entity.PisRecommend" >
+      SELECT 
+      <include refid="Base_Column_List" />
+    FROM PIS_RECOMMEND
+    WHERE CUSTOMER_PRESENT_USER_ID = #{customerPresentUserId, jdbcType=VARCHAR}
+    AND STATUS in ('present','pledges','order')
+    <if test="customerTel !=null">
+    		AND   CUSTOMER_TEL like '%${customerTel}%' 
+    </if>
+  </select>
    <select id="getMyWaitingComeByStatus"  resultMap="BaseResultMap" parameterType="java.lang.String" >
       SELECT 
       <include refid="Base_Column_List" />
@@ -178,6 +232,16 @@
     WHERE CUSTOMER_PRESENT_USER_ID = #{confirmUserId, jdbcType=VARCHAR}
     <if test="status!=''">
     	AND STATUS IN(${status})
+    </if>
+  </select>
+  <select id="getMyConfirmByStatusKey"  resultMap="BaseResultMap" parameterType="net.yuan.nova.pis.entity.PisRecommend" >
+      SELECT 
+      <include refid="Base_Column_List" />
+    FROM PIS_RECOMMEND
+    WHERE RECOMMEND_CONFIRM_USERID = #{customerPresentUserId, jdbcType=VARCHAR}
+    AND STATUS in ('present','pledges','order')
+     <if test="customerTel !=null">
+    		AND   CUSTOMER_TEL like '%${customerTel}%' 
     </if>
   </select>
    <select id="getMyConfirmByStatus"  resultMap="BaseResultMap" parameterType="java.lang.String" >

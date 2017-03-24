@@ -77,6 +77,11 @@ public class PisProperty {
     private String trafficFacilities;
     //户型介绍
     private String houseType;
+    //系统设置自检时间
+    private String passTime;
+    
+    
+    
     /**
      * 楼盘id
      * @return
@@ -458,5 +463,12 @@ public class PisProperty {
 	public void setHouseType(String houseType) {
 		this.houseType = houseType;
 	}
-    
+
+	public String getPassTime() {
+		return passTime;
+	}
+
+	public void setPassTime(String passTime) {
+		this.passTime = passTime;
+	}
 }

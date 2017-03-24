@@ -28,12 +28,13 @@
     <result column="property_Tel" property="propertyTel" jdbcType="VARCHAR" />
     <result column="traffic_Facilities" property="trafficFacilities" jdbcType="VARCHAR" />
     <result column="house_Type" property="houseType" jdbcType="VARCHAR" />
+     <result column="PASSTIME" property="passTime" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
     PROPERTY_ID, PROPERTY_NAME, PROPERTY_TYPE, REAL_ESTATE_AGENCY, ADDRESS, COUNTRY, 
     PROVINCE, CITY, COUNTY, OPEN_DATE, CHARACTERISTIC, DECORATION, AREA, YEARS, GREEN_RATE, 
     PROPERTY_COMPANY, DELIVERY_TIME, AVG_PRICE, COMMISSION, RECOMMENDED_NUMBER, RESERVATION_NUMBER, 
-    VIEW_TIMES,subscription_rules,property_Tel,traffic_Facilities,house_Type
+    VIEW_TIMES,subscription_rules,property_Tel,traffic_Facilities,house_Type,PASSTIME
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select 
@@ -310,6 +311,9 @@
       </if>
       <if test="houseType != null" >
         house_Type = #{houseType,jdbcType=VARCHAR},
+      </if>
+      <if test="passTime != null">
+      	PASSTIME = #{passTime,jdbcType=VARCHAR}
       </if>
     </set>
     where PROPERTY_ID = #{propertyId,jdbcType=VARCHAR}

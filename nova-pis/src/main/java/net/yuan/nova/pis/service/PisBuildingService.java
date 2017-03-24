@@ -115,6 +115,8 @@ public class PisBuildingService {
 	public PisProperty selectByPrimaryKey(String id) {
 		return pisPropertyMapper.selectByPrimaryKey(id);
 	}
+	
+	
 	public void update(PisProperty record){
 		this.pisPropertyMapper.updateByPrimaryKeySelective(record);
 	}

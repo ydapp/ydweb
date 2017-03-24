@@ -22,6 +22,7 @@ import net.yuan.nova.pis.controller.model.ConfirmModel;
 import net.yuan.nova.pis.controller.model.CustomerModel;
 import net.yuan.nova.pis.entity.PisBuilding;
 import net.yuan.nova.pis.entity.PisCity;
+import net.yuan.nova.pis.entity.PisProperty;
 import net.yuan.nova.pis.entity.PisRecommend;
 import net.yuan.nova.pis.entity.PisUser;
 import net.yuan.nova.pis.entity.PisUserGroup;
@@ -48,6 +49,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.sun.tools.internal.ws.processor.model.Model;
 
 /**
  * 推荐业务控制器
@@ -144,6 +147,23 @@ public class RecommendController {
 		jsonVo.setResult(list);
 		return getResponse(jsonVo, modelMap);
 	}
+	
+	/**
+	 *  经纪人查看所有楼盘待客户到场的报备信息
+	 * @param request
+	 * @param modelMap
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/api/recommends/waitingPresentKey", method = RequestMethod.GET)
+	public ModelMap getWaitingPersentKey(HttpServletRequest request, ModelMap modelMap){
+		JsonVo<Object> jsonVo = new JsonVo<Object>();
+		String userId = request.getParameter("userId");
+		String keyWord = request.getParameter("keyWord");
+	    List<PisRecommend> list = this.recommendService.getWaitingPresentByKey(keyWord,userId);
+		jsonVo.setResult(list);
+		return getResponse(jsonVo, modelMap);
+	}
 
 	/**
 	 * 经纪人得到某个楼盘的待到场报备信息
@@ -210,6 +230,21 @@ public class RecommendController {
 		jsonVo.setResult(list);
 		return this.getResponse(jsonVo, modelMap);
 	}
+	
+	/**
+	 * 得到详细信息
+	 * @return 
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/api/getRecommends", method = RequestMethod.GET)
+	public ModelMap getRecommends( HttpServletRequest request, ModelMap modelMap){
+		JsonVo<Object> jsonVo = new JsonVo<Object>();
+		String recommendId = request.getParameter("recommendId");
+		PisRecommendVo recommend = recommendService.getById(recommendId);
+		jsonVo.setResult(recommend);
+		return this.getResponse(jsonVo, modelMap);
+	}
+	
 	/**
 	 * 获取报备状态非“报备确认”的报备集合
 	 * @param presentUserId
@@ -226,6 +261,24 @@ public class RecommendController {
 		String status = "'"+PisRecommend.Status.present+"','"+PisRecommend.Status.pledges+"','"+PisRecommend.Status.order+"'";
 		//获取自己提交的并且状态非“报备确认”的报备集合
 		List<PisRecommendVo> list =this.recommendService.getMyPresentByStatus(presentUserId, status);
+		//装载数据集合
+		jsonVo.setResult(list);
+		return this.getResponse(jsonVo, modelMap);
+	}
+	
+	@ResponseBody
+	@RequestMapping(value = "/api/recommends/presented/doingKey", method = RequestMethod.GET)
+	public ModelMap getMyPresentByStatusKey(HttpServletRequest request, ModelMap modelMap){
+		JsonVo<Object> jsonVo = new JsonVo<Object>();
+		String userId = request.getParameter("userId");
+		String keyWord = request.getParameter("keyWord");
+		//组装状态非“确认报备”
+		//String status = "'"+PisRecommend.Status.present+"','"+PisRecommend.Status.pledges+"','"+PisRecommend.Status.order+"'";
+		PisRecommend pisRecommend = new PisRecommend();
+		pisRecommend.setRefreeId(userId);
+		pisRecommend.setCustomerTel(keyWord);
+		//获取自己提交的并且状态非“报备确认”的报备集合
+		List<PisRecommendVo> list =this.recommendService.getMyPresentByStatusKey(pisRecommend);
 		//装载数据集合
 		jsonVo.setResult(list);
 		return this.getResponse(jsonVo, modelMap);
@@ -270,8 +323,39 @@ public class RecommendController {
 		return getResponse(jsonVo, modelMap);
 	}
 	
+	/**
+	 * 通过关键字获取信息
+	 * @param request
+	 * @param modelMap
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/api/recommends/waitingConfirmByKey", method = RequestMethod.GET)
+	public ModelMap getWaitingConfirmByKey(HttpServletRequest request, ModelMap modelMap){
+		JsonVo<Object> jsonVo = new JsonVo<Object>();
+		String userId = request.getParameter("userId");
+		String keyWord = request.getParameter("keyWord");
+		log.debug("userId:" + userId);
+		List<PisRecommend> list = this.recommendService.getWaitingConfirmByKey(keyWord,userId);
+		jsonVo.setResult(list);
+		return getResponse(jsonVo, modelMap);
+	}
 	
 	
+	/**
+	 * 驻场专员确认“来”
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/api/recommends/waitingComeKey", method = RequestMethod.GET)
+	public ModelMap getWaitingComeKey(HttpServletRequest request, ModelMap modelMap){
+		JsonVo<Object> jsonVo = new JsonVo<Object>();
+		String userId = request.getParameter("userId");
+		String keyword = request.getParameter("keyWord");
+		List<PisRecommend> list = this.recommendService.getWaitingComeKey(keyword,userId);
+		jsonVo.setResult(list);
+		return getResponse(jsonVo, modelMap);
+	} 
 	/**
 	 * 驻场专员确认“来”
 	 * @param userId
@@ -317,6 +401,7 @@ public class RecommendController {
 		}
 		return this.getResponse(jsonVo, modelMap);
 	}
+ 
 	/**
 	 * 追加详情操作
 	 * 状态只要不是确认，都可以随时追加详情
@@ -374,6 +459,28 @@ public class RecommendController {
 		jsonVo.setResult(list);
 		return this.getResponse(jsonVo, modelMap);
 	}
+	
+	/**
+	 * 驻场专员正在处理的报备
+	 * @param request
+	 * @param modelMap
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/api/recommends/waitingCome/doingKey", method = RequestMethod.GET)
+	public ModelMap getMyWaitingComeByStatusKey(HttpServletRequest request, ModelMap modelMap){
+		JsonVo<Object> jsonVo = new JsonVo<Object>();
+		String userId = request.getParameter("userId");
+		String keyWord = request.getParameter("keyWord");
+		PisRecommend pisRecommend = new PisRecommend();
+		pisRecommend.setCustomerPresentUserId(userId);
+		pisRecommend.setCustomerTel(keyWord);
+		List<PisRecommend> list = this.recommendService.getMyWaitingComeByStatusKey(pisRecommend);
+		//装载数据集合
+		jsonVo.setResult(list);
+		return this.getResponse(jsonVo, modelMap);
+	}
+	
 	/**
 	 * 通过推荐人ID获取状态非“报备确认”报备集合
 	 * @param confirmUserId
@@ -393,6 +500,21 @@ public class RecommendController {
 		jsonVo.setResult(list);
 		return this.getResponse(jsonVo, modelMap);
 	}
+	 
+	 @ResponseBody
+	 @RequestMapping(value = "/api/recommends/confirmed/doingKey", method = RequestMethod.GET)
+	 public ModelMap getMyConfirmByStatusKey(HttpServletRequest request, ModelMap modelMap){
+		 JsonVo<Object> jsonVo = new JsonVo<Object>();
+		 String userId = request.getParameter("userId");
+		String keyWord = request.getParameter("keyWord");
+		PisRecommend pisRecommend = new PisRecommend();
+		pisRecommend.setCustomerPresentUserId(userId);
+		pisRecommend.setCustomerTel(keyWord);
+		//通过推荐用户ID和状态获取非“确认报备”报备集合信息
+		List<PisRecommend> list = this.recommendService.getMyConfirmByStatusKey(pisRecommend);
+		jsonVo.setResult(list);
+		return this.getResponse(jsonVo, modelMap);
+	 }
 	 
 	 /**
 	  * 驻场专员“确定报备”来
@@ -607,6 +729,7 @@ public class RecommendController {
 		// response.setHeader("Content-Length", String.valueOf(fileLength));
 		// IOUtils.copyLarge(bis, bos);
 	}
+	
 	
 	/**
 	 * 推荐信息导出列表
@@ -823,18 +946,26 @@ public class RecommendController {
 						} catch (ParseException e) {
 							 log.debug("计算内存集合中状态为'申请'的推荐信息与当前的时间差异常:"+e.getMessage());
 						}
-						 //判断内存集合中是否存在7天或以上的推荐信息
-						 if(d>7){
-							 int ret = this.recommendService.updateRecommendStatusByRecommendId(String.valueOf(key));
-							 if(ret>0){
-								 log.debug("修改推荐信息状态为X成功,ID："+key);
-								 //以内存集合为准判断是否有改变的推荐信息
-								 recoList = this.recommendService.getRecommendByStatus(PisRecommend.Status.appointment.toString());
-								 cleanRecommends(recoList,recommends);
-							 }else{
-								 log.debug("修改推荐信息状态为X失败,ID："+key);
-							 }
-						 }
+						 PisRecommendVo pisRecommendVo = recommendService.getById(key);
+						  if (null != pisRecommendVo && pisRecommendVo.getBuildingId()!="") {
+							  System.out.println(pisRecommendVo.getBuildingId());
+							  PisProperty pisProperty =  buildingService.selectByPrimaryKey(pisRecommendVo.getBuildingId());
+								 if (null != pisProperty) {
+									 int passTime = Integer.parseInt(pisProperty.getPassTime());
+									 //判断内存集合中是否存在7天或以上的推荐信息
+									 if(d>passTime){
+										 int ret = this.recommendService.updateRecommendStatusByRecommendId(String.valueOf(key));
+										 if(ret>0){
+											 log.debug("修改推荐信息状态为X成功,ID："+key);
+											 //以内存集合为准判断是否有改变的推荐信息
+											 recoList = this.recommendService.getRecommendByStatus(PisRecommend.Status.appointment.toString());
+											 cleanRecommends(recoList,recommends);
+										 }else{
+											 log.debug("修改推荐信息状态为X失败,ID："+key);
+										 }
+									 }
+								}
+						}
 					}
 				}
 		}else{

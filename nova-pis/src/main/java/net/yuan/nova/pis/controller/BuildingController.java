@@ -285,6 +285,7 @@ public class BuildingController {
 		property.setPropertyTel(multipartRequest.getParameter("propertyTel").trim());
 		property.setTrafficFacilities(multipartRequest.getParameter("trafficFacilities"));
 		property.setHouseType(multipartRequest.getParameter("houseType"));
+		property.setPassTime(multipartRequest.getParameter("passTime"));
 		
 		if (StringUtils.isEmpty(property.getPropertyName())){
 			json.setSuccess(false);

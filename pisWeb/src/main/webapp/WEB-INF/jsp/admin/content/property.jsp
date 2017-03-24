@@ -344,6 +344,13 @@
 						<tr>
 							<td>
 								<div class="fitem">
+									<label><font color="red">*</font>失效期限：</label><input  id="passTime_update" name="passTime" class="easyui-textbox" validType="maxLen['#propertyName_update',200]" required="required" class="easyui-textbox" style="width: 400px;">
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<div class="fitem">
 									<label><font color="red">*</font>交通配套：</label> <textarea
 										id="trafficFacilities_update" name="trafficFacilities" class="easyui-textbox" required="required" validType="maxLen['#trafficFacilities_update',1000]" readonly="readonly"  style="width: 400px;height: 50px"></textarea><br>
 										<button type="button" id="addRafficFacilities_update">添加一条交通配套</button>
